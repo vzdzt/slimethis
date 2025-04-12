@@ -86,6 +86,16 @@ function generateBanger() {
         },
         {
             type: 'meme',
+            image: 'canadagangs.jpeg',
+            caption: 'street gangs in canada are out of control',
+        },
+         {
+            type: 'meme',
+            image: 'brotext.jpeg',
+            caption: 'bro 😭',
+        },
+        {
+            type: 'meme',
             image: 'pigeonbot.jpeg',
             caption: 'for how much longer will they lie to us',
         },
