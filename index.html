@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlimeThis.com - Banger Machine</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+</head>
+<body data-theme="ultra-glass">
+    <canvas id="universe" class="starfield"></canvas>
+    <div id="cursor" class="cursor"></div>
+    <div id="cursor-blur" class="cursor-blur"></div>
+    <div class="container">
+        <h1 class="slime-title">SlimeThis.com</h1>
+        <div class="theme-switcher">
+            <label for="theme-select">Choose Theme:</label>
+            <select id="theme-select">
+                <option value="ultra-glass">Ultra Glass</option>
+                <option value="satin">Satin</option>
+                <option value="galactic-nebula">Galactic Nebula</option>
+                <option value="electric-storm">Electric Storm</option>
+                <option value="glass-morphism">Glass Morphism</option>
+                <option value="void-pulse">Void Pulse</option>
+                <option value="prism-shard">Prism Shard</option>
+                <option value="inferno-core">Inferno Core</option>
+                <option value="cosmic-rift">Cosmic Rift</option>
+                <option value="retro-vaporwave">Retro Vaporwave</option>
+                <option value="veazy">Veazy Mode</option>
+            </select>
+        </div>
+        <div class="type-switcher">
+            <label for="type-select">Banger Type:</label>
+            <select id="type-select">
+                <option value="all">All</option>
+                <option value="quote">Quotes</option>
+                <option value="meme">Memes</option>
+                <option value="video">Videos</option>
+                <option value="double-image">Double Images</option>
+                <option value="image">Images</option>
+                <option value="quad-image">Quad Images</option>
+            </select>
+        </div>
+        <div id="output" class="card">
+            <p>Click the button to generate a banger!</p>
+        </div>
+        <div class="button-container">
+            <button id="generate-btn">slime!</button>
+        </div>
+        <h3>follow me if you want</h3>
+        <div class="social-container">
+            <img src="veazypfp.jpeg" alt="Veazy Profile" class="profile-pic">
+            <a href="https://x.com/36966_" target="_blank" class="x-link">
+                <svg viewBox="0 0 24 24" class="x-logo">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+    <script>
+        // Load Paint Worklets
+        if ('paintWorklet' in CSS) {
+            CSS.paintWorklet.addModule('neon-grid.js');
+            CSS.paintWorklet.addModule('neon-cursor.js');
+            CSS.paintWorklet.addModule('cyber-bg.js');
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
