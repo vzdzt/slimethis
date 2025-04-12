@@ -175,6 +175,11 @@ function generateBanger() {
             src: 'shakinghishead.mp4', 
             caption: 'he not even going fast he just shaking his head 😭' 
         },
+         { 
+            type: 'video', 
+            src: 'gtalobby1.mp4', 
+            caption: 'bro lives in a GTA lobby' 
+        },
         { 
             type: 'video', 
             src: 'trustissues.mp4', 
