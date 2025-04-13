@@ -48,6 +48,10 @@ function generateBanger() {
         { type: 'quote', content: '"you changed" bro i hate you' },
         { type: 'quote', content: 'stealing tweets is good actually and the madder the original poster the better' },
         { type: 'quote', content: 'if you ever think im ignoring you i swear to god i am my phone be in my hand 24/7' },
+        { type: 'quote', content: '“men can’t handle me” ya bitch we not psychward staff members' },
+        { type: 'quote', content: 'real mfs wake up to "battery sufficiently charged" as their only notification' },
+        { type: 'quote', content: 'ima sucker for deep talks.. i wanna know what made you a lying ass bitch' },
+        { type: 'quote', content: 'yall forgiving your girl if she catches you cheating?' },
         // Memes
         { 
             type: 'meme', 
