@@ -65,13 +65,18 @@ function generateBanger() {
         },
         { 
             type: 'meme', 
-            image: 'catcode.jpeg', 
-            caption: 'When your cat walks on your keyboard and fixes your code' 
+            image: 'sillyandlie.jpeg', 
+            caption: 'me logging in to act silly and lie',
+        },
+        {
+            type: 'meme',
+            image: 'smallaccounts.jpeg',
+            caption: 'us small accounts carrying meme twt',
         },
         { 
             type: 'meme', 
-            image: 'nocoffee.jpeg', 
-            caption: 'Me trying to function before coffee hits' 
+            image: 'rapszn1.jpeg', 
+            caption: 'bro listening to rap music from Season 1 💀' 
         },
         { 
             type: 'meme', 
@@ -160,8 +165,8 @@ function generateBanger() {
         },
         {
             type: 'meme',
-            image: 'dreaming.jpeg',
-            caption: 'I’m dreaming',
+            image: 'brotext2.jpeg',
+            caption: 'bro wtf 😭😭',
         },
         {
             type: 'meme',
