@@ -146,6 +146,16 @@ function generateBanger() {
         },
         {
             type: 'meme',
+            image: 'curtains.jpeg',
+            caption: 'Strong, independent women all feeling seen here. 🫣🤭',
+        },
+        {
+            type: 'meme',
+            image: 'nosmoking.jpeg',
+            caption: 'this "no smoking in front of kids" thing is ridiculous look how cold he is',
+        },
+        {
+            type: 'meme',
             image: 'dreaming.jpeg',
             caption: 'I’m dreaming',
         },
