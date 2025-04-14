@@ -7,6 +7,7 @@ function generateBanger() {
     const bangers = [
         // Quotes
         { type: 'quote', content: 'i be like "ngl" and then lie' },
+        { type: 'quote', content: '我们杀了他并将他的尸体藏在树林里'},
         { type: 'quote', content: 'blocked her on everything and my tv started ringing' },
         { type: 'quote', content: 'i delete tweets cuz im not the same man i was 3 minutes ago' },
         { type: 'quote', content: '👣ATTENTION👣PLEASEE👣 <br> Guys 👣 if 👣 you👣 receive 👣 an 👣 email 👣 that 👣 says 👣 feet 👣 pictures 👣 of 👣 Ice 👣 Spice 👣 do 👣 NOT 👣 open 👣 it 👣 cuz 👣 its 👣 a 👣 virus 👣 that 👣 puts 👣 the 👣 feet👣emoji 👣 in 👣 between 👣 everything 👣 you👣type👣' },
