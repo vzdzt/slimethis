@@ -11,6 +11,7 @@ function generateBanger() {
         { type: 'quote', content: 'i delete tweets cuz im not the same man i was 3 minutes ago' },
         { type: 'quote', content: '👣ATTENTION👣PLEASEE👣 <br> Guys 👣 if 👣 you👣 receive 👣 an 👣 email 👣 that 👣 says 👣 feet 👣 pictures 👣 of 👣 Ice 👣 Spice 👣 do 👣 NOT 👣 open 👣 it 👣 cuz 👣 its 👣 a 👣 virus 👣 that 👣 puts 👣 the 👣 feet👣emoji 👣 in 👣 between 👣 everything 👣 you👣type👣' },
         { type: 'quote', content: '"do better" does worse' },
+        { type: 'quote', content: 'real mfs dont sleep they just close their eyes and wait' },
         { type: 'quote', content: 'sorry i didnt text you back i was ignoring you'},
         { type: 'quote', content: 'if she randomly texts "i love you" outta nowhere she just cheated' },
         { type: 'quote', content: '"turn on your hotspot" bro pay your phone bill' },
@@ -106,10 +107,15 @@ function generateBanger() {
             image: 'brotext.jpeg',
             caption: 'bro 😭',
         },
-        {
+         {
             type: 'meme',
             image: 'pigeonbot.jpeg',
             caption: 'for how much longer will they lie to us',
+        },
+        {
+            type: 'meme',
+            image: 'girlsflirt.jpeg',
+            caption: 'girls flirt by just staring at you like this',
         },
         {
             type: 'meme',
@@ -202,6 +208,11 @@ function generateBanger() {
             src: 'gtalobby1.mp4', 
             caption: 'bro lives in a GTA lobby' 
         },
+        {
+            type: 'video',
+            src: '2020hood.mp4',
+            caption: 'covid had the hood stressin',
+        },
         { 
             type: 'video', 
             src: 'trustissues.mp4', 
@@ -213,6 +224,12 @@ function generateBanger() {
             leftImage: 'looklikethis1.jpeg', 
             rightImage: 'looklikethis2.jpeg', 
             caption: 'her hands look like this so that mine can look like this' 
+        },
+        {
+            type: 'double-image',
+            leftImage: 'fingerrock.jpeg',
+            rightImage: 'fingerrock2.jpeg',
+            caption: 'whoever painted this rock to look like a finger, fuck you'
         },
         { 
             type: 'double-image', 
@@ -230,6 +247,10 @@ function generateBanger() {
         {
             type: 'image',
             image: 'stroker.jpeg'
+        },
+        {
+            type: 'image',
+            image: 'friendship.jpeg',
         },
         // Quad Images
         {
