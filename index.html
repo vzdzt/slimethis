@@ -18,92 +18,95 @@
         <h1 class="slime-title">SlimeThis.com</h1>
         <p class="subtitle">Click "slime!" to generate a banger, copy the text, and save any images/videos automatically</p>
 
-        <!-- Controls Sidebar - Fixed Position -->
-        <div class="controls-sidebar">
-            <div class="theme-switcher">
-                <label for="theme-select">Theme:</label>
-                <select id="theme-select">
-                    <option value="ultra-glass">Ultra Glass</option>
-                    <option value="satin">Satin</option>
-                    <option value="galactic-nebula">Galactic Nebula</option>
-                    <option value="electric-storm">Electric Storm</option>
-                    <option value="glass-morphism">Glass Morphism</option>
-                    <option value="void-pulse">Void Pulse</option>
-                    <option value="prism-shard">Prism Shard</option>
-                    <option value="inferno-core">Inferno Core</option>
-                    <option value="cosmic-rift">Cosmic Rift</option>
-                    <option value="retro-vaporwave">Retro Vaporwave</option>
-                    <option value="veazy">Veazy Mode</option>
-                    <option value="neon-fluid">Neon Fluid</option>
-                </select>
-            </div>
-
-            <div class="type-switcher">
-                <label for="type-select">Banger Type:</label>
-                <select id="type-select">
-                    <option value="all">All</option>
-                    <option value="quote">Quotes</option>
-                    <option value="meme">Memes</option>
-                    <option value="video">Videos</option>
-                    <option value="double-image">Double Images</option>
-                    <option value="image">Images</option>
-                    <option value="quad-image">Quad Images</option>
-                </select>
-            </div>
-
-            <div class="color-customizer">
-                <div class="customizer-header">
-                    <h4>Color Palette</h4>
-                    <button id="reset-colors" class="reset-btn" title="Reset to theme defaults">⟲</button>
+        <!-- Main Layout Grid - Stable Two Column -->
+        <div class="main-layout">
+            <!-- Controls Panel - Left Side -->
+            <div class="controls-panel">
+                <div class="theme-switcher">
+                    <label for="theme-select">Theme:</label>
+                    <select id="theme-select">
+                        <option value="ultra-glass">Ultra Glass</option>
+                        <option value="satin">Satin</option>
+                        <option value="galactic-nebula">Galactic Nebula</option>
+                        <option value="electric-storm">Electric Storm</option>
+                        <option value="glass-morphism">Glass Morphism</option>
+                        <option value="void-pulse">Void Pulse</option>
+                        <option value="prism-shard">Prism Shard</option>
+                        <option value="inferno-core">Inferno Core</option>
+                        <option value="cosmic-rift">Cosmic Rift</option>
+                        <option value="retro-vaporwave">Retro Vaporwave</option>
+                        <option value="veazy">Veazy Mode</option>
+                        <option value="neon-fluid">Neon Fluid</option>
+                    </select>
                 </div>
-                <div class="color-palette">
-                    <div class="color-input-group">
-                        <div class="color-input primary">
-                            <input type="color" id="primary-color" value="#00ffff">
-                            <div class="color-info">
-                                <span class="color-name">Primary</span>
-                                <span class="color-hex" id="primary-hex">#00ffff</span>
+
+                <div class="type-switcher">
+                    <label for="type-select">Banger Type:</label>
+                    <select id="type-select">
+                        <option value="all">All</option>
+                        <option value="quote">Quotes</option>
+                        <option value="meme">Memes</option>
+                        <option value="video">Videos</option>
+                        <option value="double-image">Double Images</option>
+                        <option value="image">Images</option>
+                        <option value="quad-image">Quad Images</option>
+                    </select>
+                </div>
+
+                <div class="color-customizer">
+                    <div class="customizer-header">
+                        <h4>Color Palette</h4>
+                        <button id="reset-colors" class="reset-btn" title="Reset to theme defaults">⟲</button>
+                    </div>
+                    <div class="color-palette">
+                        <div class="color-input-group">
+                            <div class="color-input primary">
+                                <input type="color" id="primary-color" value="#00ffff">
+                                <div class="color-info">
+                                    <span class="color-name">Primary</span>
+                                    <span class="color-hex" id="primary-hex">#00ffff</span>
+                                </div>
+                            </div>
+                            <div class="color-input secondary">
+                                <input type="color" id="secondary-color" value="#ff00ff">
+                                <div class="color-info">
+                                    <span class="color-name">Secondary</span>
+                                    <span class="color-hex" id="secondary-hex">#ff00ff</span>
+                                </div>
+                            </div>
+                            <div class="color-input accent">
+                                <input type="color" id="accent-color" value="#ffff00">
+                                <div class="color-info">
+                                    <span class="color-name">Accent</span>
+                                    <span class="color-hex" id="accent-hex">#ffff00</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="color-input secondary">
-                            <input type="color" id="secondary-color" value="#ff00ff">
-                            <div class="color-info">
-                                <span class="color-name">Secondary</span>
-                                <span class="color-hex" id="secondary-hex">#ff00ff</span>
+                        <div class="intensity-control">
+                            <div class="intensity-header">
+                                <span class="intensity-label">Intensity</span>
+                                <span class="intensity-value" id="intensity-value">100%</span>
                             </div>
-                        </div>
-                        <div class="color-input accent">
-                            <input type="color" id="accent-color" value="#ffff00">
-                            <div class="color-info">
-                                <span class="color-name">Accent</span>
-                                <span class="color-hex" id="accent-hex">#ffff00</span>
+                            <input type="range" id="intensity-slider" min="10" max="200" step="10" value="100">
+                            <div class="intensity-scale">
+                                <span>10%</span>
+                                <span>100%</span>
+                                <span>200%</span>
                             </div>
                         </div>
                     </div>
-                    <div class="intensity-control">
-                        <div class="intensity-header">
-                            <span class="intensity-label">Intensity</span>
-                            <span class="intensity-value" id="intensity-value">100%</span>
-                        </div>
-                        <input type="range" id="intensity-slider" min="10" max="200" step="10" value="100">
-                        <div class="intensity-scale">
-                            <span>10%</span>
-                            <span>100%</span>
-                            <span>200%</span>
-                        </div>
-                    </div>
+                </div>
+
+                <div class="button-container">
+                    <button id="generate-btn">slime!</button>
                 </div>
             </div>
 
-            <div class="button-container">
-                <button id="generate-btn">slime!</button>
-            </div>
-        </div>
-
-        <!-- Output Container - Independent -->
-        <div class="output-container">
-            <div id="output" class="card">
-                <p>Click "slime!" or select a banger type to generate!</p>
+            <!-- Output Panel - Right Side -->
+            <div class="output-panel">
+                <div id="output" class="card">
+                    <p>Click "slime!" or select a banger type to generate!</p>
+                </div>
             </div>
         </div>
 
