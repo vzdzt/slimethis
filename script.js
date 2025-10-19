@@ -182,7 +182,7 @@ async function loadContent() {
         const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4'];
         const maxFilesToCheck = 50; // Limit to prevent too many requests
 
-        // All images from slimethis:images/ folder
+        // All images from images/ folder
         const knownImageFiles = [
             '0a731d8a55a42f9fffe42728d65647f4.jpg', '00ab07126e655cdde010900681696e65.jpg',
             '037e31191571021e1947d83235128399.jpg', '038a6c2d382179337ab55db7f4b7422b.jpg',
@@ -244,7 +244,7 @@ async function loadContent() {
             image: `slimethis:images/${filename}`
         })));
 
-        // GIFs from slimethis:gifs/ folder
+        // GIFs from gifs/ folder
         const knownGifFiles = [
             '_00_240x320_010_reasonably_small.gif', 'aaoa.gif', 'amalaprint-cat.gif',
             'anime-girl-blush-cat.gif', 'balls-218.gif', 'batman-cat.gif', 'bear.gif',
@@ -254,7 +254,7 @@ async function loadContent() {
 
         allBangers.push(...knownGifFiles.map(filename => ({
             type: 'gif',
-            image: `slimethis:gifs/${filename}`
+            image: `gifs/${filename}`
         })));
 
         // TODO: For true automatic folder scanning, we'd need:
