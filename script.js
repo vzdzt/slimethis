@@ -118,6 +118,160 @@ function copyCurrentBanger() {
     }
 }
 
+// Global bangers data
+let allBangers = [];
+
+// Load content on page load
+async function loadContent() {
+    try {
+        // Load assets configuration
+        const configResponse = await fetch('assets-config.json');
+        const config = await configResponse.json();
+
+        // Load bangers data
+        const bangersResponse = await fetch('bangers.json');
+        const bangersData = await bangersResponse.json();
+
+        // Combine all content sources
+        allBangers = [];
+
+        // Add quotes
+        if (bangersData.quotes) {
+            allBangers.push(...bangersData.quotes.map(content => ({ type: 'quote', content })));
+        }
+
+        // Add memes
+        if (bangersData.memes) {
+            allBangers.push(...bangersData.memes.map(item => ({ type: 'meme', ...item })));
+        }
+
+        // Add videos
+        if (bangersData.videos) {
+            allBangers.push(...bangersData.videos.map(item => ({ type: 'video', ...item })));
+        }
+
+        // Add double images
+        if (bangersData['double-images']) {
+            allBangers.push(...bangersData['double-images'].map(item => ({ type: 'double-image', ...item })));
+        }
+
+        // Add quad images
+        if (bangersData['quad-images']) {
+            allBangers.push(...bangersData['quad-images'].map(item => ({ type: 'quad-image', ...item })));
+        }
+
+        // Add images
+        if (bangersData.images) {
+            allBangers.push(...bangersData.images.map(filename => ({
+                type: 'image',
+                image: config.folders.images.path + filename
+            })));
+        }
+
+        // Add GIFs from folder (simulated for now - in production you'd use a backend API)
+        // Since we can't directly access file system from browser, we'll add some known GIFs
+        const knownGifs = [
+            'shakinghishead.mp4', // This is actually MP4 but we'll treat as GIF for demo
+            'gtalobby1.mp4',
+            '2020hood.mp4',
+            'trustissues.mp4'
+        ];
+
+        allBangers.push(...knownGifs.map(filename => ({
+            type: 'gif',
+            image: config.folders.gifs.path + filename
+        })));
+
+        console.log(`Loaded ${allBangers.length} bangers from JSON files and folders`);
+
+    } catch (error) {
+        console.error('Failed to load content:', error);
+        // Fallback to basic functionality
+    }
+}
+
+// Banger Generator
+async function generateBanger() {
+    const output = document.getElementById('output');
+    const typeSelect = document.getElementById('type-select').value;
+
+    // Filter bangers based on selected type
+    const filteredBangers = typeSelect === 'all'
+        ? allBangers
+        : allBangers.filter(banger => banger.type === typeSelect);
+
+    if (filteredBangers.length === 0) {
+        output.innerHTML = `<p>No bangers available for this type!</p>`;
+        return;
+    }
+
+    // Randomly select a banger
+    const randomBanger = filteredBangers[Math.floor(Math.random() * filteredBangers.length)];
+
+    // Clear previous content and animate
+    output.style.opacity = '0';
+    gsap.to(output, {
+        opacity: 0,
+        y: 20,
+        duration: 0.3,
+        onComplete: () => {
+            output.innerHTML = '';
+            if (randomBanger.type === 'quote') {
+                output.innerHTML = `<p>${randomBanger.content}</p>`;
+            } else if (randomBanger.type === 'meme') {
+                output.innerHTML = `
+                    <img src="${randomBanger.image}" alt="Meme" class="auto-resize">
+                    <p>${randomBanger.caption}</p>
+                `;
+            } else if (randomBanger.type === 'video') {
+                output.innerHTML = `
+                    <video src="${randomBanger.src}" controls autoplay loop muted class="auto-resize"></video>
+                    <p>${randomBanger.caption}</p>
+                `;
+            } else if (randomBanger.type === 'gif') {
+                output.innerHTML = `
+                    <img src="${randomBanger.image}" alt="GIF" class="auto-resize">
+                `;
+            } else if (randomBanger.type === 'double-image') {
+                output.innerHTML = `
+                    <div class="double-image-container">
+                        <img src="${randomBanger.leftImage}" alt="Left Image" class="auto-resize">
+                        <img src="${randomBanger.rightImage}" alt="Right Image" class="auto-resize">
+                    </div>
+                    <p>${randomBanger.caption}</p>
+                `;
+            } else if (randomBanger.type === 'image') {
+                output.innerHTML = `
+                    <img src="${randomBanger.image}" alt="Image" class="auto-resize">
+                `;
+            } else if (randomBanger.type === 'quad-image') {
+                output.innerHTML = `
+                    <div class="quad-image-container">
+                        <img src="${randomBanger.topLeftImage}" alt="Top Left Image" class="auto-resize">
+                        <img src="${randomBanger.topRightImage}" alt="Top Right Image" class="auto-resize">
+                        <img src="${randomBanger.bottomLeftImage}" alt="Bottom Left Image" class="auto-resize">
+                        <img src="${randomBanger.bottomRightImage}" alt="Bottom Right Image" class="auto-resize">
+                    </div>
+                    <p>${randomBanger.caption}</p>
+                `;
+            }
+            gsap.fromTo(output,
+                { opacity: 0, y: -20 },
+                { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+            );
+        }
+    });
+
+    // Button click animation
+    gsap.to('#generate-btn', {
+        scale: 0.9,
+        duration: 0.1,
+        yoyo: true,
+        repeat: 1,
+        ease: 'power1.inOut'
+    });
+}
+
 // Banger Generator
 document.getElementById('generate-btn').addEventListener('click', () => {
     generateBanger();
@@ -683,7 +837,10 @@ function updateStarfieldColors(theme) {
 }
 
 // Main Event Listener
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Load content first
+    await loadContent();
+
     // Initialize Starfield
     initStarfield();
 
