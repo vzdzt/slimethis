@@ -646,10 +646,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Apply custom colors to CSS variables (only for neon-fluid theme for now)
         if (currentTheme === 'neon-fluid') {
+            // Force style recalculation by temporarily removing and re-adding the theme
+            document.body.removeAttribute('data-theme');
             document.documentElement.style.setProperty('--custom-primary', customizations.primary);
             document.documentElement.style.setProperty('--custom-secondary', customizations.secondary);
             document.documentElement.style.setProperty('--custom-accent', customizations.accent);
             document.documentElement.style.setProperty('--intensity-scale', customizations.intensity);
+
+            // Re-apply theme to trigger CSS recalculation
+            requestAnimationFrame(() => {
+                document.body.setAttribute('data-theme', 'neon-fluid');
+            });
         }
     }
 
