@@ -1774,9 +1774,8 @@ async function generateBanger() {
     });
 }
 
-// Banger Generator
+// Slime Button - Save and Copy current content
 document.getElementById('generate-btn').addEventListener('click', async () => {
-    await generateBanger();
     copyCurrentBanger();
 });
 
