@@ -119,19 +119,20 @@ i/* Reset default styles */
 }
 
 /* Glass Morphism Theme (Enhanced) */
-/* Default styles without Paint Worklet */
+/* Default styles without Paint Worklet - Veazy Mode as Default */
 body[data-theme] {
-    --primary: #e6f0ff;
-    --secondary: #b3ccff;
-    --accent: #99b3ff;
-    --dark: rgba(10, 20, 60, 0.9);
-    --glass: rgba(255, 255, 255, 0.25);
-    --glow: rgba(179, 204, 255, 0.8);
-    --rgb-glow: linear-gradient(45deg, rgba(230, 240, 255, 0.9), rgba(153, 179, 255, 0.5));
-    --text-color: #f0f8ff;
-    --background: linear-gradient(135deg, rgba(20, 40, 120, 0.8), rgba(60, 80, 180, 0.8));
-    --card-background: rgba(255, 255, 255, 0.1);
-    --border-color: rgba(255, 255, 255, 0.4);
+    --primary: #00ff00;
+    --secondary: #47ff47;
+    --accent: #83ff83;
+    --dark: #1a1a1a;
+    --glass: rgba(188, 255, 188, 0.15);
+    --glow: rgba(244, 255, 244, 0.6);
+    --rgb-glow: linear-gradient(45deg, #00ff00, #47ff47, #83ff83);
+    --text-color: #f4fff4;
+    --background: paint(cyber-bg);
+    --card-background: paint(neon-grid);
+    --border-color: rgba(244, 255, 244, 0.25);
+    animation: cyber-flow 5s ease-in-out infinite;
 }
 
 /* Paint Worklet support styles */
@@ -171,6 +172,7 @@ body[data-theme] {
     .type-switcher select,
     button#generate-btn {
         background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         color: var(--text-color);
     }
@@ -590,6 +592,8 @@ body {
 
 
 
+
+
 /* Selector Containers */
 .theme-switcher,
 .type-switcher {
@@ -873,8 +877,7 @@ body {
     /* Make all elements direct children of container on mobile */
     .container > .main-layout > .controls-panel,
     .container > .main-layout > .output-panel,
-    .container > .button-container,
-    .container > .footer {
+    .container > .button-container {
         order: unset !important;
         margin: 10px 0 !important;
     }
@@ -905,9 +908,7 @@ body {
 
 
 
-    .footer {
-        margin: 10px 0 !important;
-    }
+
 
     .slime-title {
         font-size: 2.2rem;
@@ -951,11 +952,12 @@ body {
     }
 
     .theme-switcher select,
-    .type-switcher select {
-        width: 100%;
-        padding: 10px;
-        font-size: 0.95rem;
-        border-radius: 6px;
+    .type-switcher select,
+    button#generate-btn {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: var(--text-color);
     }
 
     .color-input-group {
@@ -986,38 +988,7 @@ body {
         font-size: 0.9rem;
     }
 
-    .profile-link {
-        display: inline-flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 8px 12px;
-        background: var(--glass);
-        border: 1px solid var(--border-color);
-        border-radius: 16px;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-        width: auto;
-        max-width: 200px;
-        margin: 0 auto;
-    }
 
-    .profile-link:hover {
-        background: var(--rgb-glow);
-        transform: translateY(-1px);
-        box-shadow: 0 0 10px var(--glow);
-    }
-
-    .profile-pic {
-        width: 24px;
-        height: 24px;
-    }
-
-    .follow-text {
-        font-size: 0.7rem;
-        margin: 0;
-    }
 
     /* Prevent any grid layouts on mobile */
     .main-layout > * {
