@@ -940,16 +940,6 @@ body {
         border-radius: 6px;
     }
 
-    .color-customizer {
-        width: 100%;
-        max-width: 100%;
-        margin: 0 auto 15px;
-        padding: 10px;
-        border-radius: 10px;
-        box-sizing: border-box;
-        text-align: center;
-    }
-
     .color-input-group {
         gap: 6px;
     }
