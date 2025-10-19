@@ -16,71 +16,89 @@
     <div id="cursor-blur" class="cursor-blur"></div>
     <div class="container">
         <h1 class="slime-title">SlimeThis.com</h1>
-        <div class="controls-row">
-            <div class="theme-switcher">
-                <label for="theme-select">Theme:</label>
-                <select id="theme-select">
-                    <option value="ultra-glass">Ultra Glass</option>
-                    <option value="satin">Satin</option>
-                    <option value="galactic-nebula">Galactic Nebula</option>
-                    <option value="electric-storm">Electric Storm</option>
-                    <option value="glass-morphism">Glass Morphism</option>
-                    <option value="void-pulse">Void Pulse</option>
-                    <option value="prism-shard">Prism Shard</option>
-                    <option value="inferno-core">Inferno Core</option>
-                    <option value="cosmic-rift">Cosmic Rift</option>
-                    <option value="retro-vaporwave">Retro Vaporwave</option>
-                    <option value="veazy">Veazy Mode</option>
-                    <option value="neon-fluid">Neon Fluid</option>
-                </select>
+
+        <!-- Main Layout Grid -->
+        <div class="main-layout">
+            <!-- Left Panel - Controls -->
+            <div class="controls-panel">
+                <div class="theme-switcher">
+                    <label for="theme-select">Theme:</label>
+                    <select id="theme-select">
+                        <option value="ultra-glass">Ultra Glass</option>
+                        <option value="satin">Satin</option>
+                        <option value="galactic-nebula">Galactic Nebula</option>
+                        <option value="electric-storm">Electric Storm</option>
+                        <option value="glass-morphism">Glass Morphism</option>
+                        <option value="void-pulse">Void Pulse</option>
+                        <option value="prism-shard">Prism Shard</option>
+                        <option value="inferno-core">Inferno Core</option>
+                        <option value="cosmic-rift">Cosmic Rift</option>
+                        <option value="retro-vaporwave">Retro Vaporwave</option>
+                        <option value="veazy">Veazy Mode</option>
+                        <option value="neon-fluid">Neon Fluid</option>
+                    </select>
+                </div>
+
+                <div class="type-switcher">
+                    <label for="type-select">Banger Type:</label>
+                    <select id="type-select">
+                        <option value="all">All</option>
+                        <option value="quote">Quotes</option>
+                        <option value="meme">Memes</option>
+                        <option value="video">Videos</option>
+                        <option value="double-image">Double Images</option>
+                        <option value="image">Images</option>
+                        <option value="quad-image">Quad Images</option>
+                    </select>
+                </div>
+
+                <div class="color-customizer">
+                    <h4>Color Customization</h4>
+                    <div class="color-row">
+                        <div class="color-input">
+                            <input type="color" id="primary-color" value="#00ffff">
+                            <label for="primary-color">Primary</label>
+                        </div>
+                        <div class="color-input">
+                            <input type="color" id="secondary-color" value="#ff00ff">
+                            <label for="secondary-color">Secondary</label>
+                        </div>
+                        <div class="color-input">
+                            <input type="color" id="accent-color" value="#ffff00">
+                            <label for="accent-color">Accent</label>
+                        </div>
+                    </div>
+                    <div class="intensity-row">
+                        <label for="intensity-slider">Effect Intensity:</label>
+                        <input type="range" id="intensity-slider" min="0.1" max="2.0" step="0.1" value="1.0">
+                        <span id="intensity-value">1.0x</span>
+                    </div>
+                </div>
+
+                <div class="button-container">
+                    <button id="generate-btn">slime!</button>
+                </div>
             </div>
-            <div class="type-switcher">
-                <label for="type-select">Type:</label>
-                <select id="type-select">
-                    <option value="all">All</option>
-                    <option value="quote">Quotes</option>
-                    <option value="meme">Memes</option>
-                    <option value="video">Videos</option>
-                    <option value="double-image">Double Images</option>
-                    <option value="image">Images</option>
-                    <option value="quad-image">Quad Images</option>
-                </select>
-            </div>
-        </div>
-        <div class="color-customizer">
-            <div class="color-row">
-                <div class="color-input">
-                    <input type="color" id="primary-color" value="#00ffff">
-                    <label for="primary-color">Primary</label>
-                </div>
-                <div class="color-input">
-                    <input type="color" id="secondary-color" value="#ff00ff">
-                    <label for="secondary-color">Secondary</label>
-                </div>
-                <div class="color-input">
-                    <input type="color" id="accent-color" value="#ffff00">
-                    <label for="accent-color">Accent</label>
-                </div>
-                <div class="intensity-input">
-                    <input type="range" id="intensity-slider" min="0.1" max="2.0" step="0.1" value="1.0">
-                    <label for="intensity-slider">Intensity: <span id="intensity-value">1.0x</span></label>
+
+            <!-- Right Panel - Output -->
+            <div class="output-panel">
+                <div id="output" class="card">
+                    <p>Click the button to generate a banger!</p>
                 </div>
             </div>
         </div>
-        <div id="output" class="card">
-            <p>Click the button to generate a banger!</p>
-        </div>
-        <div class="button-container">
-            <button id="generate-btn">slime!</button>
-        </div>
-        <h3>follow me if you want</h3>
-        <div class="social-container">
-            <img src="veazypfp.jpeg" alt="Veazy Profile" class="profile-pic">
-            <a href="https://x.com/36966_" target="_blank" class="x-link">
-                <svg viewBox="0 0 24 24" class="x-logo">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-            </a>
+
+        <!-- Footer -->
+        <div class="footer">
+            <h3>follow me if you want</h3>
+            <div class="social-container">
+                <img src="veazypfp.jpeg" alt="Veazy Profile" class="profile-pic">
+                <a href="https://x.com/36966_" target="_blank" class="x-link">
+                    <svg viewBox="0 0 24 24" class="x-logo">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                </a>
+            </div>
         </div>
     </div>
     <script>
