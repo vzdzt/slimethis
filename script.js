@@ -168,42 +168,39 @@ async function loadContent() {
             })));
         }
 
-        // Load from folders if they exist (relative to web server root)
-        // This will work if you move the folders to be served by the web server
-        try {
-            // Try to load from ../slimethis:images/ folder
-            const imageFiles = [
-                '2019air.jpeg', '2020hood.mp4', 'aicouldnever.jpeg', 'batbite.jpeg',
-                'beyblades1.jpeg', 'beyblades2.jpeg', 'brotext.jpeg', 'brotext2.jpeg',
-                'canadagangs.jpeg', 'childhood1.jpeg', 'childhood2.jpeg', 'curtains.jpeg',
-                'diabetes.jpeg', 'disneyland.jpeg', 'fingerrock.jpeg', 'fingerrock2.jpeg',
-                'foodgood.jpeg', 'friendship.jpeg', 'girlsflirt.jpeg', 'goodbye.jpeg',
-                'hedgehogno.jpeg', 'looklikethis1.jpeg', 'looklikethis2.jpeg', 'mainquest.jpeg',
-                'meatbeach.jpeg', 'nosmoking.jpeg', 'payrent.jpeg', 'pigeonbot.jpeg',
-                'pikachu.jpeg', 'rapszn1.jpeg', 'scoobycall.jpeg', 'semitruck.jpeg',
-                'sleep1.jpeg', 'sleep2.jpeg', 'sleep3.jpeg', 'sleep4.jpeg', 'smallaccounts.jpeg',
-                'spritecroc.jpeg', 'stroker.jpeg', 'tookthispic.jpeg', 'vegetable.jpeg',
-                'walkitoff.jpeg'
-            ];
+        // Load from folders - hardcoded lists of actual files
+        // Images from slimethis:images/ folder
+        const imageFiles = [
+            '2019air.jpeg', '2020hood.mp4', 'aicouldnever.jpeg', 'batbite.jpeg',
+            'beyblades1.jpeg', 'beyblades2.jpeg', 'brotext.jpeg', 'brotext2.jpeg',
+            'canadagangs.jpeg', 'childhood1.jpeg', 'childhood2.jpeg', 'curtains.jpeg',
+            'diabetes.jpeg', 'disneyland.jpeg', 'fingerrock.jpeg', 'fingerrock2.jpeg',
+            'foodgood.jpeg', 'friendship.jpeg', 'girlsflirt.jpeg', 'goodbye.jpeg',
+            'hedgehogno.jpeg', 'looklikethis1.jpeg', 'looklikethis2.jpeg', 'mainquest.jpeg',
+            'meatbeach.jpeg', 'nosmoking.jpeg', 'payrent.jpeg', 'pigeonbot.jpeg',
+            'pikachu.jpeg', 'rapszn1.jpeg', 'scoobycall.jpeg', 'semitruck.jpeg',
+            'sleep1.jpeg', 'sleep2.jpeg', 'sleep3.jpeg', 'sleep4.jpeg', 'smallaccounts.jpeg',
+            'spritecroc.jpeg', 'stroker.jpeg', 'tookthispic.jpeg', 'vegetable.jpeg',
+            'walkitoff.jpeg', '0a731d8a55a42f9fffe42728d65647f4.jpg', '00ab07126e655cdde010900681696e65.jpg'
+        ];
 
-            allBangers.push(...imageFiles.map(filename => ({
-                type: 'image',
-                image: `slimethis:images/${filename}`
-            })));
+        allBangers.push(...imageFiles.map(filename => ({
+            type: 'image',
+            image: `slimethis:images/${filename}`
+        })));
 
-            // Try to load from slimethis:gifs/ folder
-            const gifFiles = [
-                'shakinghishead.mp4', 'gtalobby1.mp4', '2020hood.mp4', 'trustissues.mp4'
-            ];
+        // GIFs from slimethis:gifs/ folder
+        const gifFiles = [
+            '_00_240x320_010_reasonably_small.gif', 'aaoa.gif', 'amalaprint-cat.gif',
+            'anime-girl-blush-cat.gif', 'balls-218.gif', 'batman-cat.gif', 'bear.gif',
+            'bingus-dynamite.gif', 'bongo-cat-pumpkin-bongo.gif', 'boom.gif',
+            'bro-got-little-turbulence-plane.gif', 'caseoh-ai.gif', 'cat-car.gif'
+        ];
 
-            allBangers.push(...gifFiles.map(filename => ({
-                type: 'gif',
-                image: `slimethis:gifs/${filename}`
-            })));
-
-        } catch (error) {
-            console.log('Folder loading failed, using JSON content only');
-        }
+        allBangers.push(...gifFiles.map(filename => ({
+            type: 'gif',
+            image: `slimethis:gifs/${filename}`
+        })));
 
         console.log(`Loaded ${allBangers.length} bangers from JSON files and folders`);
 
