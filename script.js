@@ -265,6 +265,7 @@ async function loadContent() {
     }
 }
 
+
 // Banger Generator
 async function generateBanger() {
     const output = document.getElementById('output');
