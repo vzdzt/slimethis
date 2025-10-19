@@ -307,8 +307,6 @@ async function loadContent() {
 
         // Load from folders - dynamic scanning (limited by browser security)
 const knownImageFiles = [
-"??????.jpg",
-"??.jpeg",
 "00ab07126e655cdde010900681696e65.jpg",
 "037e31191571021e1947d83235128399.jpg",
 "038a6c2d382179337ab55db7f4b7422b.jpg",
