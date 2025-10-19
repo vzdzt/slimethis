@@ -11,12 +11,12 @@
       "defaultCaption": "Watch this!"
     },
     "gifs": {
-      "path": "/Users/veazy/Library/Mobile Documents/com~apple~CloudDocs/dino/veazy new/slimethis:gifs/",
+      "path": "../slimethis:gifs/",
       "requiresCaption": false,
       "defaultCaption": ""
     },
     "images": {
-      "path": "/Users/veazy/Library/Mobile Documents/com~apple~CloudDocs/dino/veazy new/slimethis:images/",
+      "path": "../slimethis:images/",
       "requiresCaption": false,
       "defaultCaption": ""
     },
