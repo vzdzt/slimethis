@@ -289,33 +289,33 @@ function generateBanger() {
                 output.innerHTML = `<p>${randomBanger.content}</p>`;
             } else if (randomBanger.type === 'meme') {
                 output.innerHTML = `
-                    <img src="${randomBanger.image}" alt="Meme">
+                    <img src="${randomBanger.image}" alt="Meme" class="auto-resize">
                     <p>${randomBanger.caption}</p>
                 `;
             } else if (randomBanger.type === 'video') {
                 output.innerHTML = `
-                    <video src="${randomBanger.src}" controls autoplay loop muted></video>
+                    <video src="${randomBanger.src}" controls autoplay loop muted class="auto-resize"></video>
                     <p>${randomBanger.caption}</p>
                 `;
             } else if (randomBanger.type === 'double-image') {
                 output.innerHTML = `
                     <div class="double-image-container">
-                        <img src="${randomBanger.leftImage}" alt="Left Image">
-                        <img src="${randomBanger.rightImage}" alt="Right Image">
+                        <img src="${randomBanger.leftImage}" alt="Left Image" class="auto-resize">
+                        <img src="${randomBanger.rightImage}" alt="Right Image" class="auto-resize">
                     </div>
                     <p>${randomBanger.caption}</p>
                 `;
             } else if (randomBanger.type === 'image') {
                 output.innerHTML = `
-                    <img src="${randomBanger.image}" alt="Image">
+                    <img src="${randomBanger.image}" alt="Image" class="auto-resize">
                 `;
             } else if (randomBanger.type === 'quad-image') {
                 output.innerHTML = `
                     <div class="quad-image-container">
-                        <img src="${randomBanger.topLeftImage}" alt="Top Left Image">
-                        <img src="${randomBanger.topRightImage}" alt="Top Right Image">
-                        <img src="${randomBanger.bottomLeftImage}" alt="Bottom Left Image">
-                        <img src="${randomBanger.bottomRightImage}" alt="Bottom Right Image">
+                        <img src="${randomBanger.topLeftImage}" alt="Top Left Image" class="auto-resize">
+                        <img src="${randomBanger.topRightImage}" alt="Top Right Image" class="auto-resize">
+                        <img src="${randomBanger.bottomLeftImage}" alt="Bottom Left Image" class="auto-resize">
+                        <img src="${randomBanger.bottomRightImage}" alt="Bottom Right Image" class="auto-resize">
                     </div>
                     <p>${randomBanger.caption}</p>
                 `;

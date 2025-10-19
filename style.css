@@ -809,14 +809,44 @@ body {
     line-height: 1.5;
 }
 
-.card img, .card video {
+/* Auto-resize images and videos to prevent scrolling */
+.auto-resize {
     max-width: 90%;
+    max-height: 60vh; /* Maximum 60% of viewport height */
     border-radius: 10px;
     margin-top: 10px;
     object-fit: contain;
     display: block;
     margin-left: auto;
     margin-right: auto;
+    width: auto;
+    height: auto;
+}
+
+/* Ensure images don't exceed container bounds */
+.card .auto-resize {
+    max-height: calc(60vh - 100px); /* Account for padding and text */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .auto-resize {
+        max-height: 50vh;
+    }
+
+    .card .auto-resize {
+        max-height: calc(50vh - 80px);
+    }
+}
+
+@media (max-width: 480px) {
+    .auto-resize {
+        max-height: 40vh;
+    }
+
+    .card .auto-resize {
+        max-height: calc(40vh - 60px);
+    }
 }
 
 .card video {
