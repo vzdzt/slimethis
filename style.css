@@ -884,8 +884,16 @@ body {
         padding: 0;
     }
 
-    .color-customizer {
+    .button-container {
         order: 3;
+        width: 100% !important;
+        max-width: 280px !important;
+        margin: 15px auto 0 !important;
+        padding: 0 !important;
+    }
+
+    .color-customizer {
+        order: 4;
         width: 100% !important;
         max-width: 100% !important;
         margin: 15px auto 0;
