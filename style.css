@@ -827,10 +827,10 @@ body {
     box-shadow: 0 0 10px var(--glow);
 }
 
-/* Button Container in Controls */
-.controls-panel .button-container {
-    margin-top: 5px;
-    margin-bottom: 5px;
+/* Button Container in Output Panel */
+.output-panel .button-container {
+    margin-bottom: 15px;
+    text-align: center;
 }
 
 .controls-panel .button-container button {
