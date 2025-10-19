@@ -1014,6 +1014,36 @@ body {
     .controls-panel > *:last-child {
         margin-bottom: 0;
     }
+
+    /* Force all main elements to stack vertically on mobile */
+    .container > * {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .main-layout > * {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .controls-panel {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        padding: 15px !important;
+        margin: 0 !important;
+    }
+
+    .output-panel {
+        padding: 15px !important;
+        margin: 0 !important;
+    }
+
+    .footer {
+        padding: 15px !important;
+        margin: 0 !important;
+    }
 }
 
 @keyframes customizer-slide-in {
