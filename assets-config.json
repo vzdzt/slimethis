@@ -1,0 +1,41 @@
+{
+  "folders": {
+    "memes": {
+      "path": "assets/memes/",
+      "requiresCaption": true,
+      "defaultCaption": "Check this out!"
+    },
+    "videos": {
+      "path": "assets/videos/",
+      "requiresCaption": true,
+      "defaultCaption": "Watch this!"
+    },
+    "images": {
+      "path": "assets/images/",
+      "requiresCaption": false,
+      "defaultCaption": ""
+    }
+  },
+  "content": {
+    "memes": [
+      {
+        "image": "payrent.jpeg",
+        "caption": "I love my dog but this mf gotta pay rent"
+      },
+      {
+        "image": "tyingshoes.jpeg",
+        "caption": "me tryna get my shoes on without untying it"
+      }
+    ],
+    "videos": [
+      {
+        "src": "shakinghishead.mp4",
+        "caption": "he not even going fast he just shaking his head 😭"
+      }
+    ],
+    "images": [
+      "stroker.jpeg",
+      "friendship.jpeg"
+    ]
+  }
+}
