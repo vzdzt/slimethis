@@ -91,7 +91,7 @@ function showNotification(message, type = 'info') {
 
 function copyCurrentBanger() {
     const output = document.getElementById('output');
-    if (!output || !output.textContent.trim()) {
+    if (!output) {
         showNotification('No content to copy', 'error');
         return;
     }
@@ -99,13 +99,12 @@ function copyCurrentBanger() {
     // Get text content from the output
     const textToCopy = output.textContent.trim() || output.innerText.trim();
 
+    // Always try to copy text if it exists (for captions)
     if (textToCopy) {
         copyToClipboard(textToCopy);
-    } else {
-        showNotification('No text content to copy', 'error');
     }
 
-    // Check for media to save
+    // Always check for media to save (images, videos, GIFs)
     const img = output.querySelector('img');
     const video = output.querySelector('video');
 
@@ -115,6 +114,11 @@ function copyCurrentBanger() {
     } else if (video && video.src) {
         const filename = `slime-this-${Date.now()}.mp4`;
         saveMedia(video.src, filename);
+    }
+
+    // Only show "no content" error if there's neither text nor media
+    if (!textToCopy && !img && !video) {
+        showNotification('No content to copy', 'error');
     }
 }
 
