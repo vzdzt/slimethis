@@ -126,7 +126,7 @@ function copyCurrentBanger() {
 let allBangers = [];
 let allImages = []; // Separate array for images only
 let currentPage = 1;
-const IMAGES_PER_PAGE = 20;
+const IMAGES_PER_PAGE = 10;
 
 // Pagination functions
 function createPaginationControls() {
@@ -205,29 +205,37 @@ function displayImageGallery() {
     const end = start + IMAGES_PER_PAGE;
     const pageImages = allImages.slice(start, end);
 
-    let galleryHTML = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 10px;">';
+    // Create a 2x5 grid that fits in viewport
+    let galleryHTML = `
+        <div style="display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 120px); gap: 10px; padding: 10px; max-width: 100%; margin: 0 auto;">
+    `;
 
-    pageImages.forEach(image => {
-        galleryHTML += `
-            <div style="position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; background: var(--glass); border: 1px solid var(--border-color); transition: transform 0.3s ease;" onclick="selectImage('${image}')">
-                <img src="${image}" alt="Meme" style="width: 100%; height: 120px; object-fit: cover; display: block;" loading="lazy">
-                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 4px; font-size: 10px; text-align: center; opacity: 0; transition: opacity 0.3s ease;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
-                    Click to select
+    pageImages.forEach((image, index) => {
+        if (index < 10) { // Limit to 10 images (2x5 grid)
+            galleryHTML += `
+                <div style="position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; background: var(--glass); border: 1px solid var(--border-color); transition: transform 0.3s ease, box-shadow 0.3s ease;" onclick="selectImage('${image}')">
+                    <img src="${image}" alt="Meme" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">
+                    <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.7); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; opacity: 0; transition: opacity 0.3s ease;">
+                        Select
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
     });
 
     galleryHTML += '</div>';
 
-    // Add pagination controls if they don't exist
-    if (!document.getElementById('pagination-controls')) {
-        const paginationControls = createPaginationControls();
-        output.parentNode.insertBefore(paginationControls, output.nextSibling);
-    }
+    // Add simple navigation buttons
+    const totalPages = Math.ceil(allImages.length / IMAGES_PER_PAGE);
+    galleryHTML += `
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
+            <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} style="padding: 8px 16px; background: var(--glass); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='var(--rgb-glow)'" onmouseout="this.style.background='var(--glass)'">← Previous</button>
+            <span style="color: var(--text-color); font-weight: 500; align-self: center;">Page ${currentPage} of ${totalPages}</span>
+            <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 8px 16px; background: var(--glass); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='var(--rgb-glow)'" onmouseout="this.style.background='var(--glass)'">Next →</button>
+        </div>
+    `;
 
     output.innerHTML = galleryHTML;
-    updatePaginationControls();
 }
 
 function selectImage(imageSrc) {
