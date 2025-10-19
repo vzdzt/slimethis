@@ -873,9 +873,7 @@ body {
     /* Make all elements direct children of container on mobile */
     .container > .main-layout > .controls-panel,
     .container > .main-layout > .output-panel,
-    .container > .main-layout > .color-customizer,
     .container > .button-container,
-    .container > .color-customizer,
     .container > .footer {
         order: unset !important;
         margin: 10px 0 !important;
@@ -905,15 +903,7 @@ body {
         padding: 0 !important;
     }
 
-    .color-customizer {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 10px 0 !important;
-        padding: 10px;
-        border-radius: 10px;
-        box-sizing: border-box;
-        text-align: center;
-    }
+
 
     .footer {
         margin: 10px 0 !important;

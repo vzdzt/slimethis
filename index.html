@@ -68,53 +68,52 @@
                     <button id="gallery-btn" class="gallery-btn">🖼️ Browse Gallery</button>
                 </div>
 
+                <div class="color-customizer">
+                    <div class="customizer-header">
+                        <h4>Color Palette</h4>
+                        <button id="reset-colors" class="reset-btn" title="Reset to theme defaults">⟲</button>
+                    </div>
+                    <div class="color-palette">
+                        <div class="color-input-group">
+                            <div class="color-input primary">
+                                <input type="color" id="primary-color" value="#00ffff">
+                                <div class="color-info">
+                                    <span class="color-name">Primary</span>
+                                    <span class="color-hex" id="primary-hex">#00ffff</span>
+                                </div>
+                            </div>
+                            <div class="color-input secondary">
+                                <input type="color" id="secondary-color" value="#ff00ff">
+                                <div class="color-info">
+                                    <span class="color-name">Secondary</span>
+                                    <span class="color-hex" id="secondary-hex">#ff00ff</span>
+                                </div>
+                            </div>
+                            <div class="color-input accent">
+                                <input type="color" id="accent-color" value="#ffff00">
+                                <div class="color-info">
+                                    <span class="color-name">Accent</span>
+                                    <span class="color-hex" id="accent-hex">#ffff00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="intensity-control">
+                            <div class="intensity-header">
+                                <span class="intensity-label">Intensity</span>
+                                <span class="intensity-value" id="intensity-value">100%</span>
+                            </div>
+                            <input type="range" id="intensity-slider" min="10" max="200" step="10" value="100">
+                            <div class="intensity-scale">
+                                <span>10%</span>
+                                <span>100%</span>
+                                <span>200%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="button-container">
                     <button id="generate-btn">slime!</button>
-                </div>
-            </div>
-
-            <!-- Color Customizer - Moved outside controls panel for mobile ordering -->
-            <div class="color-customizer">
-                <div class="customizer-header">
-                    <h4>Color Palette</h4>
-                    <button id="reset-colors" class="reset-btn" title="Reset to theme defaults">⟲</button>
-                </div>
-                <div class="color-palette">
-                    <div class="color-input-group">
-                        <div class="color-input primary">
-                            <input type="color" id="primary-color" value="#00ffff">
-                            <div class="color-info">
-                                <span class="color-name">Primary</span>
-                                <span class="color-hex" id="primary-hex">#00ffff</span>
-                            </div>
-                        </div>
-                        <div class="color-input secondary">
-                            <input type="color" id="secondary-color" value="#ff00ff">
-                            <div class="color-info">
-                                <span class="color-name">Secondary</span>
-                                <span class="color-hex" id="secondary-hex">#ff00ff</span>
-                            </div>
-                        </div>
-                        <div class="color-input accent">
-                            <input type="color" id="accent-color" value="#ffff00">
-                            <div class="color-info">
-                                <span class="color-name">Accent</span>
-                                <span class="color-hex" id="accent-hex">#ffff00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="intensity-control">
-                        <div class="intensity-header">
-                            <span class="intensity-label">Intensity</span>
-                            <span class="intensity-value" id="intensity-value">100%</span>
-                        </div>
-                        <input type="range" id="intensity-slider" min="10" max="200" step="10" value="100">
-                        <div class="intensity-scale">
-                            <span>10%</span>
-                            <span>100%</span>
-                            <span>200%</span>
-                        </div>
-                    </div>
                 </div>
             </div>
             </div>
