@@ -14,9 +14,72 @@
       "path": "assets/images/",
       "requiresCaption": false,
       "defaultCaption": ""
+    },
+    "double-images": {
+      "path": "assets/double-images/",
+      "requiresCaption": true,
+      "defaultCaption": "Double the fun!"
+    },
+    "quad-images": {
+      "path": "assets/quad-images/",
+      "requiresCaption": true,
+      "defaultCaption": "Quad vision!"
     }
   },
   "content": {
+    "quotes": [
+      "i be like \"ngl\" and then lie",
+      "我们杀了他并将他的尸体藏在树林里",
+      "blocked her on everything and my tv started ringing",
+      "i delete tweets cuz im not the same man i was 3 minutes ago",
+      "👣ATTENTION👣PLEASEE👣 <br> Guys 👣 if 👣 you👣 receive 👣 an 👣 email 👣 that 👣 says 👣 feet 👣 pictures 👣 of 👣 Ice 👣 Spice 👣 do 👣 NOT 👣 open 👣 it 👣 cuz 👣 its 👣 a 👣 virus 👣 that 👣 puts 👣 the 👣 feet👣emoji 👣 in 👣 between 👣 everything 👣 you👣type👣",
+      "\"do better\" does worse",
+      "real mfs dont sleep they just close their eyes and wait",
+      "sorry i didnt text you back i was ignoring you",
+      "if she randomly texts \"i love you\" outta nowhere she just cheated",
+      "\"turn on your hotspot\" bro pay your phone bill",
+      "therapy not enough i need everyone who wronged me to suffer",
+      "u are not future bro love ur gf",
+      "you gotta be a sick ass woman to ask a dude for a nut video",
+      "apple music cant shuffle for shit",
+      "how tf the corner store have apple pay but walmart doesnt",
+      "sex supposed to happened naturally but yall out here talkin bout \"please\"😭",
+      "girls be like \"this my comfort show\" and its a netflix serial killer series",
+      "saying all water tastes the same tells me everything i need to know about you",
+      "she was anemic and i was her iron man",
+      "\"what percent you on?\" bro this is MY charger",
+      "\"ima tell u later\" tell me now or ima throw up",
+      "im forever loyal to that password i made when i was 12",
+      "nobody flirts better than a girl whos unhappy with her boyfriend 😭",
+      "stop double texting her",
+      "cant trust anyone who uses light mode",
+      "real mfs use dark mode on every app",
+      "the older i get the more i understand why roosters start their day off by screaming",
+      "i knew i was the problem when motivational speakers started to annoy me",
+      "life after 18 is terrible. you breathe and you owe $100",
+      "she dont want you",
+      "its been \"one of those days\" for like 3 years now",
+      "mfs be in a secret competition with you and still be losing",
+      "instagram is literally just screenshots of twitter",
+      "whenever i wanna go on a diet i check her likes",
+      "hating on shit you never watched/listened to >>>>>>>",
+      "theres no reason for you to post yourself crying on the internet",
+      "glad i got to experience disney channel & nickelodeon before they fell off",
+      "i can save her",
+      "them breakups when yall wasnt even together be hurting a lil bit",
+      "if she say \"i hate youuu\" congrats bro you won",
+      "i be like \"lol\" then kms",
+      "\"it takes time to heal\" BRO HOW LONG",
+      "not to flex but im probably better at making bad decisions than you",
+      "\"why would i lie\" is my best lie",
+      "\"you changed\" bro i hate you",
+      "stealing tweets is good actually and the madder the original poster the better",
+      "if you ever think im ignoring you i swear to god i am my phone be in my hand 24/7",
+      "\"men can't handle me\" ya bitch we not psychward staff members",
+      "real mfs wake up to \"battery sufficiently charged\" as their only notification",
+      "ima sucker for deep talks.. i wanna know what made you a lying ass bitch",
+      "yall forgiving your girl if she catches you cheating?"
+    ],
     "memes": [
       {
         "image": "payrent.jpeg",
@@ -36,6 +99,22 @@
     "images": [
       "stroker.jpeg",
       "friendship.jpeg"
+    ],
+    "double-images": [
+      {
+        "leftImage": "looklikethis1.jpeg",
+        "rightImage": "looklikethis2.jpeg",
+        "caption": "her hands look like this so that mine can look like this"
+      }
+    ],
+    "quad-images": [
+      {
+        "topLeftImage": "sleep1.jpeg",
+        "topRightImage": "sleep2.jpeg",
+        "bottomLeftImage": "sleep3.jpeg",
+        "bottomRightImage": "sleep4.jpeg",
+        "caption": "im about to have the best sleep of my life"
+      }
     ]
   }
 }
