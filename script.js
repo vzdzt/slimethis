@@ -241,7 +241,7 @@ async function loadContent() {
         // Add known images
         allBangers.push(...knownImageFiles.map(filename => ({
             type: 'image',
-            image: `slimethis:images/${filename}`
+            image: `images/${filename}`
         })));
 
         // GIFs from gifs/ folder
