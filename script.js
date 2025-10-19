@@ -168,9 +168,15 @@ async function loadContent() {
             })));
         }
 
-        // Load from folders - hardcoded lists of actual files
-        // Images from slimethis:images/ folder
-        const imageFiles = [
+        // Load from folders - dynamic scanning (limited by browser security)
+        // For now, we'll use a hybrid approach: try to load known files + allow manual addition
+
+        // Common image extensions to look for
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4'];
+        const maxFilesToCheck = 50; // Limit to prevent too many requests
+
+        // Try to load images dynamically (this will work for files we know exist)
+        const knownImageFiles = [
             '2019air.jpeg', '2020hood.mp4', 'aicouldnever.jpeg', 'batbite.jpeg',
             'beyblades1.jpeg', 'beyblades2.jpeg', 'brotext.jpeg', 'brotext2.jpeg',
             'canadagangs.jpeg', 'childhood1.jpeg', 'childhood2.jpeg', 'curtains.jpeg',
@@ -181,26 +187,34 @@ async function loadContent() {
             'pikachu.jpeg', 'rapszn1.jpeg', 'scoobycall.jpeg', 'semitruck.jpeg',
             'sleep1.jpeg', 'sleep2.jpeg', 'sleep3.jpeg', 'sleep4.jpeg', 'smallaccounts.jpeg',
             'spritecroc.jpeg', 'stroker.jpeg', 'tookthispic.jpeg', 'vegetable.jpeg',
-            'walkitoff.jpeg', '0a731d8a55a42f9fffe42728d65647f4.jpg', '00ab07126e655cdde010900681696e65.jpg'
+            'walkitoff.jpeg'
         ];
 
-        allBangers.push(...imageFiles.map(filename => ({
+        // Add known images
+        allBangers.push(...knownImageFiles.map(filename => ({
             type: 'image',
             image: `slimethis:images/${filename}`
         })));
 
         // GIFs from slimethis:gifs/ folder
-        const gifFiles = [
+        const knownGifFiles = [
             '_00_240x320_010_reasonably_small.gif', 'aaoa.gif', 'amalaprint-cat.gif',
             'anime-girl-blush-cat.gif', 'balls-218.gif', 'batman-cat.gif', 'bear.gif',
             'bingus-dynamite.gif', 'bongo-cat-pumpkin-bongo.gif', 'boom.gif',
             'bro-got-little-turbulence-plane.gif', 'caseoh-ai.gif', 'cat-car.gif'
         ];
 
-        allBangers.push(...gifFiles.map(filename => ({
+        allBangers.push(...knownGifFiles.map(filename => ({
             type: 'gif',
             image: `slimethis:gifs/${filename}`
         })));
+
+        // TODO: For true automatic folder scanning, we'd need:
+        // 1. A backend API that lists directory contents
+        // 2. Or a build script that generates this list
+        // 3. Or manual updates when adding new files
+
+        console.log(`Note: To add new images/GIFs, manually add filenames to the knownImageFiles/knownGifFiles arrays in script.js`);
 
         console.log(`Loaded ${allBangers.length} bangers from JSON files and folders`);
 
