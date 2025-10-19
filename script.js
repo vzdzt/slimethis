@@ -612,11 +612,20 @@ document.addEventListener('DOMContentLoaded', () => {
         applyColorCustomizations(currentCustomizations);
     }
 
-    // Update HEX displays
+    // Update HEX displays and color picker buttons
     function updateHexDisplays() {
         if (primaryHex) primaryHex.textContent = currentCustomizations.primary.toUpperCase();
         if (secondaryHex) secondaryHex.textContent = currentCustomizations.secondary.toUpperCase();
         if (accentHex) accentHex.textContent = currentCustomizations.accent.toUpperCase();
+
+        // Update color picker button backgrounds to show current colors
+        const primaryPicker = document.getElementById('primary-color');
+        const secondaryPicker = document.getElementById('secondary-color');
+        const accentPicker = document.getElementById('accent-color');
+
+        if (primaryPicker) primaryPicker.style.backgroundColor = currentCustomizations.primary;
+        if (secondaryPicker) secondaryPicker.style.backgroundColor = currentCustomizations.secondary;
+        if (accentPicker) accentPicker.style.backgroundColor = currentCustomizations.accent;
     }
 
     // Color picker event listeners
