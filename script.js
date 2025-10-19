@@ -239,10 +239,20 @@ function displayImageGallery() {
 }
 
 function selectImage(imageSrc) {
-    const output = document.getElementById('output');
-    output.innerHTML = `<img src="${imageSrc}" alt="Selected Meme" class="auto-resize" style="max-width: 100%; border-radius: 8px;">`;
-    copyCurrentBanger();
-    showNotification('Image selected and copied!', 'success');
+    // Just copy the image without changing the gallery view
+    const tempImg = document.createElement('img');
+    tempImg.src = imageSrc;
+    tempImg.style.display = 'none';
+    document.body.appendChild(tempImg);
+
+    // Copy the image URL to clipboard
+    copyToClipboard(imageSrc);
+    showNotification('Image URL copied!', 'success');
+
+    // Remove the temporary image
+    setTimeout(() => {
+        document.body.removeChild(tempImg);
+    }, 100);
 }
 
 // Load content on page load
