@@ -933,8 +933,27 @@ body {
         width: 100%;
         max-width: 100%;
         margin-bottom: 15px;
-        padding: 12px;
+        padding: 10px;
         border-radius: 10px;
+        box-sizing: border-box;
+    }
+
+    .color-input-group {
+        gap: 6px;
+    }
+
+    .color-input {
+        padding: 6px;
+        gap: 8px;
+    }
+
+    .color-input input[type="color"] {
+        width: 32px;
+        height: 32px;
+    }
+
+    .intensity-control {
+        padding: 10px;
     }
 
     .gallery-toggle {
