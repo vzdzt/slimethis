@@ -238,12 +238,28 @@ function displayImageGallery() {
     output.innerHTML = galleryHTML;
 }
 
-function selectImage(imageSrc) {
-    // Display the selected image in the output area with back button
+function selectImage(imageSrc, currentIndex = null) {
+    // If no index provided, find it in the current page
+    if (currentIndex === null) {
+        const start = (currentPage - 1) * IMAGES_PER_PAGE;
+        const end = start + IMAGES_PER_PAGE;
+        const pageImages = allImages.slice(start, end);
+        currentIndex = pageImages.indexOf(imageSrc);
+    }
+
+    const start = (currentPage - 1) * IMAGES_PER_PAGE;
+    const end = start + IMAGES_PER_PAGE;
+    const pageImages = allImages.slice(start, end);
+    const hasNext = currentIndex < pageImages.length - 1;
+    const hasPrev = currentIndex > 0;
+
+    // Display the selected image in the output area with navigation buttons
     const output = document.getElementById('output');
     output.innerHTML = `
         <div style="position: relative; display: inline-block; width: 100%;">
             <button onclick="displayImageGallery()" style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; z-index: 10;">← Back to Gallery</button>
+            ${hasPrev ? `<button onclick="selectImage('${pageImages[currentIndex - 1]}', ${currentIndex - 1})" style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); background: rgba(0,0,0,0.7); color: white; border: none; padding: 12px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; z-index: 10;">‹</button>` : ''}
+            ${hasNext ? `<button onclick="selectImage('${pageImages[currentIndex + 1]}', ${currentIndex + 1})" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: rgba(0,0,0,0.7); color: white; border: none; padding: 12px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; z-index: 10;">›</button>` : ''}
             <img src="${imageSrc}" alt="Selected Meme" class="auto-resize" style="max-width: 100%; border-radius: 8px; display: block; margin: 0 auto;">
         </div>
     `;
