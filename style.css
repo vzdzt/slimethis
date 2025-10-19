@@ -479,78 +479,153 @@ body {
     transform: scale(1.02);
 }
 
-/* Color Customizer - Vertical Layout */
+/* Color Customizer - Modern Palette Design */
 .color-customizer {
     background: var(--glass);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 24px;
     backdrop-filter: blur(10px);
     animation: customizer-slide-in 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.8s both;
 }
 
-.color-customizer h4 {
-    font-size: 1rem;
-    color: var(--text-color);
-    margin-bottom: 15px;
-    text-align: center;
+.customizer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
-.color-row {
+.customizer-header h4 {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin: 0;
+    font-weight: 600;
+}
+
+.reset-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reset-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 0 8px var(--glow);
+}
+
+.color-palette {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 24px;
+}
+
+.color-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .color-input {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.color-input:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .color-input input[type="color"] {
-    width: 45px;
-    height: 40px;
-    border: 2px solid var(--border-color);
+    width: 48px;
+    height: 48px;
+    border: none;
     border-radius: 8px;
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .color-input input[type="color"]:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 10px var(--glow);
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-.color-input label {
-    font-size: 0.85rem;
-    color: var(--text-color);
+.color-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     flex: 1;
 }
 
-.intensity-row {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.intensity-row label {
-    font-size: 0.85rem;
+.color-name {
+    font-size: 0.9rem;
     color: var(--text-color);
+    font-weight: 500;
 }
 
-.intensity-row input[type="range"] {
+.color-hex {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Courier New', monospace;
+    font-weight: 400;
+}
+
+.intensity-control {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.intensity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.intensity-label {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.intensity-value {
+    font-size: 0.9rem;
+    color: var(--primary);
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+}
+
+.intensity-control input[type="range"] {
     width: 100%;
     height: 6px;
     border-radius: 3px;
-    background: var(--border-color);
+    background: rgba(255, 255, 255, 0.2);
     outline: none;
     -webkit-appearance: none;
     appearance: none;
+    margin-bottom: 8px;
 }
 
-.intensity-row input[type="range"]::-webkit-slider-thumb {
+.intensity-control input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 20px;
@@ -559,18 +634,20 @@ body {
     background: var(--primary);
     cursor: pointer;
     box-shadow: 0 0 8px var(--glow);
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.intensity-row input[type="range"]::-webkit-slider-thumb:hover {
+.intensity-control input[type="range"]::-webkit-slider-thumb:hover {
     transform: scale(1.2);
+    box-shadow: 0 0 12px var(--glow);
 }
 
-.intensity-row span {
-    font-size: 0.9rem;
-    color: var(--text-color);
-    text-align: center;
-    margin-top: 5px;
+.intensity-scale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: 'Courier New', monospace;
 }
 
 /* Button Container in Controls */

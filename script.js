@@ -590,13 +590,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const accentColorInput = document.getElementById('accent-color');
     const intensitySlider = document.getElementById('intensity-slider');
     const intensityValueSpan = document.getElementById('intensity-value');
+    const resetButton = document.getElementById('reset-colors');
+
+    // HEX display elements
+    const primaryHex = document.getElementById('primary-hex');
+    const secondaryHex = document.getElementById('secondary-hex');
+    const accentHex = document.getElementById('accent-hex');
 
     // Current customization values
     let currentCustomizations = {
         primary: '#00ffff',
         secondary: '#ff00ff',
         accent: '#ffff00',
-        intensity: 1.0
+        intensity: 100
     };
 
     // Load saved customizations
@@ -606,29 +612,52 @@ document.addEventListener('DOMContentLoaded', () => {
         applyColorCustomizations(currentCustomizations);
     }
 
+    // Update HEX displays
+    function updateHexDisplays() {
+        if (primaryHex) primaryHex.textContent = currentCustomizations.primary.toUpperCase();
+        if (secondaryHex) secondaryHex.textContent = currentCustomizations.secondary.toUpperCase();
+        if (accentHex) accentHex.textContent = currentCustomizations.accent.toUpperCase();
+    }
+
     // Color picker event listeners
     primaryColorInput.addEventListener('input', (e) => {
         currentCustomizations.primary = e.target.value;
+        updateHexDisplays();
         applyColorCustomizations(currentCustomizations);
         saveColorCustomizations();
     });
 
     secondaryColorInput.addEventListener('input', (e) => {
         currentCustomizations.secondary = e.target.value;
+        updateHexDisplays();
         applyColorCustomizations(currentCustomizations);
         saveColorCustomizations();
     });
 
     accentColorInput.addEventListener('input', (e) => {
         currentCustomizations.accent = e.target.value;
+        updateHexDisplays();
         applyColorCustomizations(currentCustomizations);
         saveColorCustomizations();
     });
 
     // Intensity slider
     intensitySlider.addEventListener('input', (e) => {
-        currentCustomizations.intensity = parseFloat(e.target.value);
-        intensityValueSpan.textContent = currentCustomizations.intensity.toFixed(1) + 'x';
+        currentCustomizations.intensity = parseInt(e.target.value);
+        intensityValueSpan.textContent = currentCustomizations.intensity + '%';
+        applyColorCustomizations(currentCustomizations);
+        saveColorCustomizations();
+    });
+
+    // Reset button
+    resetButton.addEventListener('click', () => {
+        // Reset to Neon Fluid theme defaults
+        currentCustomizations = {
+            primary: '#00ffff',
+            secondary: '#ff00ff',
+            accent: '#ffff00',
+            intensity: 100
+        };
         applyColorCustomizations(currentCustomizations);
         saveColorCustomizations();
     });
