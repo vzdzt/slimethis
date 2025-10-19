@@ -584,14 +584,78 @@ body {
     font-size: 1rem;
 }
 
-/* Footer */
+/* Footer - Compact Inline */
 .footer {
-    text-align: center;
-    margin-top: 30px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
 }
 
-.footer h3 {
-    margin-bottom: 15px;
+.social-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--glass);
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    padding: 8px 16px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+}
+
+.social-container:hover {
+    transform: translateY(-2px);
+}
+
+.profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 8px var(--glow);
+    transition: transform 0.3s ease;
+}
+
+.profile-pic:hover {
+    transform: scale(1.1);
+}
+
+.x-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: color 0.3s ease;
+}
+
+.x-link:hover {
+    color: var(--primary);
+}
+
+.x-link span {
+    font-weight: 500;
+}
+
+.x-logo {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .footer {
+        position: static;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .social-container {
+        justify-content: center;
+    }
 }
 
 /* Responsive Design */
@@ -675,7 +739,7 @@ body {
 }
 
 .card img, .card video {
-    max-width: 100%;
+    max-width: 95%;
     border-radius: 10px;
     margin-top: 10px;
     object-fit: contain;
