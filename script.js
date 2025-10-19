@@ -2331,6 +2331,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('theme-select').value = savedTheme;
     updateStarfieldColors(savedTheme);
 
+    // Show/hide color customizer based on initial theme
+    const colorCustomizer = document.querySelector('.color-customizer');
+    if (savedTheme === 'neon-fluid' || savedTheme === 'aurora-wave') {
+        colorCustomizer.style.display = 'block';
+    } else {
+        colorCustomizer.style.display = 'none';
+    }
+
     // Initialize color inputs
     applyColorCustomizations(currentCustomizations);
 });
