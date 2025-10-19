@@ -921,6 +921,7 @@ body {
         gap: 12px;
         margin: 0 auto 0 !important;
         padding: 15px;
+        position: static !important;
     }
 
     .output-panel {
