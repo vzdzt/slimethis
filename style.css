@@ -512,6 +512,7 @@ body {
     gap: 30px;
     margin-bottom: 40px;
     align-items: start;
+    align-content: start;
 }
 
 .controls-panel {
@@ -780,7 +781,7 @@ body {
 /* Footer - Profile Pic as Hyperlink */
 .footer {
     position: fixed;
-    bottom: 20px;
+    bottom: 5px;
     right: 20px;
     z-index: 100;
 }
