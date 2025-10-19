@@ -76,7 +76,7 @@ i/* Reset default styles */
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 8px 20px;
+    padding: 8px 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
