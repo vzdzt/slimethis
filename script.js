@@ -160,13 +160,13 @@ async function loadContent() {
             allBangers.push(...bangersData['quad-images'].map(item => ({ type: 'quad-image', ...item })));
         }
 
-        // Add images from JSON (existing images in project)
-        if (bangersData.images) {
-            allBangers.push(...bangersData.images.map(filename => ({
-                type: 'image',
-                image: filename // Use relative path for images in project
-            })));
-        }
+        // Add images from JSON (existing images in project) - DISABLED to avoid duplicates
+        // if (bangersData.images) {
+        //     allBangers.push(...bangersData.images.map(filename => ({
+        //         type: 'image',
+        //         image: filename // Use relative path for images in project
+        //     })));
+        // }
 
         // Load from folders - dynamic scanning (limited by browser security)
         // For now, we'll use a hybrid approach: try to load known files + allow manual addition
