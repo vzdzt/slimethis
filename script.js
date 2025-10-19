@@ -104,20 +104,27 @@ function copyCurrentBanger() {
         copyToClipboard(textToCopy);
     }
 
-    // Always check for media to save (images, videos, GIFs)
-    const img = output.querySelector('img');
+    // Always check for media to save (images, videos, GIFs) - handle multiple images
+    const images = output.querySelectorAll('img');
     const video = output.querySelector('video');
 
-    if (img && img.src) {
-        const filename = `slime-this-${Date.now()}.jpg`;
-        saveMedia(img.src, filename);
+    if (images.length > 0) {
+        // Save all images found
+        images.forEach((img, index) => {
+            if (img.src) {
+                const filename = images.length > 1
+                    ? `slime-this-${Date.now()}-${index + 1}.jpg`
+                    : `slime-this-${Date.now()}.jpg`;
+                saveMedia(img.src, filename);
+            }
+        });
     } else if (video && video.src) {
         const filename = `slime-this-${Date.now()}.mp4`;
         saveMedia(video.src, filename);
     }
 
     // Only show "no content" error if there's neither text nor media
-    if (!textToCopy && !img && !video) {
+    if (!textToCopy && images.length === 0 && !video) {
         showNotification('No content to copy', 'error');
     }
 }
