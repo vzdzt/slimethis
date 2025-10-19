@@ -456,6 +456,10 @@ body {
 
 .output-panel {
     min-height: 400px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 0;
 }
 
 /* Controls Panel Styling */
