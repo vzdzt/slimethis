@@ -365,18 +365,18 @@ body[data-theme="veazy"] .card {
 
 /* Neon Fluid Theme - CSS Relative Color Syntax */
 body[data-theme="neon-fluid"] {
-    --primary: #00ffff;
-    --secondary: #ff00ff;
-    --accent: #ffff00;
+    --primary: var(--custom-primary, #00ffff);
+    --secondary: var(--custom-secondary, #ff00ff);
+    --accent: var(--custom-accent, #ffff00);
     --dark: #000033;
     --glass: rgba(0, 255, 255, 0.2);
     --glow: rgba(255, 0, 255, 0.8);
-    --rgb-glow: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
+    --rgb-glow: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
     --text-color: #ffffff;
     --background: linear-gradient(135deg,
-        hsl(from #00ffff calc(h + 0) s l) 0%,
-        hsl(from #ff00ff calc(h + 120) s l) 50%,
-        hsl(from #ffff00 calc(h + 240) s l) 100%);
+        hsl(from var(--primary) calc(h + 0) s l) 0%,
+        hsl(from var(--secondary) calc(h + 120) s l) 50%,
+        hsl(from var(--accent) calc(h + 240) s l) 100%);
     --card-background: rgba(0, 255, 255, 0.1);
     --border-color: rgba(0, 255, 255, 0.4);
     animation: fluid-flow 4s ease-in-out infinite;
@@ -387,6 +387,9 @@ body[data-theme="neon-fluid"] .card {
     background: linear-gradient(45deg,
         hsl(from var(--primary) calc(h + 30) s l),
         hsl(from var(--secondary) calc(h - 30) s l));
+    transform: scale(var(--intensity-scale, 1));
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37),
+                0 0 calc(20px * var(--intensity-scale, 1)) var(--glow);
 }
 
 /* General Styles */
