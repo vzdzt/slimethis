@@ -566,12 +566,12 @@ body {
 
 /* Main Layout - Two Column Grid */
 .main-layout {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 30px;
-    margin-bottom: 40px;
-    align-items: start;
-    align-content: start;
+    display: grid !important;
+    grid-template-columns: 320px 1fr !important;
+    gap: 30px !important;
+    margin-bottom: 40px !important;
+    align-items: start !important;
+    align-content: start !important;
 }
 
 .controls-panel {
