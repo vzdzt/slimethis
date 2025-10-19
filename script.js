@@ -696,22 +696,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Apply custom colors to CSS variables (only for neon-fluid theme for now)
         if (currentTheme === 'neon-fluid') {
-            // Calculate gradient colors using JavaScript for better browser support
-            const primaryColor = hexToRgb(customizations.primary);
-            const secondaryColor = hexToRgb(customizations.secondary);
-            const accentColor = hexToRgb(customizations.accent);
-
-            // Create HSL variations for the gradient
-            const primaryHSL = rgbToHsl(primaryColor.r, primaryColor.g, primaryColor.b);
-            const secondaryHSL = rgbToHsl(secondaryColor.r, secondaryColor.g, secondaryColor.b);
-            const accentHSL = rgbToHsl(accentColor.r, accentColor.g, accentColor.b);
-
-            // Create gradient with color variations
-            const gradientStart = hslToRgb(primaryHSL.h, primaryHSL.s, primaryHSL.l);
-            const gradientMid = hslToRgb((secondaryHSL.h + 120) % 360, secondaryHSL.s, secondaryHSL.l);
-            const gradientEnd = hslToRgb((accentHSL.h + 240) % 360, accentHSL.s, accentHSL.l);
-
-            const gradient = `linear-gradient(135deg, rgb(${gradientStart.r}, ${gradientStart.g}, ${gradientStart.b}) 0%, rgb(${gradientMid.r}, ${gradientMid.g}, ${gradientMid.b}) 50%, rgb(${gradientEnd.r}, ${gradientEnd.g}, ${gradientEnd.b}) 100%)`;
+            // Use the actual selected colors directly for the gradient
+            const gradient = `linear-gradient(135deg, ${customizations.primary} 0%, ${customizations.secondary} 50%, ${customizations.accent} 100%)`;
 
             // Force style recalculation by temporarily removing and re-adding the theme
             document.body.removeAttribute('data-theme');
