@@ -673,6 +673,31 @@ body {
     font-family: 'Courier New', monospace;
 }
 
+/* Gallery Toggle */
+.gallery-toggle {
+    margin: 15px 0;
+}
+
+.gallery-btn {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--glass);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.gallery-btn:hover {
+    background: var(--rgb-glow);
+    transform: translateY(-1px);
+    box-shadow: 0 0 10px var(--glow);
+}
+
 /* Button Container in Controls */
 .controls-panel .button-container {
     margin-top: 10px;

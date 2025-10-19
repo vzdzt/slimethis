@@ -2095,16 +2095,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Type selector auto-generate
     document.getElementById('type-select').addEventListener('change', async function() {
-        const selectedType = this.value;
+        // Auto-generate a banger when type changes
+        await generateBanger();
+        copyCurrentBanger();
+    });
 
-        if (selectedType === 'gallery') {
-            // Show image gallery
-            displayImageGallery();
-        } else {
-            // Auto-generate a banger when type changes
-            await generateBanger();
-            copyCurrentBanger();
-        }
+    // Gallery button
+    document.getElementById('gallery-btn').addEventListener('click', function() {
+        displayImageGallery();
     });
 
     // Output card click handler
