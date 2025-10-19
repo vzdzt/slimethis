@@ -871,8 +871,19 @@ body {
         padding: 0;
     }
 
-    .footer {
+    .color-customizer {
         order: 3;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 15px auto 0;
+        padding: 10px;
+        border-radius: 10px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .footer {
+        order: 4;
         position: static !important;
         margin-top: 15px;
         width: 100% !important;
