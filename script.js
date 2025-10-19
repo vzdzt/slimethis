@@ -229,9 +229,9 @@ function displayImageGallery() {
     const totalPages = Math.ceil(allImages.length / IMAGES_PER_PAGE);
     galleryHTML += `
         <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
-            <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} style="padding: 8px 16px; background: var(--glass); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='var(--rgb-glow)'" onmouseout="this.style.background='var(--glass)'">← Previous</button>
+            <button onclick="event.stopPropagation(); changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} style="padding: 8px 16px; background: var(--glass); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='var(--rgb-glow)'" onmouseout="this.style.background='var(--glass)'">← Previous</button>
             <span style="color: var(--text-color); font-weight: 500; align-self: center;">Page ${currentPage} of ${totalPages}</span>
-            <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 8px 16px; background: var(--glass); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='var(--rgb-glow)'" onmouseout="this.style.background='var(--glass)'">Next →</button>
+            <button onclick="event.stopPropagation(); changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 8px 16px; background: var(--glass); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 6px; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='var(--rgb-glow)'" onmouseout="this.style.background='var(--glass)'">Next →</button>
         </div>
     `;
 
