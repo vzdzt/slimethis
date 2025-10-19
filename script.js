@@ -584,6 +584,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.animation = animations[newTheme] || 'none';
     });
 
+    // Type selector auto-generate
+    document.getElementById('type-select').addEventListener('change', function() {
+        // Auto-generate a banger when type changes
+        generateBanger();
+    });
+
+    // Output card click handler
+    document.getElementById('output').addEventListener('click', function() {
+        // Generate banger when clicking on the output area
+        generateBanger();
+    });
+
     // Color Customization
     const primaryColorInput = document.getElementById('primary-color');
     const secondaryColorInput = document.getElementById('secondary-color');
