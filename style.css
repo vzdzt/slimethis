@@ -854,11 +854,12 @@ body {
     .container {
         display: flex !important;
         flex-direction: column !important;
-        align-items: center;
+        align-items: flex-start;
         gap: 10px;
         padding: 90px 10px 15px 10px;
         margin-bottom: 1rem;
-        width: 100%;
+        margin-left: 10px;
+        width: calc(100% - 20px);
     }
 
     .main-layout {
@@ -872,6 +873,7 @@ body {
     /* Make all elements direct children of container on mobile */
     .container > .main-layout > .controls-panel,
     .container > .main-layout > .output-panel,
+    .container > .main-layout > .color-customizer,
     .container > .button-container,
     .container > .color-customizer,
     .container > .footer {
