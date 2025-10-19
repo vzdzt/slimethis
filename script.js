@@ -213,7 +213,7 @@ function displayImageGallery() {
     pageImages.forEach((image, index) => {
         if (index < 10) { // Limit to 10 images (2x5 grid)
             galleryHTML += `
-                <div style="position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; background: var(--glass); border: 1px solid var(--border-color); transition: transform 0.3s ease, box-shadow 0.3s ease;" onclick="selectImage('${image}')">
+                <div style="position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; background: var(--glass); border: 1px solid var(--border-color); transition: transform 0.3s ease, box-shadow 0.3s ease;" onclick="event.stopPropagation(); selectImage('${image}')">
                     <img src="${image}" alt="Meme" style="width: 100%; height: 100%; object-fit: cover; display: block;" loading="lazy">
                     <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.7); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; opacity: 0; transition: opacity 0.3s ease;">
                         Select
