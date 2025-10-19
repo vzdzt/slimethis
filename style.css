@@ -437,25 +437,32 @@ body {
     line-height: 1.4;
 }
 
-/* Main Layout - Two Column Grid */
-.main-layout {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 30px;
-    margin-bottom: 40px;
-    align-items: start;
-}
-
-.controls-panel {
+/* Controls Sidebar - Fixed Position */
+.controls-sidebar {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 320px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    position: sticky;
-    top: 20px;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.output-panel {
-    min-height: 400px;
+/* Output Container - Independent Layout */
+.output-container {
+    margin-left: 380px; /* 320px sidebar + 60px gap for padding */
+    margin-right: 20px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Controls Panel Styling */
