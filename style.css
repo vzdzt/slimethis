@@ -373,10 +373,10 @@ body[data-theme="neon-fluid"] {
     --glow: rgba(255, 0, 255, 0.8);
     --rgb-glow: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
     --text-color: #ffffff;
-    --background: linear-gradient(135deg,
+    --background: var(--custom-gradient, linear-gradient(135deg,
         hsl(from var(--primary) calc(h + 0) s l) 0%,
         hsl(from var(--secondary) calc(h + 120) s l) 50%,
-        hsl(from var(--accent) calc(h + 240) s l) 100%);
+        hsl(from var(--accent) calc(h + 240) s l) 100%));
     --card-background: rgba(0, 255, 255, 0.1);
     --border-color: rgba(0, 255, 255, 0.4);
     animation: fluid-flow 4s ease-in-out infinite;

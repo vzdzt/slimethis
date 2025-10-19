@@ -671,22 +671,102 @@ document.addEventListener('DOMContentLoaded', () => {
         secondaryColorInput.value = customizations.secondary;
         accentColorInput.value = customizations.accent;
         intensitySlider.value = customizations.intensity;
-        intensityValueSpan.textContent = customizations.intensity.toFixed(1) + 'x';
+        intensityValueSpan.textContent = customizations.intensity + '%';
 
         // Apply custom colors to CSS variables (only for neon-fluid theme for now)
         if (currentTheme === 'neon-fluid') {
+            // Calculate gradient colors using JavaScript for better browser support
+            const primaryColor = hexToRgb(customizations.primary);
+            const secondaryColor = hexToRgb(customizations.secondary);
+            const accentColor = hexToRgb(customizations.accent);
+
+            // Create HSL variations for the gradient
+            const primaryHSL = rgbToHsl(primaryColor.r, primaryColor.g, primaryColor.b);
+            const secondaryHSL = rgbToHsl(secondaryColor.r, secondaryColor.g, secondaryColor.b);
+            const accentHSL = rgbToHsl(accentColor.r, accentColor.g, accentColor.b);
+
+            // Create gradient with color variations
+            const gradientStart = hslToRgb(primaryHSL.h, primaryHSL.s, primaryHSL.l);
+            const gradientMid = hslToRgb((secondaryHSL.h + 120) % 360, secondaryHSL.s, secondaryHSL.l);
+            const gradientEnd = hslToRgb((accentHSL.h + 240) % 360, accentHSL.s, accentHSL.l);
+
+            const gradient = `linear-gradient(135deg, rgb(${gradientStart.r}, ${gradientStart.g}, ${gradientStart.b}) 0%, rgb(${gradientMid.r}, ${gradientMid.g}, ${gradientMid.b}) 50%, rgb(${gradientEnd.r}, ${gradientEnd.g}, ${gradientEnd.b}) 100%)`;
+
             // Force style recalculation by temporarily removing and re-adding the theme
             document.body.removeAttribute('data-theme');
             document.documentElement.style.setProperty('--custom-primary', customizations.primary);
             document.documentElement.style.setProperty('--custom-secondary', customizations.secondary);
             document.documentElement.style.setProperty('--custom-accent', customizations.accent);
-            document.documentElement.style.setProperty('--intensity-scale', customizations.intensity);
+            document.documentElement.style.setProperty('--intensity-scale', customizations.intensity / 100);
+            document.documentElement.style.setProperty('--custom-gradient', gradient);
 
             // Re-apply theme to trigger CSS recalculation
             requestAnimationFrame(() => {
                 document.body.setAttribute('data-theme', 'neon-fluid');
             });
         }
+    }
+
+    // Helper functions for color conversion
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    function rgbToHsl(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+
+        if (max === min) {
+            h = s = 0; // achromatic
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        return { h: h * 360, s: s, l: l };
+    }
+
+    function hslToRgb(h, s, l) {
+        h /= 360;
+        const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        };
+
+        let r, g, b;
+        if (s === 0) {
+            r = g = b = l; // achromatic
+        } else {
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+
+        return {
+            r: Math.round(r * 255),
+            g: Math.round(g * 255),
+            b: Math.round(b * 255)
+        };
     }
 
     function saveColorCustomizations() {
