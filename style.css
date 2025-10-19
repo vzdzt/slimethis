@@ -509,7 +509,7 @@ body {
     background: var(--glass);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 15px;
+    padding: 12px;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
@@ -518,11 +518,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .customizer-header h4 {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-color);
     margin: 0;
@@ -532,9 +532,9 @@ body {
     background: rgba(239, 68, 68, 0.8);
     border: 1px solid rgba(239, 68, 68, 0.5);
     color: white;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 0.8rem;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -548,13 +548,14 @@ body {
 .color-palette {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
 }
 
 .color-input-group {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
 }
 
 .color-input {
