@@ -2326,7 +2326,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Apply saved theme
-    const savedTheme = localStorage.getItem('currentTheme') || 'ultra-glass';
+    const savedTheme = localStorage.getItem('currentTheme') || 'veazy';
     document.body.setAttribute('data-theme', savedTheme);
     document.getElementById('theme-select').value = savedTheme;
     updateStarfieldColors(savedTheme);
