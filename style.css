@@ -451,6 +451,100 @@ body {
     transform: scale(1.05);
 }
 
+/* Color Customizer */
+.color-customizer {
+    background: var(--glass);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    animation: customizer-slide-in 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.8s both;
+}
+
+.color-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.color-controls label {
+    font-size: 0.9rem;
+    margin-right: 5px;
+    color: var(--text-color);
+}
+
+.color-controls input[type="color"] {
+    width: 40px;
+    height: 35px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.color-controls input[type="color"]:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px var(--glow);
+}
+
+.effect-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.effect-controls label {
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.effect-controls input[type="range"] {
+    width: 100px;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--border-color);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.effect-controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 0 8px var(--glow);
+    transition: transform 0.2s ease;
+}
+
+.effect-controls input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.effect-controls span {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    min-width: 35px;
+    text-align: center;
+}
+
+@keyframes customizer-slide-in {
+    0% {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .card {
     background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
     border: 2px solid var(--border-color);

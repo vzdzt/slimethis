@@ -584,9 +584,85 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.animation = animations[newTheme] || 'none';
     });
 
+    // Color Customization
+    const primaryColorInput = document.getElementById('primary-color');
+    const secondaryColorInput = document.getElementById('secondary-color');
+    const accentColorInput = document.getElementById('accent-color');
+    const intensitySlider = document.getElementById('intensity-slider');
+    const intensityValueSpan = document.getElementById('intensity-value');
+
+    // Current customization values
+    let currentCustomizations = {
+        primary: '#00ffff',
+        secondary: '#ff00ff',
+        accent: '#ffff00',
+        intensity: 1.0
+    };
+
+    // Load saved customizations
+    const savedCustomizations = localStorage.getItem('colorCustomizations');
+    if (savedCustomizations) {
+        currentCustomizations = JSON.parse(savedCustomizations);
+        applyColorCustomizations(currentCustomizations);
+    }
+
+    // Color picker event listeners
+    primaryColorInput.addEventListener('input', (e) => {
+        currentCustomizations.primary = e.target.value;
+        applyColorCustomizations(currentCustomizations);
+        saveColorCustomizations();
+    });
+
+    secondaryColorInput.addEventListener('input', (e) => {
+        currentCustomizations.secondary = e.target.value;
+        applyColorCustomizations(currentCustomizations);
+        saveColorCustomizations();
+    });
+
+    accentColorInput.addEventListener('input', (e) => {
+        currentCustomizations.accent = e.target.value;
+        applyColorCustomizations(currentCustomizations);
+        saveColorCustomizations();
+    });
+
+    // Intensity slider
+    intensitySlider.addEventListener('input', (e) => {
+        currentCustomizations.intensity = parseFloat(e.target.value);
+        intensityValueSpan.textContent = currentCustomizations.intensity.toFixed(1) + 'x';
+        applyColorCustomizations(currentCustomizations);
+        saveColorCustomizations();
+    });
+
+    function applyColorCustomizations(customizations) {
+        // Apply CSS custom properties for the current theme
+        const currentTheme = document.body.getAttribute('data-theme') || 'ultra-glass';
+
+        // Update color inputs to show current values
+        primaryColorInput.value = customizations.primary;
+        secondaryColorInput.value = customizations.secondary;
+        accentColorInput.value = customizations.accent;
+        intensitySlider.value = customizations.intensity;
+        intensityValueSpan.textContent = customizations.intensity.toFixed(1) + 'x';
+
+        // Apply custom colors to CSS variables (only for neon-fluid theme for now)
+        if (currentTheme === 'neon-fluid') {
+            document.documentElement.style.setProperty('--custom-primary', customizations.primary);
+            document.documentElement.style.setProperty('--custom-secondary', customizations.secondary);
+            document.documentElement.style.setProperty('--custom-accent', customizations.accent);
+            document.documentElement.style.setProperty('--intensity-scale', customizations.intensity);
+        }
+    }
+
+    function saveColorCustomizations() {
+        localStorage.setItem('colorCustomizations', JSON.stringify(currentCustomizations));
+    }
+
     // Apply saved theme
     const savedTheme = localStorage.getItem('currentTheme') || 'ultra-glass';
     document.body.setAttribute('data-theme', savedTheme);
     document.getElementById('theme-select').value = savedTheme;
     updateStarfieldColors(savedTheme);
+
+    // Initialize color inputs
+    applyColorCustomizations(currentCustomizations);
 });
