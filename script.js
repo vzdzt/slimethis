@@ -2084,6 +2084,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         localStorage.setItem('currentTheme', newTheme);
         updateStarfieldColors(newTheme);
 
+        // Show/hide color customizer based on theme
+        const colorCustomizer = document.querySelector('.color-customizer');
+        if (newTheme === 'neon-fluid') {
+            colorCustomizer.style.display = 'block';
+        } else {
+            colorCustomizer.style.display = 'none';
+        }
+
         const animations = {
             'galactic-nebula': 'nebula-swirl 15s ease-in-out infinite',
             'electric-storm': 'storm-flash 5s infinite',
