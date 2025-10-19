@@ -130,6 +130,9 @@ async function loadContent() {
 
         // Load bangers data
         const bangersResponse = await fetch('bangers.json');
+        if (!bangersResponse.ok) {
+            throw new Error(`Failed to load bangers.json: ${bangersResponse.status}`);
+        }
         const bangersData = await bangersResponse.json();
 
         // Combine all content sources
