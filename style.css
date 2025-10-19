@@ -1,4 +1,4 @@
-/* Reset default styles */
+i/* Reset default styles */
 * {
     margin: 0;
     padding: 0;
@@ -951,31 +951,31 @@ body {
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        padding: 10px 15px;
+        gap: 8px;
+        padding: 8px 12px;
         background: var(--glass);
         border: 1px solid var(--border-color);
-        border-radius: 20px;
+        border-radius: 16px;
         backdrop-filter: blur(10px);
         transition: all 0.3s ease;
         width: auto;
-        max-width: 250px;
+        max-width: 200px;
         margin: 0 auto;
     }
 
     .profile-link:hover {
         background: var(--rgb-glow);
         transform: translateY(-1px);
-        box-shadow: 0 0 12px var(--glow);
+        box-shadow: 0 0 10px var(--glow);
     }
 
     .profile-pic {
-        width: 32px;
-        height: 32px;
+        width: 24px;
+        height: 24px;
     }
 
     .follow-text {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         margin: 0;
     }
 
