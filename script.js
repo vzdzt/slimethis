@@ -2124,9 +2124,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Output card click handler
-    document.getElementById('output').addEventListener('click', function() {
-        // Generate banger when clicking on the output area
-        generateBanger();
+    document.getElementById('output').addEventListener('click', function(e) {
+        // Only generate banger when clicking directly on the output area, not on gallery images or buttons
+        if (e.target === this || e.target.closest('.gallery-image, button, .pagination-controls button')) {
+            // Don't generate if clicking on gallery images or buttons
+            if (!e.target.closest('.gallery-image, button, .pagination-controls button')) {
+                generateBanger();
+            }
+        } else {
+            generateBanger();
+        }
     });
 
     // Color Customization
