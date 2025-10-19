@@ -349,8 +349,8 @@ async function generateBanger() {
 }
 
 // Banger Generator
-document.getElementById('generate-btn').addEventListener('click', () => {
-    generateBanger();
+document.getElementById('generate-btn').addEventListener('click', async () => {
+    await generateBanger();
     copyCurrentBanger();
 });
 
