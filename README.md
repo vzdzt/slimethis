@@ -28,6 +28,15 @@ SlimeThis is a cutting-edge web application that generates random "bangers" (mem
 - **State Management** - localStorage persistence for user preferences
 - **Performance Optimization** - RequestAnimationFrame for smooth animations
 - **Error Handling** - Graceful fallbacks for unsupported features
+- **JSON Content Management** - Dynamic loading from `bangers.json` and `assets-config.json`
+- **Folder-Based Assets** - Organized content loading from dedicated directories
+
+### Content Management System
+- **JSON Configuration** - `assets-config.json` defines folder paths and caption requirements
+- **Dynamic Loading** - Asynchronous content fetching and rendering
+- **Flexible Content Types** - Support for quotes, memes, videos, images, and composites
+- **Folder Organization** - Dedicated directories for each content type
+- **Caption Management** - Automatic handling of caption requirements per content type
 
 ## 🎯 Key Features
 
@@ -53,10 +62,20 @@ SlimeThis is a cutting-edge web application that generates random "bangers" (mem
 - **Theme-Specific Defaults** - Each theme has optimized color schemes
 
 ### Content Generation System
-- **Multiple Content Types** - Quotes, memes, videos, images, and composites
-- **Smart Filtering** - Type-based content selection
-- **Responsive Media** - Optimized display for all screen sizes
-- **Progressive Loading** - Smooth content transitions
+- **Multiple Content Types** - Quotes, memes, videos, images, double-images, quad-images
+- **Smart Filtering** - Type-based content selection with auto-generation
+- **Responsive Media** - Optimized display for all screen sizes with auto-resizing
+- **Progressive Loading** - Smooth content transitions with GSAP animations
+- **JSON Content Management** - Dynamic loading from organized configuration files
+- **Folder-Based Assets** - Dedicated directories for each content type
+- **Caption Management** - Flexible caption requirements per content type
+
+### Content Management Features
+- **Auto-Generation** - Content changes automatically when switching types
+- **Copy & Save** - One-click copying of text and downloading of media
+- **Multiple Interaction Methods** - Click button, output area, or change type selector
+- **Notification System** - Real-time feedback for all user actions
+- **Automatic Resizing** - Images fit screen without scrolling (60vh max height)
 
 ### Advanced Visual Effects
 - **Three.js Starfield** - Interactive particle system with mouse tracking
