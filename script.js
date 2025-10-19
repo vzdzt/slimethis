@@ -238,10 +238,10 @@ async function loadContent() {
             'spritecroc.jpeg', 'stroker.jpeg', 'tookthispic.jpeg', 'vegetable.jpeg', 'walkitoff.jpeg'
         ];
 
-        // Add known images
+        // Add known images (now in main directory)
         allBangers.push(...knownImageFiles.map(filename => ({
             type: 'image',
-            image: `images/${filename}`
+            image: filename
         })));
 
         // GIFs from gifs/ folder
