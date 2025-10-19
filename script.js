@@ -160,27 +160,24 @@ async function loadContent() {
             allBangers.push(...bangersData['quad-images'].map(item => ({ type: 'quad-image', ...item })));
         }
 
-        // Add images
+        // Add images from JSON (existing images in project)
         if (bangersData.images) {
             allBangers.push(...bangersData.images.map(filename => ({
                 type: 'image',
-                image: config.folders.images.path + filename
+                image: filename // Use relative path for images in project
             })));
         }
 
-        // Add GIFs from folder (simulated for now - in production you'd use a backend API)
-        // Since we can't directly access file system from browser, we'll add some known GIFs
-        const knownGifs = [
-            'shakinghishead.mp4', // This is actually MP4 but we'll treat as GIF for demo
-            'gtalobby1.mp4',
-            '2020hood.mp4',
-            'trustissues.mp4'
+        // Add some demo GIFs from existing videos (since we can't access external folders from browser)
+        // In production, you'd use a backend API to list directory contents
+        const demoGifs = [
+            { type: 'gif', image: 'shakinghishead.mp4' },
+            { type: 'gif', image: 'gtalobby1.mp4' },
+            { type: 'gif', image: '2020hood.mp4' },
+            { type: 'gif', image: 'trustissues.mp4' }
         ];
 
-        allBangers.push(...knownGifs.map(filename => ({
-            type: 'gif',
-            image: config.folders.gifs.path + filename
-        })));
+        allBangers.push(...demoGifs);
 
         console.log(`Loaded ${allBangers.length} bangers from JSON files and folders`);
 
