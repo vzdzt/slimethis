@@ -11,12 +11,12 @@
       "defaultCaption": "Watch this!"
     },
     "gifs": {
-      "path": "../slimethis:gifs/",
+      "path": "slimethis:gifs/",
       "requiresCaption": false,
       "defaultCaption": ""
     },
     "images": {
-      "path": "../slimethis:images/",
+      "path": "slimethis:images/",
       "requiresCaption": false,
       "defaultCaption": ""
     },

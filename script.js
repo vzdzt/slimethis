@@ -188,17 +188,17 @@ async function loadContent() {
 
             allBangers.push(...imageFiles.map(filename => ({
                 type: 'image',
-                image: `../slimethis:images/${filename}`
+                image: `slimethis:images/${filename}`
             })));
 
-            // Try to load from ../slimethis:gifs/ folder
+            // Try to load from slimethis:gifs/ folder
             const gifFiles = [
                 'shakinghishead.mp4', 'gtalobby1.mp4', '2020hood.mp4', 'trustissues.mp4'
             ];
 
             allBangers.push(...gifFiles.map(filename => ({
                 type: 'gif',
-                image: `../slimethis:gifs/${filename}`
+                image: `slimethis:gifs/${filename}`
             })));
 
         } catch (error) {
