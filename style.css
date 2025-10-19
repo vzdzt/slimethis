@@ -453,6 +453,55 @@ body {
     gap: 20px;
     position: sticky;
     top: 20px;
+    background: var(--glass);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Selector Containers */
+.theme-switcher,
+.type-switcher {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.theme-switcher label,
+.type-switcher label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 4px;
+}
+
+.theme-switcher select,
+.type-switcher select {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.theme-switcher select:hover,
+.type-switcher select:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px var(--glow);
+}
+
+.theme-switcher select:focus,
+.type-switcher select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 15px var(--glow);
 }
 
 /* Button Container in Controls */
