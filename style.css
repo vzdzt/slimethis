@@ -60,6 +60,64 @@ i/* Reset default styles */
     }
 }
 
+/* Navigation Bar */
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-title {
+    font-family: 'Creepster', cursive;
+    font-size: 1.8rem;
+    color: var(--primary, #00ff00);
+    text-shadow:
+        0 0 8px var(--glow, #00ff00),
+        0 0 16px var(--glow, #00ff00);
+    margin: 0;
+    line-height: 1;
+}
+
+.nav-profile-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.nav-profile-link:hover {
+    transform: scale(1.05);
+}
+
+.nav-profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 8px var(--glow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-profile-pic:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 12px var(--glow);
+}
+
 /* Glass Morphism Theme (Enhanced) */
 /* Default styles without Paint Worklet */
 body[data-theme] {
@@ -473,7 +531,8 @@ body {
 /* Desktop Layout - Explicitly preserved */
 .container {
     text-align: center;
-    padding: 40px 20px;
+    padding: 40px 20px 40px 20px;
+    padding-top: 80px; /* Account for fixed nav bar */
     animation: container-bounce 3s ease-in-out infinite;
     position: relative;
     z-index: 10;
