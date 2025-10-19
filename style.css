@@ -584,7 +584,7 @@ body {
     font-size: 1rem;
 }
 
-/* Footer - Compact Inline */
+/* Footer - Profile Pic as Hyperlink */
 .footer {
     position: fixed;
     bottom: 20px;
@@ -592,57 +592,45 @@ body {
     z-index: 100;
 }
 
-.social-container {
+.profile-link {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    background: var(--glass);
-    border: 1px solid var(--border-color);
-    border-radius: 25px;
-    padding: 8px 16px;
-    backdrop-filter: blur(10px);
+    gap: 8px;
+    text-decoration: none;
     transition: transform 0.3s ease;
 }
 
-.social-container:hover {
-    transform: translateY(-2px);
+.profile-link:hover {
+    transform: translateY(-3px);
 }
 
 .profile-pic {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    border: 1px solid var(--primary);
-    box-shadow: 0 0 8px var(--glow);
-    transition: transform 0.3s ease;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 12px var(--glow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .profile-pic:hover {
-    transform: scale(1.1);
+    transform: scale(1.15);
+    box-shadow: 0 0 20px var(--glow);
 }
 
-.x-link {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+.follow-text {
+    font-size: 0.7rem;
     color: var(--text-color);
-    text-decoration: none;
-    font-size: 0.8rem;
-    transition: color 0.3s ease;
-}
-
-.x-link:hover {
-    color: var(--primary);
-}
-
-.x-link span {
+    text-align: center;
     font-weight: 500;
+    opacity: 0.8;
+    transition: opacity 0.3s ease, color 0.3s ease;
 }
 
-.x-logo {
-    width: 16px;
-    height: 16px;
-    fill: currentColor;
+.profile-link:hover .follow-text {
+    opacity: 1;
+    color: var(--primary);
 }
 
 /* Mobile adjustments */
@@ -653,8 +641,13 @@ body {
         text-align: center;
     }
 
-    .social-container {
-        justify-content: center;
+    .profile-link {
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .follow-text {
+        font-size: 0.8rem;
     }
 }
 
@@ -739,7 +732,7 @@ body {
 }
 
 .card img, .card video {
-    max-width: 95%;
+    max-width: 90%;
     border-radius: 10px;
     margin-top: 10px;
     object-fit: contain;
