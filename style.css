@@ -837,54 +837,7 @@ body {
     font-size: 1rem;
 }
 
-/* Footer - Profile Pic as Hyperlink */
-.footer {
-    position: fixed;
-    bottom: 5px;
-    right: 20px;
-    z-index: 100;
-}
 
-.profile-link {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: transform 0.3s ease;
-}
-
-.profile-link:hover {
-    transform: translateY(-3px);
-}
-
-.profile-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--primary);
-    box-shadow: 0 0 12px var(--glow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.profile-pic:hover {
-    transform: scale(1.15);
-    box-shadow: 0 0 20px var(--glow);
-}
-
-.follow-text {
-    font-size: 0.7rem;
-    color: var(--text-color);
-    text-align: center;
-    font-weight: 500;
-    opacity: 0.8;
-    transition: opacity 0.3s ease, color 0.3s ease;
-}
-
-.profile-link:hover .follow-text {
-    opacity: 1;
-    color: var(--primary);
-}
 
 /* Responsive Design */
 @media (max-width: 1024px) {
@@ -940,15 +893,6 @@ body {
         border-radius: 10px;
         box-sizing: border-box;
         text-align: center;
-    }
-
-    .footer {
-        order: 4;
-        position: static !important;
-        margin-top: 15px;
-        width: 100% !important;
-        text-align: center;
-        padding: 10px 0;
     }
 
     .slime-title {
@@ -1101,10 +1045,7 @@ body {
         margin: 0 !important;
     }
 
-    .footer {
-        padding: 15px !important;
-        margin: 0 !important;
-    }
+
 }
 
 @keyframes customizer-slide-in {
@@ -1279,53 +1220,7 @@ button#generate-btn:active {
     transform: scale(0.95);
 }
 
-/* Social Container Styles */
-.social-container {
-    margin-top: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-}
 
-.profile-pic {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border: 2px solid var(--primary);
-    box-shadow: 0 0 15px var(--glow);
-    transition: transform 0.3s ease;
-}
-
-.profile-pic:hover {
-    transform: scale(1.1);
-}
-
-.x-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 8px 16px;
-    background: var(--glass);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    color: var(--text-color);
-    text-decoration: none;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.x-link:hover {
-    background: var(--rgb-glow);
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px var(--glow);
-}
-
-.x-logo {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
-}
 
 /* New Animations */
 @keyframes glass-shimmer {
