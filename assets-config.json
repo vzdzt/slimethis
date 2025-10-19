@@ -10,8 +10,13 @@
       "requiresCaption": true,
       "defaultCaption": "Watch this!"
     },
+    "gifs": {
+      "path": "/Users/veazy/Library/Mobile Documents/com~apple~CloudDocs/dino/veazy new/slimethis:gifs/",
+      "requiresCaption": false,
+      "defaultCaption": ""
+    },
     "images": {
-      "path": "assets/images/",
+      "path": "/Users/veazy/Library/Mobile Documents/com~apple~CloudDocs/dino/veazy new/slimethis:images/",
       "requiresCaption": false,
       "defaultCaption": ""
     },
