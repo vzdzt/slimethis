@@ -1032,9 +1032,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Type selector auto-generate
-    document.getElementById('type-select').addEventListener('change', function() {
+    document.getElementById('type-select').addEventListener('change', async function() {
         // Auto-generate a banger when type changes
-        generateBanger();
+        await generateBanger();
+        copyCurrentBanger();
     });
 
     // Output card click handler
