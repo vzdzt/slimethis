@@ -853,8 +853,8 @@ body {
         display: flex !important;
         flex-direction: column !important;
         align-items: center;
-        gap: 15px;
-        padding: 15px 10px;
+        gap: 10px;
+        padding: 60px 10px 15px 10px;
         margin-bottom: 1rem;
         width: 100%;
     }
