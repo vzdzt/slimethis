@@ -417,12 +417,24 @@ body {
     font-family: 'Creepster', cursive;
     font-size: 3rem;
     color: var(--primary, #00ff00);
-    text-shadow: 
+    text-shadow:
         0 0 10px var(--glow, #00ff00),
         0 0 20px var(--glow, #00ff00),
         0 0 30px var(--glow, #00ff00);
-    margin-bottom: 40px;
+    margin-bottom: 10px;
     animation: slime-glow 2s ease-in-out infinite, neon-drip 3s ease-in-out infinite;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 400;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.4;
 }
 
 /* Main Layout - Two Column Grid */
