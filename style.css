@@ -906,6 +906,7 @@ body {
     }
 
     .color-customizer {
+        display: none !important;
         width: 100% !important;
         max-width: 100% !important;
         margin: 10px 0 !important;
