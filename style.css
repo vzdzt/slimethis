@@ -391,6 +391,73 @@ body[data-theme="neon-fluid"] .card {
                 0 0 calc(20px * var(--intensity-scale, 1)) var(--glow);
 }
 
+/* Aurora Wave Theme - Customizable flowing aurora effects */
+body[data-theme="aurora-wave"] {
+    --primary: var(--custom-primary, #00ff88);
+    --secondary: var(--custom-secondary, #0088ff);
+    --accent: var(--custom-accent, #ff0088);
+    --dark: #0a0f1a;
+    --glass: rgba(0, 255, 136, 0.15);
+    --glow: rgba(0, 255, 136, 0.8);
+    --rgb-glow: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+    --text-color: #e6fff0;
+    --background: linear-gradient(135deg,
+        hsl(from var(--primary) calc(h + 0) s calc(l - 0.2)) 0%,
+        hsl(from var(--secondary) calc(h + 120) s calc(l - 0.2)) 50%,
+        hsl(from var(--accent) calc(h + 240) s calc(l - 0.2)) 100%);
+    --card-background: rgba(0, 255, 136, 0.1);
+    --border-color: rgba(0, 255, 136, 0.4);
+    animation: aurora-flow 8s ease-in-out infinite;
+}
+
+body[data-theme="aurora-wave"]::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 136, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 0, 136, 0.3) 0%, transparent 50%);
+    animation: aurora-drift 15s ease-in-out infinite;
+    z-index: -1;
+    pointer-events: none;
+}
+
+body[data-theme="aurora-wave"] .card {
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 255, 136, 0.5);
+    box-shadow:
+        0 4px 30px rgba(0, 255, 136, 0.3),
+        inset 0 0 30px rgba(0, 255, 136, 0.1);
+    animation: aurora-pulse 4s ease-in-out infinite;
+    background: linear-gradient(135deg,
+        rgba(0, 255, 136, 0.1),
+        rgba(0, 136, 255, 0.1),
+        rgba(255, 0, 136, 0.1));
+    position: relative;
+    overflow: hidden;
+}
+
+body[data-theme="aurora-wave"] .card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg,
+        transparent,
+        rgba(0, 255, 136, 0.1),
+        rgba(0, 136, 255, 0.1),
+        rgba(255, 0, 136, 0.1),
+        transparent);
+    animation: aurora-sweep 6s linear infinite;
+    pointer-events: none;
+}
+
 /* General Styles */
 body {
     font-family: 'Arial', sans-serif;
@@ -1291,6 +1358,84 @@ button#generate-btn:active {
 @keyframes satin-shimmer {
     0%, 100% { box-shadow: 0 0 10px var(--glow); }
     50% { box-shadow: 0 0 20px var(--primary); }
+}
+
+@keyframes aurora-flow {
+    0%, 100% {
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg) brightness(1);
+    }
+    25% {
+        background-position: 100% 50%;
+        filter: hue-rotate(90deg) brightness(1.1);
+    }
+    50% {
+        background-position: 50% 100%;
+        filter: hue-rotate(180deg) brightness(1.2);
+    }
+    75% {
+        background-position: 0% 50%;
+        filter: hue-rotate(270deg) brightness(1.1);
+    }
+}
+
+@keyframes aurora-drift {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.6;
+    }
+    25% {
+        transform: translate(10px, -5px) scale(1.1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translate(-5px, 10px) scale(0.9);
+        opacity: 0.4;
+    }
+    75% {
+        transform: translate(5px, -10px) scale(1.05);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.6;
+    }
+}
+
+@keyframes aurora-pulse {
+    0%, 100% {
+        box-shadow:
+            0 4px 30px rgba(0, 255, 136, 0.3),
+            inset 0 0 30px rgba(0, 255, 136, 0.1);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow:
+            0 8px 40px rgba(0, 255, 136, 0.5),
+            inset 0 0 40px rgba(0, 255, 136, 0.2);
+        transform: scale(1.02);
+    }
+}
+
+@keyframes aurora-sweep {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.3;
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(180deg);
+        opacity: 0.6;
+    }
+    90% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+        opacity: 0;
+    }
 }
 
 @keyframes shard-glint {

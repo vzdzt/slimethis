@@ -2086,7 +2086,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Show/hide color customizer based on theme
         const colorCustomizer = document.querySelector('.color-customizer');
-        if (newTheme === 'neon-fluid') {
+        if (newTheme === 'neon-fluid' || newTheme === 'aurora-wave') {
             colorCustomizer.style.display = 'block';
         } else {
             colorCustomizer.style.display = 'none';
@@ -2104,7 +2104,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             'satin': 'satin-flow 6s ease-in-out infinite',
             'glass-morphism': 'glass-shimmer 8s ease-in-out infinite',
             'veazy': 'cyber-flow 5s ease-in-out infinite',
-            'neon-fluid': 'fluid-flow 4s ease-in-out infinite'
+            'neon-fluid': 'fluid-flow 4s ease-in-out infinite',
+            'aurora-wave': 'aurora-flow 8s ease-in-out infinite'
         };
 
         document.body.style.animation = animations[newTheme] || 'none';
@@ -2226,8 +2227,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         intensitySlider.value = customizations.intensity;
         intensityValueSpan.textContent = customizations.intensity + '%';
 
-        // Apply custom colors to CSS variables (only for neon-fluid theme for now)
-        if (currentTheme === 'neon-fluid') {
+        // Apply custom colors to CSS variables for customizable themes
+        if (currentTheme === 'neon-fluid' || currentTheme === 'aurora-wave') {
             // Use the actual selected colors directly for the gradient
             const gradient = `linear-gradient(135deg, ${customizations.primary} 0%, ${customizations.secondary} 50%, ${customizations.accent} 100%)`;
 
@@ -2241,7 +2242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Re-apply theme to trigger CSS recalculation
             requestAnimationFrame(() => {
-                document.body.setAttribute('data-theme', 'neon-fluid');
+                document.body.setAttribute('data-theme', currentTheme);
             });
         }
     }
