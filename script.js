@@ -239,9 +239,14 @@ function displayImageGallery() {
 }
 
 function selectImage(imageSrc) {
-    // Display the selected image in the output area
+    // Display the selected image in the output area with back button
     const output = document.getElementById('output');
-    output.innerHTML = `<img src="${imageSrc}" alt="Selected Meme" class="auto-resize" style="max-width: 100%; border-radius: 8px;">`;
+    output.innerHTML = `
+        <div style="position: relative; display: inline-block; width: 100%;">
+            <button onclick="displayImageGallery()" style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; z-index: 10;">← Back to Gallery</button>
+            <img src="${imageSrc}" alt="Selected Meme" class="auto-resize" style="max-width: 100%; border-radius: 8px; display: block; margin: 0 auto;">
+        </div>
+    `;
 
     // Copy the image URL to clipboard
     copyToClipboard(imageSrc);
