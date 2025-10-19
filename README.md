@@ -8,17 +8,20 @@ SlimeThis.com is a content generator that randomly displays different types of m
 
 - **Content Types**: Quotes, memes, videos, GIFs, double images, single images, and quad images
 - **Theme System**: Multiple visual themes with customizable colors
-- **Automatic Actions**: Clicking "slime!" generates content and automatically copies text to clipboard and saves media files
+- **Automatic Actions**: Clicking "slime!" saves and copies the current displayed content (text to clipboard, all media files downloaded)
+- **Gallery Browsing**: Browse through image collections with next/previous navigation
 - **Interactive UI**: Custom cursor effects, animations, and responsive design
 
 ## Functionality
 
 ### Core Features
-- **Random Generation**: Click "slime!" or select a content type to generate random bangers
+- **Content Saving**: Click "slime!" to save and copy the currently displayed content (preserves gallery position)
+- **Random Generation**: Select a content type to generate random bangers
+- **Gallery Browsing**: Browse image collections with next/previous navigation when expanded
 - **Type Filtering**: Choose specific content types (quotes, memes, videos, etc.) or view all
 - **Theme Selection**: 12+ themes including Ultra Glass, Galactic Nebula, Electric Storm, etc.
 - **Color Customization**: Adjust primary, secondary, and accent colors with intensity control
-- **Automatic Copy/Save**: Text is copied to clipboard, media files are automatically downloaded
+- **Automatic Copy/Save**: Text is copied to clipboard, all media files are automatically downloaded
 
 ### Technical Features
 - **Responsive Design**: Works on desktop and mobile devices
@@ -69,6 +72,22 @@ SlimeThis.com is a content generator that randomly displays different types of m
 - Clear browser cache
 - Check for JavaScript errors in console
 - Ensure CSS theme files are loading
+
+### Gallery Navigation Not Working
+**Issue**: Next/previous buttons don't appear or work in gallery view.
+**Symptoms**: Can't navigate through images when expanded.
+**Fix**:
+- Ensure you're viewing images from the gallery (not generated content)
+- Check that there are multiple images in the current page
+- Navigation is limited to the current page of 10 images
+
+### Double/Quad Images Not Saving All Files
+**Issue**: Only one image saves when clicking "slime!" on multi-image content.
+**Symptoms**: Multiple images displayed but only one downloads.
+**Fix**:
+- This should work automatically - all images are saved with numbered filenames
+- Check browser download permissions
+- Ensure all image files exist and are accessible
 
 ### Content Not Loading
 **Issue**: "No bangers available" or empty output.
