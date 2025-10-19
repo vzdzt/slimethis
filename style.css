@@ -779,27 +779,36 @@ body {
     }
 
     .main-layout {
-        display: contents; /* Remove grid, use container flexbox */
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 20px;
+    }
+
+    .controls-panel {
+        order: 1;
+        width: 100%;
+        max-width: 400px;
+        gap: 15px;
+        margin-bottom: 0;
+    }
+
+    .output-panel {
+        order: 2;
+        width: 100%;
+        max-width: 100%;
     }
 
     .slime-title {
-        order: 1;
         font-size: 2.5rem;
         margin-bottom: 10px;
         text-align: center;
     }
 
     .subtitle {
-        order: 2;
         font-size: 0.9rem;
         margin-bottom: 20px;
         text-align: center;
-        max-width: 100%;
-    }
-
-    .output-panel {
-        order: 3;
-        width: 100%;
         max-width: 100%;
     }
 
@@ -810,7 +819,6 @@ body {
     }
 
     .button-container {
-        order: 4;
         margin: 0 auto 30px;
         width: 100%;
         max-width: 300px;
@@ -821,14 +829,6 @@ body {
         padding: 15px;
         font-size: 1.1rem;
         margin: 0;
-    }
-
-    .controls-panel {
-        order: 5;
-        width: 100%;
-        max-width: 400px;
-        gap: 15px;
-        margin-bottom: 30px;
     }
 
     .theme-switcher,
@@ -845,7 +845,6 @@ body {
     }
 
     .color-customizer {
-        order: 6;
         width: 100%;
         max-width: 400px;
         margin-bottom: 20px;
@@ -854,11 +853,11 @@ body {
     }
 
     .footer {
-        order: 7;
         position: static;
-        margin-top: 10px;
+        margin-top: 20px;
         width: 100%;
         text-align: center;
+        order: 3;
     }
 
     .profile-link {
