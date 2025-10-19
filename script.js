@@ -456,7 +456,8 @@ function updateStarfieldColors(theme) {
         'inferno-core': { r: 1.0, g: 0.2, b: 0.0 },
         'cosmic-rift': { r: 0.7, g: 0.4, b: 1.0 },
         'retro-vaporwave': { r: 1.0, g: 0.41, b: 0.71 },
-        'veazy': { r: 0.0, g: 1.0, b: 0.0 }
+        'veazy': { r: 0.0, g: 1.0, b: 0.0 },
+        'neon-fluid': { r: 0.0, g: 1.0, b: 1.0 }
     };
     const baseColor = themeColors[theme] || { r: 0.3, g: 0.3, b: 0.5 };
     for (let i = 0; i < colorArray.length; i += 3) {
@@ -566,7 +567,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStarfieldColors(newTheme);
 
         const animations = {
-            'seafoam-crystal': 'seafoam-shimmer 6s ease-in-out infinite',
             'galactic-nebula': 'nebula-swirl 15s ease-in-out infinite',
             'electric-storm': 'storm-flash 5s infinite',
             'void-pulse': 'void-pulse 3s infinite',
@@ -577,7 +577,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'ultra-glass': 'glass-shimmer 8s ease-in-out infinite',
             'satin': 'satin-flow 6s ease-in-out infinite',
             'glass-morphism': 'glass-shimmer 8s ease-in-out infinite',
-            'veazy': 'cyber-flow 5s ease-in-out infinite'
+            'veazy': 'cyber-flow 5s ease-in-out infinite',
+            'neon-fluid': 'fluid-flow 4s ease-in-out infinite'
         };
 
         document.body.style.animation = animations[newTheme] || 'none';
