@@ -124,6 +124,118 @@ function copyCurrentBanger() {
 
 // Global bangers data
 let allBangers = [];
+let allImages = []; // Separate array for images only
+let currentPage = 1;
+const IMAGES_PER_PAGE = 20;
+
+// Pagination functions
+function createPaginationControls() {
+    const paginationContainer = document.createElement('div');
+    paginationContainer.id = 'pagination-controls';
+    paginationContainer.style.cssText = `
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+    `;
+
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = '← Previous';
+    prevBtn.onclick = () => changePage(currentPage - 1);
+    prevBtn.style.cssText = `
+        padding: 8px 16px;
+        background: var(--glass);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    `;
+
+    const pageInfo = document.createElement('span');
+    pageInfo.id = 'page-info';
+    pageInfo.style.cssText = `
+        color: var(--text-color);
+        font-weight: 500;
+        min-width: 100px;
+        text-align: center;
+    `;
+
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = 'Next →';
+    nextBtn.onclick = () => changePage(currentPage + 1);
+    nextBtn.style.cssText = prevBtn.style.cssText;
+
+    paginationContainer.appendChild(prevBtn);
+    paginationContainer.appendChild(pageInfo);
+    paginationContainer.appendChild(nextBtn);
+
+    return paginationContainer;
+}
+
+function changePage(page) {
+    const totalPages = Math.ceil(allImages.length / IMAGES_PER_PAGE);
+    if (page < 1 || page > totalPages) return;
+
+    currentPage = page;
+    displayImageGallery();
+    updatePaginationControls();
+}
+
+function updatePaginationControls() {
+    const totalPages = Math.ceil(allImages.length / IMAGES_PER_PAGE);
+    const pageInfo = document.getElementById('page-info');
+    if (pageInfo) {
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+
+    // Update button states
+    const prevBtn = document.querySelector('#pagination-controls button:first-child');
+    const nextBtn = document.querySelector('#pagination-controls button:last-child');
+
+    if (prevBtn) prevBtn.disabled = currentPage === 1;
+    if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+}
+
+function displayImageGallery() {
+    const output = document.getElementById('output');
+    const start = (currentPage - 1) * IMAGES_PER_PAGE;
+    const end = start + IMAGES_PER_PAGE;
+    const pageImages = allImages.slice(start, end);
+
+    let galleryHTML = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 10px;">';
+
+    pageImages.forEach(image => {
+        galleryHTML += `
+            <div style="position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; background: var(--glass); border: 1px solid var(--border-color); transition: transform 0.3s ease;" onclick="selectImage('${image}')">
+                <img src="${image}" alt="Meme" style="width: 100%; height: 120px; object-fit: cover; display: block;" loading="lazy">
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: white; padding: 4px; font-size: 10px; text-align: center; opacity: 0; transition: opacity 0.3s ease;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                    Click to select
+                </div>
+            </div>
+        `;
+    });
+
+    galleryHTML += '</div>';
+
+    // Add pagination controls if they don't exist
+    if (!document.getElementById('pagination-controls')) {
+        const paginationControls = createPaginationControls();
+        output.parentNode.insertBefore(paginationControls, output.nextSibling);
+    }
+
+    output.innerHTML = galleryHTML;
+    updatePaginationControls();
+}
+
+function selectImage(imageSrc) {
+    const output = document.getElementById('output');
+    output.innerHTML = `<img src="${imageSrc}" alt="Selected Meme" class="auto-resize" style="max-width: 100%; border-radius: 8px;">`;
+    copyCurrentBanger();
+    showNotification('Image selected and copied!', 'success');
+}
 
 // Load content on page load
 async function loadContent() {
@@ -239,6 +351,7 @@ async function loadContent() {
         ];
 
         // Add known images (now in main directory)
+        allImages = knownImageFiles; // Store images separately for gallery
         allBangers.push(...knownImageFiles.map(filename => ({
             type: 'image',
             image: filename
@@ -706,9 +819,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Type selector auto-generate
     document.getElementById('type-select').addEventListener('change', async function() {
-        // Auto-generate a banger when type changes
-        await generateBanger();
-        copyCurrentBanger();
+        const selectedType = this.value;
+
+        if (selectedType === 'gallery') {
+            // Show image gallery
+            displayImageGallery();
+        } else {
+            // Auto-generate a banger when type changes
+            await generateBanger();
+            copyCurrentBanger();
+        }
     });
 
     // Output card click handler
