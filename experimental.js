@@ -181,21 +181,30 @@ function initGUI() {
 }
 
 function initTweakpane() {
-    // Initialize Tweakpane (v3 API) - try Pane constructor
+    // Debug: Check what's available globally
+    console.log('Available globals:', Object.keys(window).filter(key => key.toLowerCase().includes('tweak') || key.toLowerCase().includes('pane')));
+
+    // Initialize Tweakpane - try different approaches
     try {
-        pane = new Pane({
-            title: 'Tweakpane Controls'
-        });
-    } catch (e) {
-        console.error('Pane constructor failed, trying Tweakpane.Pane');
-        try {
+        // Try direct Pane constructor
+        if (typeof Pane !== 'undefined') {
+            pane = new Pane({
+                title: 'Tweakpane Controls'
+            });
+            console.log('✅ Pane constructor worked');
+        } else if (typeof Tweakpane !== 'undefined') {
+            // Try Tweakpane.Pane
             pane = new Tweakpane.Pane({
                 title: 'Tweakpane Controls'
             });
-        } catch (e2) {
-            console.error('Tweakpane.Pane also failed:', e2);
+            console.log('✅ Tweakpane.Pane constructor worked');
+        } else {
+            console.error('❌ Neither Pane nor Tweakpane global found');
             return;
         }
+    } catch (e) {
+        console.error('❌ Tweakpane initialization failed:', e);
+        return;
     }
 
     // Move the pane to a better position (bottom right)
