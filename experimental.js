@@ -181,33 +181,23 @@ function initGUI() {
 }
 
 function initTweakpane() {
-    // Initialize Tweakpane
-    pane = new Tweakpane.Pane({
-        title: 'Tweakpane Controls',
-        expanded: true  // Make it visible by default
+    // Initialize Tweakpane (v3 API)
+    pane = new Tweakpane({
+        title: 'Tweakpane Controls'
     });
 
     // Move the pane to a better position (bottom right)
-    pane.element.style.position = 'fixed';
-    pane.element.style.bottom = '20px';
-    pane.element.style.right = '20px';
-    pane.element.style.zIndex = '10000'; // Higher than lil-gui
-    pane.element.style.background = 'rgba(0, 0, 0, 0.8)'; // Make it more visible
-    pane.element.style.border = '1px solid rgba(255, 255, 255, 0.3)';
+    pane.domElement.style.position = 'fixed';
+    pane.domElement.style.bottom = '20px';
+    pane.domElement.style.right = '20px';
+    pane.domElement.style.zIndex = '10000'; // Higher than lil-gui
+    pane.domElement.style.background = 'rgba(0, 0, 0, 0.8)'; // Make it more visible
+    pane.domElement.style.border = '1px solid rgba(255, 255, 255, 0.3)';
 
     // Starfield parameters
-    const starFolder = pane.addFolder({ title: 'Stars' });
-    starFolder.addBinding(starfieldParams, 'starCount', {
-        min: 1000,
-        max: 50000,
-        step: 1000
-    }).on('change', createStars);
-
-    starFolder.addBinding(starfieldParams, 'starSize', {
-        min: 0.5,
-        max: 5,
-        step: 0.1
-    }).on('change', () => {
+    const starFolder = pane.addFolder('Stars');
+    starFolder.add(starfieldParams, 'starCount', 1000, 50000, 1000).on('change', createStars);
+    starFolder.add(starfieldParams, 'starSize', 0.5, 5, 0.1).on('change', () => {
         if (starField && starField.material) {
             starField.material.size = starfieldParams.starSize;
             starField.material.needsUpdate = true;
@@ -215,54 +205,21 @@ function initTweakpane() {
     });
 
     // Animation parameters
-    const animFolder = pane.addFolder({ title: 'Animation' });
-    animFolder.addBinding(starfieldParams, 'animationSpeed', {
-        min: 0,
-        max: 0.002,
-        step: 0.0001
-    });
-
-    animFolder.addBinding(starfieldParams, 'mouseInfluence', {
-        min: 0,
-        max: 0.01,
-        step: 0.0001
-    });
-
-    animFolder.addBinding(starfieldParams, 'scaleAmplitude', {
-        min: 0,
-        max: 0.2,
-        step: 0.01
-    });
-
-    animFolder.addBinding(starfieldParams, 'baseScale', {
-        min: 0.5,
-        max: 2,
-        step: 0.1
-    });
+    const animFolder = pane.addFolder('Animation');
+    animFolder.add(starfieldParams, 'animationSpeed', 0, 0.002, 0.0001);
+    animFolder.add(starfieldParams, 'mouseInfluence', 0, 0.01, 0.0001);
+    animFolder.add(starfieldParams, 'scaleAmplitude', 0, 0.2, 0.01);
+    animFolder.add(starfieldParams, 'baseScale', 0.5, 2, 0.1);
 
     // Color controls
-    const colorFolder = pane.addFolder({ title: 'Colors' });
-    colorFolder.addBinding(starfieldParams.color, 'r', {
-        min: 0,
-        max: 1,
-        step: 0.01
-    }).on('change', updateStarColors);
-
-    colorFolder.addBinding(starfieldParams.color, 'g', {
-        min: 0,
-        max: 1,
-        step: 0.01
-    }).on('change', updateStarColors);
-
-    colorFolder.addBinding(starfieldParams.color, 'b', {
-        min: 0,
-        max: 1,
-        step: 0.01
-    }).on('change', updateStarColors);
+    const colorFolder = pane.addFolder('Colors');
+    colorFolder.add(starfieldParams.color, 'r', 0, 1, 0.01).on('change', updateStarColors);
+    colorFolder.add(starfieldParams.color, 'g', 0, 1, 0.01).on('change', updateStarColors);
+    colorFolder.add(starfieldParams.color, 'b', 0, 1, 0.01).on('change', updateStarColors);
 
     // Utility buttons
-    pane.addButton({ title: 'Regenerate Stars' }).on('click', createStars);
-    pane.addButton({ title: 'Reset Defaults' }).on('click', resetStarfieldDefaults);
+    pane.addButton('Regenerate Stars').on('click', createStars);
+    pane.addButton('Reset Defaults').on('click', resetStarfieldDefaults);
 
     console.log('✅ Tweakpane controls initialized');
 }
