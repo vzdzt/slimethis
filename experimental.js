@@ -171,64 +171,83 @@ function createStars() {
 }
 
 function createShaderMaterial() {
-    const vertexShader = `
-        attribute float size;
-        attribute float phase;
-        varying vec3 vColor;
-        varying float vTwinkle;
-        uniform float uTime;
-        uniform float uTwinkleSpeed;
-        uniform float uTwinkleIntensity;
-        uniform float uStarSize;
+    try {
+        const vertexShader = `
+            attribute float size;
+            attribute float phase;
+            varying vec3 vColor;
+            varying float vTwinkle;
+            uniform float uTime;
+            uniform float uTwinkleSpeed;
+            uniform float uTwinkleIntensity;
+            uniform float uStarSize;
 
-        void main() {
-            vColor = color;
+            void main() {
+                vColor = color;
 
-            // Twinkle effect
-            float twinkle = sin(uTime * uTwinkleSpeed + phase) * 0.5 + 0.5;
-            vTwinkle = mix(1.0, twinkle * uTwinkleIntensity + (1.0 - uTwinkleIntensity), uTwinkleIntensity);
+                // Twinkle effect
+                float twinkle = sin(uTime * uTwinkleSpeed + phase) * 0.5 + 0.5;
+                vTwinkle = mix(1.0, twinkle * uTwinkleIntensity + (1.0 - uTwinkleIntensity), uTwinkleIntensity);
 
-            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-            gl_PointSize = uStarSize * size * vTwinkle * (300.0 / -mvPosition.z);
-            gl_Position = projectionMatrix * mvPosition;
-        }
-    `;
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                gl_PointSize = uStarSize * size * vTwinkle * (300.0 / -mvPosition.z);
+                gl_Position = projectionMatrix * mvPosition;
+            }
+        `;
 
-    const fragmentShader = `
-        varying vec3 vColor;
-        varying float vTwinkle;
+        const fragmentShader = `
+            varying vec3 vColor;
+            varying float vTwinkle;
 
-        void main() {
-            // Create circular star shape
-            vec2 center = gl_PointCoord - vec2(0.5);
-            float dist = length(center);
+            void main() {
+                // Create circular star shape
+                vec2 center = gl_PointCoord - vec2(0.5);
+                float dist = length(center);
 
-            if (dist > 0.5) discard;
+                if (dist > 0.5) discard;
 
-            // Soft circular falloff
-            float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
+                // Soft circular falloff
+                float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
 
-            // Apply twinkle effect
-            vec3 finalColor = vColor * vTwinkle;
+                // Apply twinkle effect
+                vec3 finalColor = vColor * vTwinkle;
 
-            gl_FragColor = vec4(finalColor, alpha * 0.8);
-        }
-    `;
+                gl_FragColor = vec4(finalColor, alpha * 0.8);
+            }
+        `;
 
-    return new THREE.ShaderMaterial({
-        uniforms: {
-            uTime: { value: 0 },
-            uTwinkleSpeed: { value: starfieldParams.twinkleSpeed },
-            uTwinkleIntensity: { value: starfieldParams.twinkleIntensity },
-            uStarSize: { value: starfieldParams.starSize }
-        },
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader,
-        transparent: true,
-        vertexColors: true,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false
-    });
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uTwinkleSpeed: { value: starfieldParams.twinkleSpeed },
+                uTwinkleIntensity: { value: starfieldParams.twinkleIntensity },
+                uStarSize: { value: starfieldParams.starSize }
+            },
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            transparent: true,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        console.log('✅ Shader material created successfully');
+        return material;
+
+    } catch (error) {
+        console.error('❌ Shader creation failed:', error);
+        // Fallback to basic material
+        return new THREE.PointsMaterial({
+            size: starfieldParams.starSize,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.6,
+            sizeAttenuation: true,
+            fog: false,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+    }
 }
 
 function initGUI() {
