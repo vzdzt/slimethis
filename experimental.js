@@ -231,6 +231,14 @@ function createCollapsibleControlPanel() {
                 <label style="color: var(--text-color, #ffffff); font-size: 12px;">Mouse Influence: <span id="mouse-influence-value">0.001</span></label>
                 <input type="range" id="mouse-influence" min="0" max="0.01" step="0.0001" value="0.001" style="width: 100%; accent-color: var(--primary, #00ff00);">
             </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Scale Amplitude: <span id="scale-amplitude-value">0.05</span></label>
+                <input type="range" id="scale-amplitude" min="0" max="0.2" step="0.01" value="0.05" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Base Scale: <span id="base-scale-value">1.0</span></label>
+                <input type="range" id="base-scale" min="0.5" max="2" step="0.1" value="1.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
         </div>
 
         <div class="control-section">
@@ -349,6 +357,20 @@ function createCollapsibleControlPanel() {
             mouseInfluenceValue.textContent = e.target.value;
         });
 
+        const scaleAmplitudeInput = document.getElementById('scale-amplitude');
+        const scaleAmplitudeValue = document.getElementById('scale-amplitude-value');
+        scaleAmplitudeInput.addEventListener('input', (e) => {
+            starfieldParams.scaleAmplitude = parseFloat(e.target.value);
+            scaleAmplitudeValue.textContent = e.target.value;
+        });
+
+        const baseScaleInput = document.getElementById('base-scale');
+        const baseScaleValue = document.getElementById('base-scale-value');
+        baseScaleInput.addEventListener('input', (e) => {
+            starfieldParams.baseScale = parseFloat(e.target.value);
+            baseScaleValue.textContent = e.target.value;
+        });
+
         // Color controls
         const colorRInput = document.getElementById('color-r');
         const colorRValue = document.getElementById('color-r-value');
@@ -441,6 +463,10 @@ function resetStarfieldDefaults() {
         document.getElementById('anim-speed-value').textContent = starfieldParams.animationSpeed;
         document.getElementById('mouse-influence').value = starfieldParams.mouseInfluence;
         document.getElementById('mouse-influence-value').textContent = starfieldParams.mouseInfluence;
+        document.getElementById('scale-amplitude').value = starfieldParams.scaleAmplitude;
+        document.getElementById('scale-amplitude-value').textContent = starfieldParams.scaleAmplitude;
+        document.getElementById('base-scale').value = starfieldParams.baseScale;
+        document.getElementById('base-scale-value').textContent = starfieldParams.baseScale;
         document.getElementById('color-r').value = starfieldParams.color.r;
         document.getElementById('color-r-value').textContent = starfieldParams.color.r;
         document.getElementById('color-g').value = starfieldParams.color.g;
