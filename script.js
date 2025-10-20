@@ -135,6 +135,17 @@ let allImages = []; // Separate array for images only
 let currentPage = 1;
 const IMAGES_PER_PAGE = 10;
 
+// Track sequential position for each banger type
+let bangerIndices = {
+    'quote': 0,
+    'meme': 0,
+    'video': 0,
+    'gif': 0,
+    'double-image': 0,
+    'quad-image': 0,
+    'image': 0
+};
+
 // Pagination functions
 function createPaginationControls() {
     const paginationContainer = document.createElement('div');
