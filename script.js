@@ -146,6 +146,157 @@ let bangerIndices = {
     'image': 0
 };
 
+// Navigation arrows for sequential bangers
+function createNavigationArrows() {
+    // Previous arrow
+    const prevArrow = document.createElement('button');
+    prevArrow.id = 'prev-banger';
+    prevArrow.innerHTML = '⬅️';
+    prevArrow.title = 'Previous item in sequence';
+    prevArrow.style.cssText = `
+        position: fixed;
+        left: 20px;
+        bottom: 100px; /* Position above slime button */
+        width: 50px;
+        height: 50px;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary, #00ff00);
+        border-radius: 50%;
+        color: var(--primary, #00ff00);
+        font-size: 18px;
+        cursor: pointer;
+        display: none; /* Hidden by default, shown for specific types */
+        box-shadow: 0 0 10px var(--glow, rgba(0, 255, 0, 0.3));
+        transition: all 0.3s ease;
+        z-index: 9999;
+    `;
+
+    // Next arrow
+    const nextArrow = document.createElement('button');
+    nextArrow.id = 'next-banger';
+    nextArrow.innerHTML = '➡️';
+    nextArrow.title = 'Next item in sequence';
+    nextArrow.style.cssText = prevArrow.style.cssText;
+    nextArrow.style.left = '90px'; // Position to the right of previous button
+
+    // Add hover effects
+    [prevArrow, nextArrow].forEach(arrow => {
+        arrow.addEventListener('mouseenter', () => {
+            arrow.style.transform = 'scale(1.1)';
+            arrow.style.boxShadow = `0 0 15px ${arrow === prevArrow ? 'rgba(255, 100, 100, 0.5)' : 'var(--glow, rgba(0, 255, 0, 0.5))'}`;
+            arrow.style.zIndex = '10000';
+        });
+        arrow.addEventListener('mouseleave', () => {
+            arrow.style.transform = 'scale(1)';
+            arrow.style.boxShadow = `0 0 10px ${arrow === prevArrow ? 'rgba(255, 100, 100, 0.3)' : 'var(--glow, rgba(0, 255, 0, 0.3))'}`;
+            arrow.style.zIndex = '9999';
+        });
+    });
+
+    // Previous button functionality
+    prevArrow.addEventListener('click', () => {
+        const currentType = document.getElementById('type-select').value;
+        if (currentType !== 'all' && bangerIndices[currentType] > 0) {
+            bangerIndices[currentType]--;
+            navigateToBanger(currentType, bangerIndices[currentType]);
+        }
+    });
+
+    // Next button functionality
+    nextArrow.addEventListener('click', () => {
+        const currentType = document.getElementById('type-select').value;
+        if (currentType !== 'all') {
+            bangerIndices[currentType]++;
+            navigateToBanger(currentType, bangerIndices[currentType]);
+        }
+    });
+
+    document.body.appendChild(prevArrow);
+    document.body.appendChild(nextArrow);
+
+    // Show/hide arrows based on type selection
+    const typeSelector = document.getElementById('type-select');
+    function updateArrowVisibility() {
+        const currentType = typeSelector.value;
+        const display = currentType === 'all' ? 'none' : 'flex';
+        prevArrow.style.display = display;
+        nextArrow.style.display = display;
+    }
+
+    typeSelector.addEventListener('change', updateArrowVisibility);
+
+    // Set initial visibility
+    updateArrowVisibility();
+
+    return { prevArrow, nextArrow };
+}
+
+// Navigate to specific banger in sequence
+async function navigateToBanger(type, index) {
+    const filteredBangers = allBangers.filter(banger => banger.type === type);
+    if (filteredBangers.length === 0) return;
+
+    const bangerIndex = index % filteredBangers.length;
+    if (bangerIndex >= 0 && bangerIndex < filteredBangers.length) {
+        const selectedBanger = filteredBangers[bangerIndex];
+
+        const output = document.getElementById('output');
+        output.style.opacity = '0';
+        gsap.to(output, {
+            opacity: 0,
+            y: 20,
+            duration: 0.3,
+            onComplete: () => {
+                output.innerHTML = '';
+                if (selectedBanger.type === 'quote') {
+                    output.innerHTML = `<p>${selectedBanger.content}</p>`;
+                } else if (selectedBanger.type === 'meme') {
+                    output.innerHTML = `
+                        <img src="${selectedBanger.image}" alt="Meme" class="auto-resize">
+                        <p>${selectedBanger.caption}</p>
+                    `;
+                } else if (selectedBanger.type === 'video') {
+                    output.innerHTML = `
+                        <video src="${selectedBanger.src}" controls autoplay loop muted class="auto-resize"></video>
+                        <p>${selectedBanger.caption}</p>
+                    `;
+                } else if (selectedBanger.type === 'gif') {
+                    output.innerHTML = `
+                        <img src="${selectedBanger.image}" alt="GIF" class="auto-resize">
+                    `;
+                } else if (selectedBanger.type === 'double-image') {
+                    output.innerHTML = `
+                        <div class="double-image-container">
+                            <img src="${selectedBanger.leftImage}" alt="Left Image" class="auto-resize">
+                            <img src="${selectedBanger.rightImage}" alt="Right Image" class="auto-resize">
+                        </div>
+                        <p>${selectedBanger.caption}</p>
+                    `;
+                } else if (selectedBanger.type === 'image') {
+                    output.innerHTML = `
+                        <img src="${selectedBanger.image}" alt="Image" class="auto-resize">
+                    `;
+                } else if (selectedBanger.type === 'quad-image') {
+                    output.innerHTML = `
+                        <div class="quad-image-container">
+                            <img src="${selectedBanger.topLeftImage}" alt="Top Left Image" class="auto-resize">
+                            <img src="${selectedBanger.topRightImage}" alt="Top Right Image" class="auto-resize">
+                            <img src="${selectedBanger.bottomLeftImage}" alt="Bottom Left Image" class="auto-resize">
+                            <img src="${selectedBanger.bottomRightImage}" alt="Bottom Right Image" class="auto-resize">
+                        </div>
+                        <p>${selectedBanger.caption}</p>
+                    `;
+                }
+                gsap.fromTo(output,
+                    { opacity: 0, y: -20 },
+                    { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+                );
+            }
+        });
+    }
+}
+
 // Pagination functions
 function createPaginationControls() {
     const paginationContainer = document.createElement('div');
@@ -2631,6 +2782,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialize Color Panel Controls
     createColorCustomizerPanel();
+
+    // Initialize Navigation Arrows for Sequential Content
+    createNavigationArrows();
 
     // GSAP Animations
     if (typeof gsap !== 'undefined') {
