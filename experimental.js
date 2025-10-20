@@ -586,19 +586,19 @@ function createCollapsibleControlPanel() {
         });
     }, 100);
 
-    // Create shader effects panel
+    // Create shader effects panel - positioned on left edge
     const shaderPanel = document.createElement('div');
     shaderPanel.id = 'shader-panel';
     shaderPanel.style.cssText = `
         position: fixed;
         top: 50%;
-        right: -50px; /* Start with tab visible */
+        left: -50px; /* Start with tab visible on left edge */
         transform: translateY(-50%);
         z-index: 1000;
         transition: all 0.3s ease;
     `;
 
-    // Create shader content panel
+    // Create shader content panel - opens to the right
     const shaderContent = document.createElement('div');
     shaderContent.id = 'shader-content';
     shaderContent.style.cssText = `
@@ -606,13 +606,13 @@ function createCollapsibleControlPanel() {
         background: rgba(0, 0, 0, 0.95);
         backdrop-filter: blur(20px);
         border: 2px solid var(--primary, #00ff00);
-        border-right: none;
-        border-radius: 12px 0 0 12px;
+        border-left: none;
+        border-radius: 0 12px 12px 0;
         padding: 15px;
-        margin-right: 50px;
+        margin-left: 50px;
         opacity: 0;
         visibility: hidden;
-        transform: translateX(20px);
+        transform: translateX(-20px);
         transition: all 0.3s ease;
         max-height: 60vh;
         overflow-y: auto;
