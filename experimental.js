@@ -143,130 +143,270 @@ function createStars() {
 }
 
 function initGUI() {
-    // Initialize lil-gui with custom styling and better positioning
-    gui = new lil.GUI({
-        title: 'Starfield Controls',
-        width: 280
+    // Create custom collapsible control panel
+    createCollapsibleControlPanel();
+    console.log('✅ Custom collapsible control panel initialized');
+}
+
+function createCollapsibleControlPanel() {
+    // Create the main container
+    const panel = document.createElement('div');
+    panel.id = 'control-panel';
+    panel.style.cssText = `
+        position: fixed;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        z-index: 1000;
+        transition: all 0.3s ease;
+    `;
+
+    // Create the tab (visible part)
+    const tab = document.createElement('div');
+    tab.id = 'control-tab';
+    tab.innerHTML = '⚙️';
+    tab.style.cssText = `
+        width: 50px;
+        height: 50px;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary, #00ff00);
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        color: var(--primary, #00ff00);
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: -5px 0 15px var(--glow, rgba(0, 255, 0, 0.3));
+        transition: all 0.3s ease;
+    `;
+
+    // Create the content panel (hidden by default)
+    const content = document.createElement('div');
+    content.id = 'control-content';
+    content.style.cssText = `
+        width: 300px;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary, #00ff00);
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        padding: 20px;
+        margin-right: 50px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(20px);
+        transition: all 0.3s ease;
+        max-height: 80vh;
+        overflow-y: auto;
+    `;
+
+    // Create sections
+    content.innerHTML = `
+        <h3 style="color: var(--primary, #00ff00); margin: 0 0 15px 0; text-shadow: 0 0 8px var(--glow, #00ff00);">
+            🌟 Starfield Controls
+        </h3>
+
+        <div class="control-section">
+            <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">🌟 Stars</h4>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Count: <span id="star-count-value">15000</span></label>
+                <input type="range" id="star-count" min="1000" max="50000" step="1000" value="15000" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Size: <span id="star-size-value">1.5</span></label>
+                <input type="range" id="star-size" min="0.5" max="5" step="0.1" value="1.5" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+        </div>
+
+        <div class="control-section">
+            <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">⚡ Animation</h4>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Speed: <span id="anim-speed-value">0.0002</span></label>
+                <input type="range" id="anim-speed" min="0" max="0.002" step="0.0001" value="0.0002" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Mouse Influence: <span id="mouse-influence-value">0.001</span></label>
+                <input type="range" id="mouse-influence" min="0" max="0.01" step="0.0001" value="0.001" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+        </div>
+
+        <div class="control-section">
+            <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">🎨 Colors</h4>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Red: <span id="color-r-value">0.3</span></label>
+                <input type="range" id="color-r" min="0" max="1" step="0.01" value="0.3" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Green: <span id="color-g-value">0.3</span></label>
+                <input type="range" id="color-g" min="0" max="1" step="0.01" value="0.3" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Blue: <span id="color-b-value">0.5</span></label>
+                <input type="range" id="color-b" min="0" max="1" step="0.01" value="0.5" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+        </div>
+
+        <div class="control-section" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; margin-top: 15px;">
+            <button id="regenerate-btn" style="
+                width: 100%;
+                padding: 8px;
+                background: rgba(0, 255, 0, 0.1);
+                border: 1px solid var(--primary, #00ff00);
+                border-radius: 6px;
+                color: var(--primary, #00ff00);
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin-bottom: 8px;
+            ">🔄 Regenerate Stars</button>
+            <button id="reset-btn" style="
+                width: 100%;
+                padding: 8px;
+                background: rgba(255, 100, 100, 0.1);
+                border: 1px solid #ff6464;
+                border-radius: 6px;
+                color: #ff6464;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            ">⚙️ Reset Defaults</button>
+        </div>
+    `;
+
+    // Add hover effects to tab
+    tab.addEventListener('mouseenter', () => {
+        tab.style.background = 'rgba(0, 255, 0, 0.1)';
+        tab.style.boxShadow = '-8px 0 20px var(--glow, rgba(0, 255, 0, 0.4))';
     });
 
-    // Position in bottom-right corner to avoid navbar
-    gui.domElement.style.position = 'fixed';
-    gui.domElement.style.bottom = '20px';
-    gui.domElement.style.right = '20px';
-    gui.domElement.style.zIndex = '1000';
-
-    // Apply custom SlimeThis styling
-    styleLilGUI();
-
-    // Starfield parameters
-    const starFolder = gui.addFolder('🌟 Stars');
-    starFolder.add(starfieldParams, 'starCount', 1000, 50000, 1000).onChange(createStars);
-    starFolder.add(starfieldParams, 'starSize', 0.5, 5, 0.1).onChange(() => {
-        if (starField && starField.material) {
-            starField.material.size = starfieldParams.starSize;
-            starField.material.needsUpdate = true;
+    tab.addEventListener('mouseleave', () => {
+        if (!panel.classList.contains('open')) {
+            tab.style.background = 'rgba(0, 0, 0, 0.9)';
+            tab.style.boxShadow = '-5px 0 15px var(--glow, rgba(0, 255, 0, 0.3))';
         }
     });
 
-    // Animation parameters
-    const animFolder = gui.addFolder('⚡ Animation');
-    animFolder.add(starfieldParams, 'animationSpeed', 0, 0.002, 0.0001);
-    animFolder.add(starfieldParams, 'mouseInfluence', 0, 0.01, 0.0001);
-    animFolder.add(starfieldParams, 'scaleAmplitude', 0, 0.2, 0.01);
-    animFolder.add(starfieldParams, 'baseScale', 0.5, 2, 0.1);
+    // Toggle panel on tab click
+    let isOpen = false;
+    tab.addEventListener('click', () => {
+        isOpen = !isOpen;
+        if (isOpen) {
+            panel.classList.add('open');
+            content.style.opacity = '1';
+            content.style.visibility = 'visible';
+            content.style.transform = 'translateX(0)';
+            tab.innerHTML = '✕';
+            tab.style.background = 'rgba(0, 255, 0, 0.2)';
+        } else {
+            panel.classList.remove('open');
+            content.style.opacity = '0';
+            content.style.visibility = 'hidden';
+            content.style.transform = 'translateX(20px)';
+            tab.innerHTML = '⚙️';
+            tab.style.background = 'rgba(0, 0, 0, 0.9)';
+        }
+    });
 
-    // Color controls
-    const colorFolder = gui.addFolder('🎨 Colors');
-    colorFolder.add(starfieldParams.color, 'r', 0, 1, 0.01).onChange(updateStarColors);
-    colorFolder.add(starfieldParams.color, 'g', 0, 1, 0.01).onChange(updateStarColors);
-    colorFolder.add(starfieldParams.color, 'b', 0, 1, 0.01).onChange(updateStarColors);
-
-    // Utility functions
-    gui.add({ regenerateStars: createStars }, 'regenerateStars').name('🔄 Regenerate Stars');
-    gui.add({ resetToDefaults: resetStarfieldDefaults }, 'resetToDefaults').name('⚙️ Reset Defaults');
-
-    console.log('✅ lil-gui controls initialized with SlimeThis styling');
-}
-
-function styleLilGUI() {
-    // Wait for GUI to be created, then apply custom styles
+    // Add control event listeners
     setTimeout(() => {
-        if (!gui || !gui.domElement) return;
+        // Star controls
+        const starCountInput = document.getElementById('star-count');
+        const starCountValue = document.getElementById('star-count-value');
+        starCountInput.addEventListener('input', (e) => {
+            starfieldParams.starCount = parseInt(e.target.value);
+            starCountValue.textContent = e.target.value;
+            createStars();
+        });
 
-        const guiElement = gui.domElement;
-
-        // Apply SlimeThis cyber theme
-        guiElement.style.background = 'rgba(0, 0, 0, 0.9)';
-        guiElement.style.backdropFilter = 'blur(20px)';
-        guiElement.style.border = '2px solid var(--primary, #00ff00)';
-        guiElement.style.borderRadius = '12px';
-        guiElement.style.boxShadow = '0 0 20px var(--glow, rgba(0, 255, 0, 0.3))';
-        guiElement.style.fontFamily = 'Arial, sans-serif';
-
-        // Style the title
-        const title = guiElement.querySelector('.title');
-        if (title) {
-            title.style.color = 'var(--primary, #00ff00)';
-            title.style.textShadow = '0 0 8px var(--glow, #00ff00)';
-            title.style.fontWeight = 'bold';
-            title.style.fontSize = '14px';
-        }
-
-        // Style folders
-        const folders = guiElement.querySelectorAll('.folder');
-        folders.forEach(folder => {
-            const title = folder.querySelector('.title');
-            if (title) {
-                title.style.color = 'var(--text-color, #ffffff)';
-                title.style.fontSize = '12px';
-                title.style.fontWeight = '600';
+        const starSizeInput = document.getElementById('star-size');
+        const starSizeValue = document.getElementById('star-size-value');
+        starSizeInput.addEventListener('input', (e) => {
+            starfieldParams.starSize = parseFloat(e.target.value);
+            starSizeValue.textContent = e.target.value;
+            if (starField && starField.material) {
+                starField.material.size = starfieldParams.starSize;
+                starField.material.needsUpdate = true;
             }
         });
 
-        // Style controllers
-        const controllers = guiElement.querySelectorAll('.controller');
-        controllers.forEach(controller => {
-            controller.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
-            controller.style.padding = '4px 0';
-
-            const name = controller.querySelector('.name');
-            if (name) {
-                name.style.color = 'var(--text-color, #ffffff)';
-                name.style.fontSize = '11px';
-            }
+        // Animation controls
+        const animSpeedInput = document.getElementById('anim-speed');
+        const animSpeedValue = document.getElementById('anim-speed-value');
+        animSpeedInput.addEventListener('input', (e) => {
+            starfieldParams.animationSpeed = parseFloat(e.target.value);
+            animSpeedValue.textContent = e.target.value;
         });
 
-        // Style buttons
-        const buttons = guiElement.querySelectorAll('button');
-        buttons.forEach(button => {
-            button.style.background = 'rgba(0, 255, 0, 0.1)';
-            button.style.border = '1px solid var(--primary, #00ff00)';
-            button.style.borderRadius = '6px';
-            button.style.color = 'var(--primary, #00ff00)';
-            button.style.fontSize = '11px';
-            button.style.fontWeight = '600';
-            button.style.transition = 'all 0.3s ease';
-
-            button.addEventListener('mouseenter', () => {
-                button.style.background = 'rgba(0, 255, 0, 0.2)';
-                button.style.boxShadow = '0 0 8px var(--glow, rgba(0, 255, 0, 0.3))';
-            });
-
-            button.addEventListener('mouseleave', () => {
-                button.style.background = 'rgba(0, 255, 0, 0.1)';
-                button.style.boxShadow = 'none';
-            });
+        const mouseInfluenceInput = document.getElementById('mouse-influence');
+        const mouseInfluenceValue = document.getElementById('mouse-influence-value');
+        mouseInfluenceInput.addEventListener('input', (e) => {
+            starfieldParams.mouseInfluence = parseFloat(e.target.value);
+            mouseInfluenceValue.textContent = e.target.value;
         });
 
-        // Style sliders
-        const sliders = guiElement.querySelectorAll('input[type="range"]');
-        sliders.forEach(slider => {
-            slider.style.accentColor = 'var(--primary, #00ff00)';
+        // Color controls
+        const colorRInput = document.getElementById('color-r');
+        const colorRValue = document.getElementById('color-r-value');
+        colorRInput.addEventListener('input', (e) => {
+            starfieldParams.color.r = parseFloat(e.target.value);
+            colorRValue.textContent = e.target.value;
+            updateStarColors();
         });
 
-        console.log('🎨 lil-gui styled with SlimeThis cyber theme');
-    }, 100); // Small delay to ensure GUI is fully rendered
+        const colorGInput = document.getElementById('color-g');
+        const colorGValue = document.getElementById('color-g-value');
+        colorGInput.addEventListener('input', (e) => {
+            starfieldParams.color.g = parseFloat(e.target.value);
+            colorGValue.textContent = e.target.value;
+            updateStarColors();
+        });
+
+        const colorBInput = document.getElementById('color-b');
+        const colorBValue = document.getElementById('color-b-value');
+        colorBInput.addEventListener('input', (e) => {
+            starfieldParams.color.b = parseFloat(e.target.value);
+            colorBValue.textContent = e.target.value;
+            updateStarColors();
+        });
+
+        // Button controls
+        document.getElementById('regenerate-btn').addEventListener('click', createStars);
+        document.getElementById('reset-btn').addEventListener('click', resetStarfieldDefaults);
+
+        // Button hover effects
+        document.getElementById('regenerate-btn').addEventListener('mouseenter', function() {
+            this.style.background = 'rgba(0, 255, 0, 0.2)';
+            this.style.boxShadow = '0 0 8px var(--glow, rgba(0, 255, 0, 0.3))';
+        });
+        document.getElementById('regenerate-btn').addEventListener('mouseleave', function() {
+            this.style.background = 'rgba(0, 255, 0, 0.1)';
+            this.style.boxShadow = 'none';
+        });
+
+        document.getElementById('reset-btn').addEventListener('mouseenter', function() {
+            this.style.background = 'rgba(255, 100, 100, 0.2)';
+            this.style.boxShadow = '0 0 8px rgba(255, 100, 100, 0.3)';
+        });
+        document.getElementById('reset-btn').addEventListener('mouseleave', function() {
+            this.style.background = 'rgba(255, 100, 100, 0.1)';
+            this.style.boxShadow = 'none';
+        });
+    }, 100);
+
+    // Assemble the panel
+    panel.appendChild(content);
+    panel.appendChild(tab);
+    document.body.appendChild(panel);
+
+    console.log('✅ Collapsible control panel created');
 }
+
+
 
 
 
@@ -291,8 +431,23 @@ function resetStarfieldDefaults() {
     starfieldParams.baseScale = 1.0;
     starfieldParams.color = { r: 0.3, g: 0.3, b: 0.5 };
 
-    // Update GUI
-    gui.controllers.forEach(controller => controller.updateDisplay());
+    // Update custom controls
+    setTimeout(() => {
+        document.getElementById('star-count').value = starfieldParams.starCount;
+        document.getElementById('star-count-value').textContent = starfieldParams.starCount;
+        document.getElementById('star-size').value = starfieldParams.starSize;
+        document.getElementById('star-size-value').textContent = starfieldParams.starSize;
+        document.getElementById('anim-speed').value = starfieldParams.animationSpeed;
+        document.getElementById('anim-speed-value').textContent = starfieldParams.animationSpeed;
+        document.getElementById('mouse-influence').value = starfieldParams.mouseInfluence;
+        document.getElementById('mouse-influence-value').textContent = starfieldParams.mouseInfluence;
+        document.getElementById('color-r').value = starfieldParams.color.r;
+        document.getElementById('color-r-value').textContent = starfieldParams.color.r;
+        document.getElementById('color-g').value = starfieldParams.color.g;
+        document.getElementById('color-g-value').textContent = starfieldParams.color.g;
+        document.getElementById('color-b').value = starfieldParams.color.b;
+        document.getElementById('color-b-value').textContent = starfieldParams.color.b;
+    }, 100);
 
     // Recreate stars
     createStars();
