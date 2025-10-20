@@ -212,7 +212,7 @@ function createShaderMaterial() {
                 // Apply twinkle effect
                 vec3 finalColor = vColor * vTwinkle;
 
-                gl_FragColor = vec4(finalColor, alpha * 0.8);
+                gl_FragColor = vec4(finalColor, alpha);
             }
         `;
 
