@@ -183,7 +183,8 @@ function createCollapsibleControlPanel() {
         cursor: pointer;
         box-shadow: 0 0 8px var(--glow);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        z-index: 1001;
+        z-index: 9999; /* Increased z-index to ensure visibility */
+        pointer-events: auto; /* Ensure clicks work */
     `;
 
     // Create the content panel (hidden by default) - 15% smaller
