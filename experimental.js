@@ -161,11 +161,15 @@ function createCollapsibleControlPanel() {
         transition: all 0.3s ease;
     `;
 
-    // Create the tab (visible part)
+    // Create the tab (visible part) - positioned absolutely to screen edge
     const tab = document.createElement('div');
     tab.id = 'control-tab';
     tab.innerHTML = '⚙️';
     tab.style.cssText = `
+        position: fixed;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
         width: 50px;
         height: 50px;
         background: rgba(0, 0, 0, 0.9);
@@ -181,6 +185,7 @@ function createCollapsibleControlPanel() {
         cursor: pointer;
         box-shadow: -5px 0 15px var(--glow, rgba(0, 255, 0, 0.3));
         transition: all 0.3s ease;
+        z-index: 1001;
     `;
 
     // Create the content panel (hidden by default)
