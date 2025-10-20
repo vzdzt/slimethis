@@ -2377,8 +2377,8 @@ function createColorCustomizerPanel() {
     colorPanelButton.innerHTML = '🌈';
     colorPanelButton.style.cssText = `
         position: fixed;
-        bottom: 25px;
-        left: 25px;
+        bottom: -90px;
+        left: 70px;
         width: 48px;
         height: 48px;
         background: rgba(255, 0, 255, 0.9);
@@ -2402,7 +2402,7 @@ function createColorCustomizerPanel() {
     colorPanel.style.cssText = `
         position: fixed;
         bottom: 80px;
-        left: 25px;
+        left: 120px;
         background: rgba(0, 0, 0, 0.95);
         backdrop-filter: blur(20px);
         border: 2px solid var(--primary, #00ff00);
