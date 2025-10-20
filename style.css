@@ -534,12 +534,19 @@ body {
 .container {
     text-align: center;
     padding: 20px;
-    padding-top: 60px; /* Further reduced for compact nav bar fit */
+    padding-top: 75px; /* Increased slightly for themes with complex backgrounds */
     animation: container-bounce 3s ease-in-out infinite;
     position: relative;
     z-index: 10;
     margin-bottom: 3rem;
     display: block; /* Explicitly block for desktop */
+}
+
+/* Theme-specific container adjustments for complex backgrounds */
+body[data-theme="veazy"] .container,
+body[data-theme="galactic-nebula"] .container,
+body[data-theme="electric-storm"] .container {
+    padding-top: 85px; /* Extra space for paint worklet backgrounds */
 }
 
 .slime-title {
