@@ -22,6 +22,11 @@ SlimeThis.com is a content generator that randomly displays different types of m
 - **Theme Selection**: 12+ themes including Ultra Glass, Galactic Nebula, Electric Storm, etc.
 - **Color Customization**: Adjust primary, secondary, and accent colors with intensity control
 - **Automatic Copy/Save**: Text is copied to clipboard, all media files are automatically downloaded
+- **Starfield Controls**: Interactive Three.js starfield with real-time control panel (⚙️ button) featuring:
+  - Star count and size adjustments
+  - Animation speed, mouse influence, and scaling effects
+  - Color customization (RGB sliders)
+  - Regenerate and reset controls
 
 ### Technical Features
 - **Responsive Design**: Works on desktop and mobile devices
