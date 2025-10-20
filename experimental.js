@@ -167,7 +167,7 @@ function createCollapsibleControlPanel() {
     tab.innerHTML = '⚙️';
     tab.style.cssText = `
         position: fixed;
-        bottom: 20px;
+        bottom: 5px; /* Much closer to bottom as user requested */
         right: 70px; /* Trying 70px as user requested */
         width: 32px;
         height: 32px;
