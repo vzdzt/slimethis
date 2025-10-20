@@ -143,11 +143,17 @@ function createStars() {
 }
 
 function initGUI() {
-    // Initialize lil-gui with custom styling
+    // Initialize lil-gui with custom styling and better positioning
     gui = new lil.GUI({
         title: 'Starfield Controls',
         width: 280
     });
+
+    // Position in bottom-right corner to avoid navbar
+    gui.domElement.style.position = 'fixed';
+    gui.domElement.style.bottom = '20px';
+    gui.domElement.style.right = '20px';
+    gui.domElement.style.zIndex = '1000';
 
     // Apply custom SlimeThis styling
     styleLilGUI();
