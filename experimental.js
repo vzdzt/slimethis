@@ -168,7 +168,7 @@ function createCollapsibleControlPanel() {
     tab.style.cssText = `
         position: fixed;
         bottom: 20px;
-        right: 50px; /* Increased to bring wheel more into view */
+        left: calc(100vw - 52px); /* Use viewport width minus offset */
         width: 32px;
         height: 32px;
         background: rgba(0, 0, 0, 0.9);
