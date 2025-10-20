@@ -161,42 +161,42 @@ function createCollapsibleControlPanel() {
         transition: all 0.3s ease;
     `;
 
-    // Create the tab (visible part) - positioned next to profile picture
+    // Create the tab (visible part) - positioned in bottom right corner
     const tab = document.createElement('div');
     tab.id = 'control-tab';
     tab.innerHTML = '⚙️';
     tab.style.cssText = `
         position: fixed;
-        top: 12px; /* Match navbar top position */
-        right: 52px; /* Position left of 32px pfp + some margin */
-        width: 32px; /* Same size as profile picture */
-        height: 32px; /* Same size as profile picture */
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
         background: rgba(0, 0, 0, 0.9);
         backdrop-filter: blur(20px);
         border: 2px solid var(--primary, #00ff00);
-        border-radius: 50%; /* Circular like profile picture */
+        border-radius: 12px;
         color: var(--primary, #00ff00);
-        font-size: 16px; /* Smaller for 32px container */
+        font-size: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow: 0 0 10px var(--glow, rgba(0, 255, 0, 0.3));
+        box-shadow: 0 0 15px var(--glow, rgba(0, 255, 0, 0.3));
         transition: all 0.3s ease;
         z-index: 1001;
     `;
 
-    // Create the content panel (hidden by default)
+    // Create the content panel (hidden by default) - 15% smaller
     const content = document.createElement('div');
     content.id = 'control-content';
     content.style.cssText = `
-        width: 300px;
+        width: 255px; /* 300px * 0.85 = 255px (15% smaller) */
         background: rgba(0, 0, 0, 0.95);
         backdrop-filter: blur(20px);
         border: 2px solid var(--primary, #00ff00);
         border-right: none;
         border-radius: 12px 0 0 12px;
-        padding: 20px;
+        padding: 17px; /* Slightly smaller padding too */
         margin-right: 50px;
         opacity: 0;
         visibility: hidden;
