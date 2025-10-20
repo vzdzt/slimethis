@@ -170,7 +170,7 @@ function create3DText() {
 
     try {
         // Create new 3D text using Troika Three Text
-        textMesh = new TroikaThreeText.Text();
+        textMesh = window.TroikaThreeText ? new window.TroikaThreeText.Text() : (window.Text ? new window.Text() : null);
 
         // Set text properties
         textMesh.text = starfieldParams.textContent;
