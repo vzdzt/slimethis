@@ -161,14 +161,14 @@ function createCollapsibleControlPanel() {
         transition: all 0.3s ease;
     `;
 
-    // Create the tab (visible part) - positioned in bottom right corner, styled like pfp
+    // Create the tab (visible part) - positioned parallel to profile picture
     const tab = document.createElement('div');
     tab.id = 'control-tab';
     tab.innerHTML = '⚙️';
     tab.style.cssText = `
         position: fixed;
         bottom: 20px;
-        right: 60px; /* Trying 60px as user suggested */
+        right: 20px; /* Match profile picture distance (~20px from edge) */
         width: 32px;
         height: 32px;
         background: rgba(0, 0, 0, 0.9);
