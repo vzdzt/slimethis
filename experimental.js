@@ -1,3 +1,12 @@
+// Experimental Three.js Playground
+// Global bangers data (placeholder for now)
+let allBangers = [];
+let allImages = [];
+
+// Global Three.js variables
+let camera, renderer, starField, scene = null;
+let gui; // lil-gui instance
+
 // Starfield parameters (now controllable via GUI)
 let starfieldParams = {
     starCount: 15000,
@@ -7,6 +16,866 @@ let starfieldParams = {
     scaleAmplitude: 0.05,
     baseScale: 1.0,
     color: { r: 0.3, g: 0.3, b: 0.5 },
-    // Removed shader/text parameters - clean starfield only
-    shaderEffect: 'none'  // Keep basic shader effect selection
+    // New shader effect parameters
+    shaderEffect: 'none', // 'none', 'twinkle', 'nebula', 'galaxy'
+    twinkleSpeed: 2.0,
+    twinkleIntensity: 0.5,
+    nebulaDensity: 0.3,
+    galaxyRotation: 0.1
 };
+
+// Initialize the experimental page
+async function initExperimental() {
+    console.log('🚀 Initializing SlimeThis Experimental Playground');
+
+    // Load basic data (placeholder)
+    await loadBasicData();
+
+    // Initialize Three.js starfield
+    initStarfieldExperimental();
+
+    // Initialize lil-gui controls
+    initGUI();
+
+    // Initialize other components
+    initThemeSystem();
+    initCursorEffects();
+    initAnimations();
+}
+
+function initStarfieldExperimental() {
+    if (isInitialized) return;
+
+    // Check for WebGL support and device performance
+    const canvas = document.getElementById('universe');
+    if (!canvas || typeof THREE === 'undefined') {
+        console.error('Three.js or canvas not found.');
+        return;
+    }
+
+    // Check for Paint Worklet support and performance issues
+    const hasWorkletSupport = CSS && 'paintWorklet' in CSS;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isLowPerfBrowser = !window.WebGLRenderingContext || isMobile || !hasWorkletSupport;
+
+    if (isLowPerfBrowser) {
+        canvas.style.display = 'none';
+        document.body.style.background = 'var(--background)';
+        console.log('Starfield disabled on low-performance device');
+        return;
+    }
+
+    isInitialized = true;
+
+    try {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        camera.position.z = 1000;
+
+        // Create stars with initial parameters
+        createStars();
+
+        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+        document.addEventListener('mousemove', debounce((e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * starfieldParams.mouseInfluence;
+            mouseY = (e.clientY - window.innerHeight / 2) * starfieldParams.mouseInfluence;
+        }, 50));
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (starField) {
+                targetX += (mouseX - targetX) * 0.02;
+                targetY += (mouseY - targetY) * 0.02;
+                starField.rotation.x += starfieldParams.animationSpeed;
+                starField.rotation.y += starfieldParams.animationSpeed * 1.5;
+                const time = Date.now() * 0.001;
+                starField.scale.setScalar(Math.sin(time) * starfieldParams.scaleAmplitude + starfieldParams.baseScale);
+
+                // Update shader uniforms if using custom shader
+                if (starField.material.uniforms) {
+                    starField.material.uniforms.uTime.value = time;
+                    starField.material.uniforms.uTwinkleSpeed.value = starfieldParams.twinkleSpeed;
+                    starField.material.uniforms.uTwinkleIntensity.value = starfieldParams.twinkleIntensity;
+                    starField.material.uniforms.uStarSize.value = starfieldParams.starSize;
+                }
+            }
+            renderer.render(scene, camera);
+        }
+
+        animate();
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        console.log('✅ Starfield initialized with experimental controls');
+
+    } catch (err) {
+        console.error('Starfield initialization failed:', err);
+    }
+}
+
+function createStars() {
+    // Remove existing starfield if it exists
+    if (starField) {
+        scene.remove(starField);
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    const vertices = [];
+    const colors = [];
+    const sizes = [];
+    const phases = [];
+
+    for (let i = 0; i < starfieldParams.starCount; i++) {
+        vertices.push(
+            Math.random() * 2000 - 1000,
+            Math.random() * 2000 - 1000,
+            Math.random() * 2000 - 1000
+        );
+        colors.push(starfieldParams.color.r, starfieldParams.color.g, starfieldParams.color.b);
+        sizes.push(Math.random() * 0.5 + 0.5); // Random size variation
+        phases.push(Math.random() * Math.PI * 2); // Random phase for twinkling
+    }
+
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+    geometry.setAttribute('phase', new THREE.Float32BufferAttribute(phases, 1));
+
+    let material;
+
+    if (starfieldParams.shaderEffect === 'none') {
+        // Use standard PointsMaterial for basic effect
+        material = new THREE.PointsMaterial({
+            size: starfieldParams.starSize,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.6,
+            sizeAttenuation: true,
+            fog: false,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+    } else {
+        // Use custom ShaderMaterial for advanced effects
+        material = createShaderMaterial();
+    }
+
+    starField = new THREE.Points(geometry, material);
+    scene.add(starField);
+}
+
+function createShaderMaterial() {
+    try {
+        const vertexShader = `
+            attribute float size;
+            attribute float phase;
+            varying vec3 vColor;
+            varying float vTwinkle;
+            uniform float uTime;
+            uniform float uTwinkleSpeed;
+            uniform float uTwinkleIntensity;
+            uniform float uStarSize;
+
+            void main() {
+                vColor = color;
+
+                // Twinkle effect
+                float twinkle = sin(uTime * uTwinkleSpeed + phase) * 0.5 + 0.5;
+                vTwinkle = mix(1.0, twinkle * uTwinkleIntensity + (1.0 - uTwinkleIntensity), uTwinkleIntensity);
+
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                gl_PointSize = uStarSize * size * vTwinkle * (300.0 / -mvPosition.z);
+                gl_Position = projectionMatrix * mvPosition;
+            }
+        `;
+
+        const fragmentShader = `
+            varying vec3 vColor;
+            varying float vTwinkle;
+
+            void main() {
+                // Create circular star shape
+                vec2 center = gl_PointCoord - vec2(0.5);
+                float dist = length(center);
+
+                if (dist > 0.5) discard;
+
+                // Soft circular falloff
+                float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
+
+                // Apply twinkle effect
+                vec3 finalColor = vColor * vTwinkle;
+
+                gl_FragColor = vec4(finalColor, alpha);
+            }
+        `;
+
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                uTime: { value: 0 },
+                uTwinkleSpeed: { value: starfieldParams.twinkleSpeed },
+                uTwinkleIntensity: { value: starfieldParams.twinkleIntensity },
+                uStarSize: { value: starfieldParams.starSize }
+            },
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            transparent: true,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        console.log('✅ Shader material created successfully');
+        return material;
+
+    } catch (error) {
+        console.error('❌ Shader creation failed:', error);
+        // Fallback to basic material
+        return new THREE.PointsMaterial({
+            size: starfieldParams.starSize,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.6,
+            sizeAttenuation: true,
+            fog: false,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+    }
+}
+
+function initGUI() {
+    // Create custom collapsible control panel
+    createCollapsibleControlPanel();
+    console.log('✅ Custom collapsible control panel initialized');
+}
+
+function createCollapsibleControlPanel() {
+    // Ensure body has position relative for absolute positioning to work
+    document.body.style.position = 'relative';
+
+    // Create the main container
+    const panel = document.createElement('div');
+    panel.id = 'control-panel';
+    panel.style.cssText = `
+        position: fixed;
+        top: 50%;
+        right: -50px; /* Start with tab visible */
+        transform: translateY(-50%);
+        z-index: 1000;
+        transition: all 0.3s ease;
+    `;
+
+    // Create the main control tab (visible part) - positioned relative to document
+    const tab = document.createElement('div');
+    tab.id = 'control-tab';
+    tab.innerHTML = '⚙️';
+    tab.style.cssText = `
+        position: absolute;
+        bottom: -95px; /* Sweet spot below document bottom */
+        right: 70px; /* Horizontal position */
+        width: 32px;
+        height: 32px;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary);
+        border-radius: 50%;
+        color: var(--primary, #00ff00);
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 0 8px var(--glow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 9999; /* Increased z-index to ensure visibility */
+        pointer-events: auto; /* Ensure clicks work */
+    `;
+
+    // Create the shader effects tab (separate button) - positioned left of main tab
+    const shaderTab = document.createElement('div');
+    shaderTab.id = 'shader-tab';
+    shaderTab.innerHTML = '✨';
+    shaderTab.style.cssText = `
+        position: absolute;
+        bottom: -95px; /* Same level as main tab */
+        right: 120px; /* Further left of main tab (70px) */
+        width: 32px;
+        height: 32px;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary);
+        border-radius: 50%;
+        color: var(--primary, #00ff00);
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 0 8px var(--glow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 9999; /* Increased z-index to ensure visibility */
+        pointer-events: auto; /* Ensure clicks work */
+    `;
+
+    // Create the content panel (hidden by default) - 15% smaller
+    const content = document.createElement('div');
+    content.id = 'control-content';
+    content.style.cssText = `
+        width: 255px; /* 300px * 0.85 = 255px (15% smaller) */
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary, #00ff00);
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        padding: 17px; /* Slightly smaller padding too */
+        margin-right: 50px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(20px);
+        transition: all 0.3s ease;
+        max-height: 80vh;
+        overflow-y: auto;
+    `;
+
+    // Create sections
+    content.innerHTML = `
+        <h3 style="color: var(--primary, #00ff00); margin: 0 0 15px 0; text-shadow: 0 0 8px var(--glow, #00ff00);">
+            🌟 Starfield Controls
+        </h3>
+
+        <div class="control-section">
+            <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">🌟 Stars</h4>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Count: <span id="star-count-value">15000</span></label>
+                <input type="range" id="star-count" min="1000" max="50000" step="1000" value="15000" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Size: <span id="star-size-value">1.5</span></label>
+                <input type="range" id="star-size" min="0.5" max="5" step="0.1" value="1.5" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+        </div>
+
+        <div class="control-section">
+            <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">⚡ Animation</h4>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Speed: <span id="anim-speed-value">0.0002</span></label>
+                <input type="range" id="anim-speed" min="0" max="0.01" step="0.0001" value="0.0002" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Mouse Influence: <span id="mouse-influence-value">0.001</span></label>
+                <input type="range" id="mouse-influence" min="0" max="0.01" step="0.0001" value="0.001" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Scale Amplitude: <span id="scale-amplitude-value">0.05</span></label>
+                <input type="range" id="scale-amplitude" min="0" max="0.2" step="0.01" value="0.05" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Base Scale: <span id="base-scale-value">1.0</span></label>
+                <input type="range" id="base-scale" min="0.5" max="2" step="0.1" value="1.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+        </div>
+
+
+
+        <div class="control-section">
+            <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">🎨 Colors</h4>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Red: <span id="color-r-value">0.3</span></label>
+                <input type="range" id="color-r" min="0" max="1" step="0.01" value="0.3" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Green: <span id="color-g-value">0.3</span></label>
+                <input type="range" id="color-g" min="0" max="1" step="0.01" value="0.3" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Blue: <span id="color-b-value">0.5</span></label>
+                <input type="range" id="color-b" min="0" max="1" step="0.01" value="0.5" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+        </div>
+
+        <div class="control-section" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; margin-top: 15px;">
+            <button id="regenerate-btn" style="
+                width: 100%;
+                padding: 8px;
+                background: rgba(0, 255, 0, 0.1);
+                border: 1px solid var(--primary, #00ff00);
+                border-radius: 6px;
+                color: var(--primary, #00ff00);
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin-bottom: 8px;
+            ">🔄 Regenerate Stars</button>
+            <button id="reset-btn" style="
+                width: 100%;
+                padding: 8px;
+                background: rgba(255, 100, 100, 0.1);
+                border: 1px solid #ff6464;
+                border-radius: 6px;
+                color: #ff6464;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            ">⚙️ Reset Defaults</button>
+        </div>
+    `;
+
+    // Add hover effects to tab (matching profile picture)
+    tab.addEventListener('mouseenter', () => {
+        tab.style.transform = 'scale(1.1)';
+        tab.style.boxShadow = '0 0 12px var(--glow)';
+    });
+
+    tab.addEventListener('mouseleave', () => {
+        if (!panel.classList.contains('open')) {
+            tab.style.transform = 'scale(1)';
+            tab.style.boxShadow = '0 0 8px var(--glow)';
+        }
+    });
+
+    // Toggle panel on tab click
+    let isOpen = false;
+    tab.addEventListener('click', () => {
+        isOpen = !isOpen;
+        if (isOpen) {
+            panel.classList.add('open');
+            content.style.opacity = '1';
+            content.style.visibility = 'visible';
+            content.style.transform = 'translateX(0)';
+            tab.innerHTML = '✕';
+            tab.style.background = 'rgba(0, 255, 0, 0.2)';
+        } else {
+            panel.classList.remove('open');
+            content.style.opacity = '0';
+            content.style.visibility = 'hidden';
+            content.style.transform = 'translateX(20px)';
+            tab.innerHTML = '⚙️';
+            tab.style.background = 'rgba(0, 0, 0, 0.9)';
+        }
+    });
+
+    // Add control event listeners
+    setTimeout(() => {
+        // Star controls
+        const starCountInput = document.getElementById('star-count');
+        const starCountValue = document.getElementById('star-count-value');
+        starCountInput.addEventListener('input', (e) => {
+            starfieldParams.starCount = parseInt(e.target.value);
+            starCountValue.textContent = e.target.value;
+            createStars();
+        });
+
+        const starSizeInput = document.getElementById('star-size');
+        const starSizeValue = document.getElementById('star-size-value');
+        starSizeInput.addEventListener('input', (e) => {
+            starfieldParams.starSize = parseFloat(e.target.value);
+            starSizeValue.textContent = e.target.value;
+            if (starField && starField.material) {
+                starField.material.size = starfieldParams.starSize;
+                starField.material.needsUpdate = true;
+            }
+        });
+
+        // Animation controls
+        const animSpeedInput = document.getElementById('anim-speed');
+        const animSpeedValue = document.getElementById('anim-speed-value');
+        animSpeedInput.addEventListener('input', (e) => {
+            starfieldParams.animationSpeed = parseFloat(e.target.value);
+            animSpeedValue.textContent = e.target.value;
+        });
+
+        const mouseInfluenceInput = document.getElementById('mouse-influence');
+        const mouseInfluenceValue = document.getElementById('mouse-influence-value');
+        mouseInfluenceInput.addEventListener('input', (e) => {
+            starfieldParams.mouseInfluence = parseFloat(e.target.value);
+            mouseInfluenceValue.textContent = e.target.value;
+        });
+
+        const scaleAmplitudeInput = document.getElementById('scale-amplitude');
+        const scaleAmplitudeValue = document.getElementById('scale-amplitude-value');
+        scaleAmplitudeInput.addEventListener('input', (e) => {
+            starfieldParams.scaleAmplitude = parseFloat(e.target.value);
+            scaleAmplitudeValue.textContent = e.target.value;
+        });
+
+        const baseScaleInput = document.getElementById('base-scale');
+        const baseScaleValue = document.getElementById('base-scale-value');
+        baseScaleInput.addEventListener('input', (e) => {
+            starfieldParams.baseScale = parseFloat(e.target.value);
+            baseScaleValue.textContent = e.target.value;
+        });
+
+        // Color controls
+        const colorRInput = document.getElementById('color-r');
+        const colorRValue = document.getElementById('color-r-value');
+        colorRInput.addEventListener('input', (e) => {
+            starfieldParams.color.r = parseFloat(e.target.value);
+            colorRValue.textContent = e.target.value;
+            updateStarColors();
+        });
+
+        const colorGInput = document.getElementById('color-g');
+        const colorGValue = document.getElementById('color-g-value');
+        colorGInput.addEventListener('input', (e) => {
+            starfieldParams.color.g = parseFloat(e.target.value);
+            colorGValue.textContent = e.target.value;
+            updateStarColors();
+        });
+
+        const colorBInput = document.getElementById('color-b');
+        const colorBValue = document.getElementById('color-b-value');
+        colorBInput.addEventListener('input', (e) => {
+            starfieldParams.color.b = parseFloat(e.target.value);
+            colorBValue.textContent = e.target.value;
+            updateStarColors();
+        });
+
+        // Shader effect controls
+        const shaderEffectSelect = document.getElementById('shader-effect');
+        const shaderEffectValue = document.getElementById('shader-effect-value');
+        shaderEffectSelect.addEventListener('change', (e) => {
+            starfieldParams.shaderEffect = e.target.value;
+            shaderEffectValue.textContent = e.target.value;
+            createStars(); // Recreate stars with new material
+        });
+
+        const twinkleSpeedInput = document.getElementById('twinkle-speed');
+        const twinkleSpeedValue = document.getElementById('twinkle-speed-value');
+        twinkleSpeedInput.addEventListener('input', (e) => {
+            starfieldParams.twinkleSpeed = parseFloat(e.target.value);
+            twinkleSpeedValue.textContent = e.target.value;
+        });
+
+        const twinkleIntensityInput = document.getElementById('twinkle-intensity');
+        const twinkleIntensityValue = document.getElementById('twinkle-intensity-value');
+        twinkleIntensityInput.addEventListener('input', (e) => {
+            starfieldParams.twinkleIntensity = parseFloat(e.target.value);
+            twinkleIntensityValue.textContent = e.target.value;
+        });
+
+        // Button controls
+        document.getElementById('regenerate-btn').addEventListener('click', createStars);
+        document.getElementById('reset-btn').addEventListener('click', resetStarfieldDefaults);
+
+        // Button hover effects
+        document.getElementById('regenerate-btn').addEventListener('mouseenter', function() {
+            this.style.background = 'rgba(0, 255, 0, 0.2)';
+            this.style.boxShadow = '0 0 8px var(--glow, rgba(0, 255, 0, 0.3))';
+        });
+        document.getElementById('regenerate-btn').addEventListener('mouseleave', function() {
+            this.style.background = 'rgba(0, 255, 0, 0.1)';
+            this.style.boxShadow = 'none';
+        });
+
+        document.getElementById('reset-btn').addEventListener('mouseenter', function() {
+            this.style.background = 'rgba(255, 100, 100, 0.2)';
+            this.style.boxShadow = '0 0 8px rgba(255, 100, 100, 0.3)';
+        });
+        document.getElementById('reset-btn').addEventListener('mouseleave', function() {
+            this.style.background = 'rgba(255, 100, 100, 0.1)';
+            this.style.boxShadow = 'none';
+        });
+    }, 100);
+
+    // Create shader effects panel
+    const shaderPanel = document.createElement('div');
+    shaderPanel.id = 'shader-panel';
+    shaderPanel.style.cssText = `
+        position: fixed;
+        top: 50%;
+        right: -50px; /* Start with tab visible */
+        transform: translateY(-50%);
+        z-index: 1000;
+        transition: all 0.3s ease;
+    `;
+
+    // Create shader content panel
+    const shaderContent = document.createElement('div');
+    shaderContent.id = 'shader-content';
+    shaderContent.style.cssText = `
+        width: 220px; /* Smaller than main panel */
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary, #00ff00);
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        padding: 15px;
+        margin-right: 50px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(20px);
+        transition: all 0.3s ease;
+        max-height: 60vh;
+        overflow-y: auto;
+    `;
+
+    // Shader panel content
+    shaderContent.innerHTML = `
+        <h3 style="color: var(--primary, #00ff00); margin: 0 0 15px 0; text-shadow: 0 0 8px var(--glow, #00ff00);">
+            ✨ Shader Effects
+        </h3>
+
+        <div class="control-section">
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Effect: <span id="shader-effect-value">none</span></label>
+                <select id="shader-effect" style="width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px; border-radius: 4px;">
+                    <option value="none">None</option>
+                    <option value="twinkle">Twinkle</option>
+                </select>
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Twinkle Speed: <span id="twinkle-speed-value">2.0</span></label>
+                <input type="range" id="twinkle-speed" min="0.5" max="5" step="0.1" value="2.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Twinkle Intensity: <span id="twinkle-intensity-value">0.5</span></label>
+                <input type="range" id="twinkle-intensity" min="0" max="1" step="0.01" value="0.5" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+        </div>
+    `;
+
+    // Add hover effects to shader tab
+    shaderTab.addEventListener('mouseenter', () => {
+        shaderTab.style.transform = 'scale(1.1)';
+        shaderTab.style.boxShadow = '0 0 12px var(--glow)';
+    });
+
+    shaderTab.addEventListener('mouseleave', () => {
+        if (!shaderPanel.classList.contains('open')) {
+            shaderTab.style.transform = 'scale(1)';
+            shaderTab.style.boxShadow = '0 0 8px var(--glow)';
+        }
+    });
+
+    // Toggle shader panel on shader tab click
+    let shaderIsOpen = false;
+    shaderTab.addEventListener('click', () => {
+        shaderIsOpen = !shaderIsOpen;
+        if (shaderIsOpen) {
+            shaderPanel.classList.add('open');
+            shaderContent.style.opacity = '1';
+            shaderContent.style.visibility = 'visible';
+            shaderContent.style.transform = 'translateX(0)';
+            shaderTab.innerHTML = '✕';
+            shaderTab.style.background = 'rgba(0, 255, 0, 0.2)';
+        } else {
+            shaderPanel.classList.remove('open');
+            shaderContent.style.opacity = '0';
+            shaderContent.style.visibility = 'hidden';
+            shaderContent.style.transform = 'translateX(20px)';
+            shaderTab.innerHTML = '✨';
+            shaderTab.style.background = 'rgba(0, 0, 0, 0.9)';
+        }
+    });
+
+    // Assemble the panels
+    panel.appendChild(content);
+    panel.appendChild(tab);
+    document.body.appendChild(panel);
+
+    shaderPanel.appendChild(shaderContent);
+    shaderPanel.appendChild(shaderTab);
+    document.body.appendChild(shaderPanel);
+
+    console.log('✅ Collapsible control panel created');
+    console.log('✅ Shader effects panel created');
+}
+
+
+
+
+
+function updateStarColors() {
+    if (starField && starField.geometry.attributes.color) {
+        const colorArray = starField.geometry.attributes.color.array;
+        for (let i = 0; i < colorArray.length; i += 3) {
+            colorArray[i] = starfieldParams.color.r + (Math.random() * 0.2 - 0.1);
+            colorArray[i + 1] = starfieldParams.color.g + (Math.random() * 0.2 - 0.1);
+            colorArray[i + 2] = starfieldParams.color.b + (Math.random() * 0.2 - 0.1);
+        }
+        starField.geometry.attributes.color.needsUpdate = true;
+    }
+}
+
+function resetStarfieldDefaults() {
+    starfieldParams.starCount = 15000;
+    starfieldParams.starSize = 1.5;
+    starfieldParams.animationSpeed = 0.0002;
+    starfieldParams.mouseInfluence = 0.001;
+    starfieldParams.scaleAmplitude = 0.05;
+    starfieldParams.baseScale = 1.0;
+    starfieldParams.color = { r: 0.3, g: 0.3, b: 0.5 };
+    starfieldParams.shaderEffect = 'none';
+    starfieldParams.twinkleSpeed = 2.0;
+    starfieldParams.twinkleIntensity = 0.5;
+
+    // Update custom controls
+    setTimeout(() => {
+        document.getElementById('star-count').value = starfieldParams.starCount;
+        document.getElementById('star-count-value').textContent = starfieldParams.starCount;
+        document.getElementById('star-size').value = starfieldParams.starSize;
+        document.getElementById('star-size-value').textContent = starfieldParams.starSize;
+        document.getElementById('anim-speed').value = starfieldParams.animationSpeed;
+        document.getElementById('anim-speed-value').textContent = starfieldParams.animationSpeed;
+        document.getElementById('mouse-influence').value = starfieldParams.mouseInfluence;
+        document.getElementById('mouse-influence-value').textContent = starfieldParams.mouseInfluence;
+        document.getElementById('scale-amplitude').value = starfieldParams.scaleAmplitude;
+        document.getElementById('scale-amplitude-value').textContent = starfieldParams.scaleAmplitude;
+        document.getElementById('base-scale').value = starfieldParams.baseScale;
+        document.getElementById('base-scale-value').textContent = starfieldParams.baseScale;
+        document.getElementById('color-r').value = starfieldParams.color.r;
+        document.getElementById('color-r-value').textContent = starfieldParams.color.r;
+        document.getElementById('color-g').value = starfieldParams.color.g;
+        document.getElementById('color-g-value').textContent = starfieldParams.color.g;
+        document.getElementById('color-b').value = starfieldParams.color.b;
+        document.getElementById('color-b-value').textContent = starfieldParams.color.b;
+        document.getElementById('shader-effect').value = starfieldParams.shaderEffect;
+        document.getElementById('shader-effect-value').textContent = starfieldParams.shaderEffect;
+        document.getElementById('twinkle-speed').value = starfieldParams.twinkleSpeed;
+        document.getElementById('twinkle-speed-value').textContent = starfieldParams.twinkleSpeed;
+        document.getElementById('twinkle-intensity').value = starfieldParams.twinkleIntensity;
+        document.getElementById('twinkle-intensity-value').textContent = starfieldParams.twinkleIntensity;
+    }, 100);
+
+    // Recreate stars
+    createStars();
+}
+
+function initThemeSystem() {
+    document.getElementById('theme-select').addEventListener('change', function() {
+        const newTheme = this.value;
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('currentTheme', newTheme);
+
+        // Update starfield colors based on theme
+        updateStarfieldForTheme(newTheme);
+
+        const animations = {
+            'galactic-nebula': 'nebula-swirl 15s ease-in-out infinite',
+            'electric-storm': 'storm-flash 5s infinite',
+            'void-pulse': 'void-pulse 3s infinite',
+            'prism-shard': 'prism-shift 6s infinite',
+            'inferno-core': 'inferno-glow 4s infinite',
+            'cosmic-rift': 'rift-swirl 6s infinite',
+            'retro-vaporwave': 'vaporwave-glitch 4s infinite',
+            'ultra-glass': 'glass-shimmer 8s ease-in-out infinite',
+            'satin': 'satin-flow 6s ease-in-out infinite',
+            'glass-morphism': 'glass-shimmer 8s ease-in-out infinite',
+            'veazy': 'cyber-flow 5s ease-in-out infinite',
+            'neon-fluid': 'fluid-flow 4s ease-in-out infinite',
+            'aurora-wave': 'aurora-flow 8s ease-in-out infinite'
+        };
+
+        document.body.style.animation = animations[newTheme] || 'none';
+    });
+
+    // Apply saved theme
+    const savedTheme = localStorage.getItem('currentTheme') || 'veazy';
+    document.body.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-select').value = savedTheme;
+    updateStarfieldForTheme(savedTheme);
+}
+
+function updateStarfieldForTheme(theme) {
+    const themeColors = {
+        'ultra-glass': { r: 0.8, g: 0.8, b: 1.0 },
+        'satin': { r: 1.0, g: 0.84, b: 0.2 },
+        'galactic-nebula': { r: 1.0, g: 0.1, b: 0.55 },
+        'electric-storm': { r: 0.0, g: 1.0, b: 0.8 },
+        'glass-morphism': { r: 0.7, g: 0.9, b: 1.0 },
+        'void-pulse': { r: 1.0, g: 0.0, b: 1.0 },
+        'prism-shard': { r: 0.4, g: 1.0, b: 0.8 },
+        'inferno-core': { r: 1.0, g: 0.2, b: 0.0 },
+        'cosmic-rift': { r: 0.7, g: 0.4, b: 1.0 },
+        'retro-vaporwave': { r: 1.0, g: 0.41, b: 0.71 },
+        'veazy': { r: 0.0, g: 1.0, b: 0.0 },
+        'neon-fluid': { r: 0.0, g: 1.0, b: 1.0 },
+        'aurora-wave': { r: 0.0, g: 1.0, b: 0.5 }
+    };
+
+    const baseColor = themeColors[theme] || { r: 0.3, g: 0.3, b: 0.5 };
+    starfieldParams.color = baseColor;
+    updateStarColors();
+
+    // Update GUI color controls
+    if (gui) {
+        const colorFolder = gui.folders.find(f => f._title === 'Colors');
+        if (colorFolder) {
+            colorFolder.controllers.forEach(controller => controller.updateDisplay());
+        }
+    }
+}
+
+function initCursorEffects() {
+    const cursor = document.getElementById('cursor');
+    const cursorBlur = document.getElementById('cursor-blur');
+
+    if (cursor && cursorBlur) {
+        cursor.style.visibility = 'visible';
+        cursorBlur.style.visibility = 'visible';
+
+        document.addEventListener('mousemove', (e) => {
+            requestAnimationFrame(() => {
+                cursor.style.left = `${e.clientX}px`;
+                cursor.style.top = `${e.clientY}px`;
+                cursorBlur.style.left = `${e.clientX}px`;
+                cursorBlur.style.top = `${e.clientY}px`;
+            });
+        });
+    }
+}
+
+function initAnimations() {
+    if (typeof gsap !== 'undefined') {
+        // Note: ScrollTrigger not loaded in experimental page, using basic GSAP
+        gsap.from('.nav-title', {
+            opacity: 0,
+            y: -50,
+            duration: 1,
+            ease: 'power2.out'
+        });
+        gsap.from('.subtitle', {
+            opacity: 0,
+            y: -30,
+            duration: 0.8,
+            ease: 'power2.out',
+            delay: 0.3
+        });
+        gsap.from('#output', {
+            opacity: 0,
+            y: 50,
+            duration: 0.8,
+            ease: 'power2.out',
+            delay: 0.5
+        });
+    }
+}
+
+async function loadBasicData() {
+    // Placeholder for loading any necessary data
+    console.log('📊 Loading experimental data...');
+}
+
+// Utility functions
+function debounce(func, delay) {
+    let timeoutId;
+    return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(null, args), delay);
+    };
+}
+
+// Global flag to prevent multiple initializations
+let isInitialized = false;
+
+// Start the experimental playground
+document.addEventListener('DOMContentLoaded', initExperimental);
