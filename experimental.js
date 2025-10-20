@@ -161,14 +161,14 @@ function createCollapsibleControlPanel() {
         transition: all 0.3s ease;
     `;
 
-    // Create the tab (visible part) - positioned parallel to profile picture
+    // Create the tab (visible part) - positioned relative to document
     const tab = document.createElement('div');
     tab.id = 'control-tab';
     tab.innerHTML = '⚙️';
     tab.style.cssText = `
-        position: fixed;
-        bottom: -40px; /* Extending below viewport as user requested */
-        right: 70px; /* Trying 70px as user requested */
+        position: absolute;
+        bottom: 20px; /* Relative to document bottom */
+        right: 70px; /* Horizontal position */
         width: 32px;
         height: 32px;
         background: rgba(0, 0, 0, 0.9);
