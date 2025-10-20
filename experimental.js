@@ -21,7 +21,13 @@ let starfieldParams = {
     twinkleSpeed: 2.0,
     twinkleIntensity: 0.5,
     nebulaDensity: 0.3,
-    galaxyRotation: 0.1
+    galaxyRotation: 0.1,
+    // 3D Text parameters
+    showText: false,
+    textContent: 'SLIME THIS',
+    textSize: 2.0,
+    textColor: { r: 0.0, g: 1.0, b: 0.0 },
+    textPosition: { x: 0, y: 0, z: -50 }
 };
 
 // Initialize the experimental page
