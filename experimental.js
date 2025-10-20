@@ -184,7 +184,7 @@ function initTweakpane() {
     // Initialize Tweakpane
     pane = new Tweakpane.Pane({
         title: 'Tweakpane Controls',
-        expanded: false
+        expanded: true  // Make it visible by default
     });
 
     // Move the pane to a better position (bottom right)
