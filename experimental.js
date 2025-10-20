@@ -191,7 +191,9 @@ function initTweakpane() {
     pane.element.style.position = 'fixed';
     pane.element.style.bottom = '20px';
     pane.element.style.right = '20px';
-    pane.element.style.zIndex = '1000';
+    pane.element.style.zIndex = '10000'; // Higher than lil-gui
+    pane.element.style.background = 'rgba(0, 0, 0, 0.8)'; // Make it more visible
+    pane.element.style.border = '1px solid rgba(255, 255, 255, 0.3)';
 
     // Starfield parameters
     const starFolder = pane.addFolder({ title: 'Stars' });
