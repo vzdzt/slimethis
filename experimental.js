@@ -6,7 +6,6 @@ let allImages = [];
 // Global Three.js variables
 let camera, renderer, starField, scene = null;
 let gui; // lil-gui instance
-let pane; // Tweakpane instance
 
 // Starfield parameters (now controllable via GUI)
 let starfieldParams = {
@@ -31,9 +30,6 @@ async function initExperimental() {
 
     // Initialize lil-gui controls
     initGUI();
-
-    // Initialize Tweakpane controls
-    initTweakpane();
 
     // Initialize other components
     initThemeSystem();
@@ -180,87 +176,7 @@ function initGUI() {
     console.log('✅ lil-gui controls initialized');
 }
 
-function initTweakpane() {
-    // Debug: Check what's available globally
-    console.log('Available globals:', Object.keys(window).filter(key => key.toLowerCase().includes('tweak') || key.toLowerCase().includes('pane')));
 
-    // Initialize Tweakpane - try different approaches
-    try {
-        // Try direct Pane constructor
-        if (typeof Pane !== 'undefined') {
-            pane = new Pane({
-                title: 'Tweakpane Controls'
-            });
-            console.log('✅ Pane constructor worked');
-        } else if (typeof Tweakpane !== 'undefined') {
-            // Try Tweakpane.Pane
-            pane = new Tweakpane.Pane({
-                title: 'Tweakpane Controls'
-            });
-            console.log('✅ Tweakpane.Pane constructor worked');
-        } else {
-            console.error('❌ Neither Pane nor Tweakpane global found');
-            return;
-        }
-    } catch (e) {
-        console.error('❌ Tweakpane initialization failed:', e);
-        return;
-    }
-
-    // Move the pane to a better position (bottom right)
-    // Try different property names for the DOM element
-    const paneElement = pane.domElement || pane.element || pane.container;
-    if (paneElement) {
-        paneElement.style.position = 'fixed';
-        paneElement.style.bottom = '20px';
-        paneElement.style.right = '20px';
-        paneElement.style.zIndex = '10000'; // Higher than lil-gui
-        paneElement.style.background = 'rgba(0, 0, 0, 0.8)'; // Make it more visible
-        paneElement.style.border = '1px solid rgba(255, 255, 255, 0.3)';
-        console.log('✅ Tweakpane styling applied');
-    } else {
-        console.error('❌ Could not find pane DOM element');
-    }
-
-    try {
-        // Try simpler Tweakpane v3 API - basic controls first
-        pane.addBinding(starfieldParams, 'starCount', {
-            min: 1000,
-            max: 50000,
-            step: 1000
-        });
-
-        pane.addBinding(starfieldParams, 'starSize', {
-            min: 0.5,
-            max: 5,
-            step: 0.1
-        });
-
-        pane.addBinding(starfieldParams, 'animationSpeed', {
-            min: 0,
-            max: 0.002,
-            step: 0.0001
-        });
-
-        // Simple button
-        pane.addButton({
-            title: 'Regenerate Stars'
-        }).on('click', createStars);
-
-        console.log('✅ Tweakpane basic controls added successfully');
-    } catch (e) {
-        console.error('❌ Error adding Tweakpane controls:', e);
-        // If basic controls fail, try even simpler approach
-        try {
-            pane.addInput(starfieldParams, 'starCount');
-            console.log('✅ Tweakpane input added as fallback');
-        } catch (e2) {
-            console.error('❌ Even basic input failed:', e2);
-        }
-    }
-
-    console.log('✅ Tweakpane controls initialized');
-}
 
 function updateStarColors() {
     if (starField && starField.geometry.attributes.color) {
