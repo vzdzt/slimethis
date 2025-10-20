@@ -15,9 +15,8 @@ let starfieldParams = {
     mouseInfluence: 0.001,
     scaleAmplitude: 0.05,
     baseScale: 1.0,
-    color: { r: 0.3, g: 0.3, b: 0.5 },
-    // 3D Text parameters only
-};
+    color: { r: 0.3, g: 0.3, b: 0.5 }
+};,
 
 // Global 3D text variable
 
@@ -147,4 +146,72 @@ function createStars() {
     starField = new THREE.Points(geometry, material);
     scene.add(starField);
 }
+
+
+function update3DText() {
+
+    try {
+            starfieldParams.textColor.r,
+            starfieldParams.textColor.g,
+            starfieldParams.textColor.b
+        );
+            starfieldParams.textPosition.x,
+            starfieldParams.textPosition.y,
+            starfieldParams.textPosition.z
+        );
+
+        // Sync changes
+
+    } catch (error) {
+        console.error('❌ 3D Text update failed:', error);
+    }
+}
+
+function initGUI() {
+    // Create custom collapsible control panel
+    createCollapsibleControlPanel();
+    console.log('✅ Custom collapsible control panel initialized');
+}
+
+function createCollapsibleControlPanel() {
+    // Ensure body has position relative for absolute positioning to work
+    document.body.style.position = 'relative';
+
+    // Create the main container
+    const panel = document.createElement('div');
+    panel.id = 'control-panel';
+    panel.style.cssText = `
+        position: fixed;
+        top: 50%;
+        right: -50px; /* Start with tab visible */
+        transform: translateY(-50%);
+        z-index: 1000;
+        transition: all 0.3s ease;
+    `;
+
+    // Create the main control tab (visible part) - positioned relative to document
+    const tab = document.createElement('div');
+    tab.id = 'control-tab';
+    tab.innerHTML = '⚙️';
+    tab.style.cssText = `
+        position: absolute;
+        bottom: -95px; /* Sweet spot below document bottom */
+        right: 70px; /* Horizontal position */
+        width: 32px;
+        height: 32px;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary);
+        border-radius: 50%;
+        color: var(--primary, #00ff00);
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 0 8px var(--glow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 9999; /* Increased z-index to ensure visibility */
+        pointer-events: auto; /* Ensure clicks work */
+    `;
 
