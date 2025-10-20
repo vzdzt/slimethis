@@ -2352,16 +2352,262 @@ function resetStarfieldDefaults() {
         document.getElementById('scale-amplitude-value').textContent = starfieldParams.scaleAmplitude;
         document.getElementById('base-scale').value = starfieldParams.baseScale;
         document.getElementById('base-scale-value').textContent = starfieldParams.baseScale;
-        document.getElementById('color-r').value = starfieldParams.color.r;
-        document.getElementById('color-r-value').textContent = starfieldParams.color.r;
-        document.getElementById('color-g').value = starfieldParams.color.g;
-        document.getElementById('color-g-value').textContent = starfieldParams.color.g;
-        document.getElementById('color-b').value = starfieldParams.color.b;
-        document.getElementById('color-b-value').textContent = starfieldParams.color.b;
+        const colorR = document.getElementById('color-r');
+        const colorG = document.getElementById('color-g');
+        const colorB = document.getElementById('color-b');
+        const colorRValue = document.getElementById('color-r-value');
+        const colorGValue = document.getElementById('color-g-value');
+        const colorBValue = document.getElementById('color-b-value');
+        if (colorR) colorR.value = starfieldParams.color.r;
+        if (colorG) colorG.value = starfieldParams.color.g;
+        if (colorB) colorB.value = starfieldParams.color.b;
+        if (colorRValue) colorRValue.textContent = starfieldParams.color.r;
+        if (colorGValue) colorGValue.textContent = starfieldParams.color.g;
+        if (colorBValue) colorBValue.textContent = starfieldParams.color.b;
     }, 100);
 
     // Recreate stars
     createStars();
+}
+
+function createColorCustomizerPanel() {
+    // Create the color customizer button and panel
+    const colorPanelButton = document.createElement('div');
+    colorPanelButton.id = 'color-panel-btn';
+    colorPanelButton.innerHTML = '🌈';
+    colorPanelButton.style.cssText = `
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 0, 255, 0.9);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary);
+        border-radius: 50%;
+        color: var(--primary, #00ff00);
+        font-size: 20px;
+        display: none; /* Hidden by default, shown for neon-fluid and aurora-wave themes */
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 0 8px var(--glow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 9998;
+    `;
+
+    // Create the color panel
+    const colorPanel = document.createElement('div');
+    colorPanel.id = 'color-customizer-panel';
+    colorPanel.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        right: 25px;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary, #00ff00);
+        border-right: none;
+        border-radius: 12px 0 12px 12px;
+        padding: 20px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+        max-width: 320px;
+        min-width: 280px;
+    `;
+
+    colorPanel.innerHTML = `
+        <h3 style="color: var(--primary, #00ff00); margin: 0 0 15px 0; text-shadow: 0 0 8px var(--glow, #00ff00);">
+            🎨 Color Customization
+        </h3>
+
+        <div class="color-customizer">
+            <div class="customizer-header">
+                <h4>Theme Colors</h4>
+                <button id="reset-colors" class="reset-btn" title="Reset to theme defaults">⟲</button>
+            </div>
+            <div class="color-palette">
+                <div class="color-input-group">
+                    <div class="color-input primary">
+                        <input type="color" id="primary-color" value="#00ffff">
+                        <div class="color-info">
+                            <span class="color-name">Primary</span>
+                            <span class="color-hex" id="primary-hex">#00ffff</span>
+                        </div>
+                    </div>
+                    <div class="color-input secondary">
+                        <input type="color" id="secondary-color" value="#ff00ff">
+                        <div class="color-info">
+                            <span class="color-name">Secondary</span>
+                            <span class="color-hex" id="secondary-hex">#ff00ff</span>
+                        </div>
+                    </div>
+                    <div class="color-input accent">
+                        <input type="color" id="accent-color" value="#ffff00">
+                        <div class="color-info">
+                            <span class="color-name">Accent</span>
+                            <span class="color-hex" id="accent-hex">#ffff00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="intensity-control">
+                    <div class="intensity-header">
+                        <span class="intensity-label">Intensity</span>
+                        <span class="intensity-value" id="intensity-value">100%</span>
+                    </div>
+                    <input type="range" id="intensity-slider" min="10" max="200" step="10" value="100">
+                    <div class="intensity-scale">
+                        <span>10%</span>
+                        <span>100%</span>
+                        <span>200%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Add hover effects
+    colorPanelButton.addEventListener('mouseenter', () => {
+        colorPanelButton.style.transform = 'scale(1.1)';
+        colorPanelButton.style.boxShadow = '0 0 12px var(--glow)';
+    });
+
+    colorPanelButton.addEventListener('mouseleave', () => {
+        if (!colorPanel.classList.contains('open')) {
+            colorPanelButton.style.transform = 'scale(1)';
+            colorPanelButton.style.boxShadow = '0 0 8px var(--glow)';
+        }
+    });
+
+    // Toggle color panel
+    let colorPanelIsOpen = false;
+    colorPanelButton.addEventListener('click', () => {
+        colorPanelIsOpen = !colorPanelIsOpen;
+        if (colorPanelIsOpen) {
+            colorPanel.style.opacity = '1';
+            colorPanel.style.visibility = 'visible';
+            colorPanel.style.transform = 'translateY(0)';
+            colorPanelButton.innerHTML = '❌';
+            colorPanelButton.style.background = 'rgba(255, 0, 255, 0.3)';
+        } else {
+            colorPanel.style.opacity = '0';
+            colorPanel.style.visibility = 'hidden';
+            colorPanel.style.transform = 'translateY(20px)';
+            colorPanelButton.innerHTML = '🌈';
+            colorPanelButton.style.background = 'rgba(255, 0, 255, 0.9)';
+        }
+    });
+
+    // Add event listeners after a short delay for DOM
+    setTimeout(() => {
+        const primaryColorInput = document.getElementById('primary-color');
+        const secondaryColorInput = document.getElementById('secondary-color');
+        const accentColorInput = document.getElementById('accent-color');
+        const intensitySlider = document.getElementById('intensity-slider');
+        const primaryHex = document.getElementById('primary-hex');
+        const secondaryHex = document.getElementById('secondary-hex');
+        const accentHex = document.getElementById('accent-hex');
+        const intensityValueSpan = document.getElementById('intensity-value');
+        const resetButton = document.getElementById('reset-colors');
+
+        let currentCustomizations = {
+            primary: '#00ffff',
+            secondary: '#ff00ff',
+            accent: '#ffff00',
+            intensity: 100
+        };
+
+        // Load saved customizations
+        const savedCustomizations = localStorage.getItem('colorCustomizations');
+        if (savedCustomizations) {
+            currentCustomizations = JSON.parse(savedCustomizations);
+        }
+
+        // Apply initial customizations
+        applyColorCustomizations(currentCustomizations);
+
+        function updateHexDisplays() {
+            if (primaryHex) primaryHex.textContent = currentCustomizations.primary.toUpperCase();
+            if (secondaryHex) secondaryHex.textContent = currentCustomizations.secondary.toUpperCase();
+            if (accentHex) accentHex.textContent = currentCustomizations.accent.toUpperCase();
+            if (intensityValueSpan) intensityValueSpan.textContent = currentCustomizations.intensity + '%';
+        }
+
+        // Color picker event listeners
+        primaryColorInput.addEventListener('input', (e) => {
+            currentCustomizations.primary = e.target.value;
+            updateHexDisplays();
+            applyColorCustomizations(currentCustomizations);
+            localStorage.setItem('colorCustomizations', JSON.stringify(currentCustomizations));
+        });
+
+        secondaryColorInput.addEventListener('input', (e) => {
+            currentCustomizations.secondary = e.target.value;
+            updateHexDisplays();
+            applyColorCustomizations(currentCustomizations);
+            localStorage.setItem('colorCustomizations', JSON.stringify(currentCustomizations));
+        });
+
+        accentColorInput.addEventListener('input', (e) => {
+            currentCustomizations.accent = e.target.value;
+            updateHexDisplays();
+            applyColorCustomizations(currentCustomizations);
+            localStorage.setItem('colorCustomizations', JSON.stringify(currentCustomizations));
+        });
+
+        // Intensity slider
+        intensitySlider.addEventListener('input', (e) => {
+            currentCustomizations.intensity = parseInt(e.target.value);
+            updateHexDisplays();
+            applyColorCustomizations(currentCustomizations);
+            localStorage.setItem('colorCustomizations', JSON.stringify(currentCustomizations));
+        });
+
+        // Reset button
+        resetButton.addEventListener('click', () => {
+            currentCustomizations = {
+                primary: '#00ffff',
+                secondary: '#ff00ff',
+                accent: '#ffff00',
+                intensity: 100
+            };
+            applyColorCustomizations(currentCustomizations);
+            localStorage.setItem('colorCustomizations', JSON.stringify(currentCustomizations));
+        });
+
+        function applyColorCustomizations(customizations) {
+            const currentTheme = document.body.getAttribute('data-theme') || 'ultra-glass';
+
+            // Update inputs
+            primaryColorInput.value = customizations.primary;
+            secondaryColorInput.value = customizations.secondary;
+            accentColorInput.value = customizations.accent;
+            intensitySlider.value = customizations.intensity;
+
+            // Apply custom colors for neon-fluid and aurora-wave themes
+            if (currentTheme === 'neon-fluid' || currentTheme === 'aurora-wave') {
+                const gradient = `linear-gradient(135deg, ${customizations.primary} 0%, ${customizations.secondary} 50%, ${customizations.accent} 100%)`;
+
+                document.body.removeAttribute('data-theme');
+                document.documentElement.style.setProperty('--custom-primary', customizations.primary);
+                document.documentElement.style.setProperty('--custom-secondary', customizations.secondary);
+                document.documentElement.style.setProperty('--custom-accent', customizations.accent);
+                document.documentElement.style.setProperty('--intensity-scale', customizations.intensity / 100);
+                document.documentElement.style.setProperty('--custom-gradient', gradient);
+
+                requestAnimationFrame(() => {
+                    document.body.setAttribute('data-theme', currentTheme);
+                });
+            }
+
+            updateHexDisplays();
+        }
+    }, 100);
+
+    // Append to body
+    document.body.appendChild(colorPanelButton);
+    document.body.appendChild(colorPanel);
 }
 
 // Main Event Listener
@@ -2371,6 +2617,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialize Starfield with Experimental Controls
     initStarfieldExperimental();
+
+    // Initialize Color Panel Controls
+    createColorCustomizerPanel();
 
     // GSAP Animations
     if (typeof gsap !== 'undefined') {
@@ -2465,12 +2714,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         localStorage.setItem('currentTheme', newTheme);
         updateStarfieldColors(newTheme);
 
-        // Show/hide color customizer based on theme
-        const colorCustomizer = document.querySelector('.color-customizer');
-        if (newTheme === 'neon-fluid' || newTheme === 'aurora-wave') {
-            colorCustomizer.style.display = 'block';
-        } else {
-            colorCustomizer.style.display = 'none';
+        // Show/hide color customizer button based on theme
+        const colorPanelButton = document.getElementById('color-panel-btn');
+        if (colorPanelButton) {
+            if (newTheme === 'neon-fluid' || newTheme === 'aurora-wave') {
+                colorPanelButton.style.display = 'flex';
+            } else {
+                colorPanelButton.style.display = 'none';
+            }
         }
 
         const animations = {
@@ -2707,12 +2958,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('theme-select').value = savedTheme;
     updateStarfieldColors(savedTheme);
 
-    // Show/hide color customizer based on initial theme
-    const colorCustomizer = document.querySelector('.color-customizer');
-    if (savedTheme === 'neon-fluid' || savedTheme === 'aurora-wave') {
-        colorCustomizer.style.display = 'block';
-    } else {
-        colorCustomizer.style.display = 'none';
+    // Show/hide color customizer button based on initial theme
+    const colorPanelButton = document.getElementById('color-panel-btn');
+    if (colorPanelButton) {
+        if (savedTheme === 'neon-fluid' || savedTheme === 'aurora-wave') {
+            colorPanelButton.style.display = 'flex';
+        } else {
+            colorPanelButton.style.display = 'none';
+        }
     }
 
     // Initialize color inputs
