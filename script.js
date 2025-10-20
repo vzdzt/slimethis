@@ -2378,7 +2378,7 @@ function createColorCustomizerPanel() {
     colorPanelButton.style.cssText = `
         position: fixed;
         bottom: 25px;
-        right: 25px;
+        left: 25px;
         width: 48px;
         height: 48px;
         background: rgba(255, 0, 255, 0.9);
@@ -2402,12 +2402,12 @@ function createColorCustomizerPanel() {
     colorPanel.style.cssText = `
         position: fixed;
         bottom: 80px;
-        right: 25px;
+        left: 25px;
         background: rgba(0, 0, 0, 0.95);
         backdrop-filter: blur(20px);
         border: 2px solid var(--primary, #00ff00);
-        border-right: none;
-        border-radius: 12px 0 12px 12px;
+        border-left: none;
+        border-radius: 0 12px 12px 12px;
         padding: 20px;
         opacity: 0;
         visibility: hidden;
