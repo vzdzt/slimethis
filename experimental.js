@@ -143,11 +143,17 @@ function createStars() {
 }
 
 function initGUI() {
-    // Initialize lil-gui
-    gui = new lil.GUI({ title: 'Starfield Controls' });
+    // Initialize lil-gui with custom styling
+    gui = new lil.GUI({
+        title: 'Starfield Controls',
+        width: 280
+    });
+
+    // Apply custom SlimeThis styling
+    styleLilGUI();
 
     // Starfield parameters
-    const starFolder = gui.addFolder('Stars');
+    const starFolder = gui.addFolder('🌟 Stars');
     starFolder.add(starfieldParams, 'starCount', 1000, 50000, 1000).onChange(createStars);
     starFolder.add(starfieldParams, 'starSize', 0.5, 5, 0.1).onChange(() => {
         if (starField && starField.material) {
@@ -157,23 +163,103 @@ function initGUI() {
     });
 
     // Animation parameters
-    const animFolder = gui.addFolder('Animation');
+    const animFolder = gui.addFolder('⚡ Animation');
     animFolder.add(starfieldParams, 'animationSpeed', 0, 0.002, 0.0001);
     animFolder.add(starfieldParams, 'mouseInfluence', 0, 0.01, 0.0001);
     animFolder.add(starfieldParams, 'scaleAmplitude', 0, 0.2, 0.01);
     animFolder.add(starfieldParams, 'baseScale', 0.5, 2, 0.1);
 
     // Color controls
-    const colorFolder = gui.addFolder('Colors');
+    const colorFolder = gui.addFolder('🎨 Colors');
     colorFolder.add(starfieldParams.color, 'r', 0, 1, 0.01).onChange(updateStarColors);
     colorFolder.add(starfieldParams.color, 'g', 0, 1, 0.01).onChange(updateStarColors);
     colorFolder.add(starfieldParams.color, 'b', 0, 1, 0.01).onChange(updateStarColors);
 
     // Utility functions
-    gui.add({ regenerateStars: createStars }, 'regenerateStars').name('Regenerate Stars');
-    gui.add({ resetToDefaults: resetStarfieldDefaults }, 'resetToDefaults').name('Reset Defaults');
+    gui.add({ regenerateStars: createStars }, 'regenerateStars').name('🔄 Regenerate Stars');
+    gui.add({ resetToDefaults: resetStarfieldDefaults }, 'resetToDefaults').name('⚙️ Reset Defaults');
 
-    console.log('✅ lil-gui controls initialized');
+    console.log('✅ lil-gui controls initialized with SlimeThis styling');
+}
+
+function styleLilGUI() {
+    // Wait for GUI to be created, then apply custom styles
+    setTimeout(() => {
+        if (!gui || !gui.domElement) return;
+
+        const guiElement = gui.domElement;
+
+        // Apply SlimeThis cyber theme
+        guiElement.style.background = 'rgba(0, 0, 0, 0.9)';
+        guiElement.style.backdropFilter = 'blur(20px)';
+        guiElement.style.border = '2px solid var(--primary, #00ff00)';
+        guiElement.style.borderRadius = '12px';
+        guiElement.style.boxShadow = '0 0 20px var(--glow, rgba(0, 255, 0, 0.3))';
+        guiElement.style.fontFamily = 'Arial, sans-serif';
+
+        // Style the title
+        const title = guiElement.querySelector('.title');
+        if (title) {
+            title.style.color = 'var(--primary, #00ff00)';
+            title.style.textShadow = '0 0 8px var(--glow, #00ff00)';
+            title.style.fontWeight = 'bold';
+            title.style.fontSize = '14px';
+        }
+
+        // Style folders
+        const folders = guiElement.querySelectorAll('.folder');
+        folders.forEach(folder => {
+            const title = folder.querySelector('.title');
+            if (title) {
+                title.style.color = 'var(--text-color, #ffffff)';
+                title.style.fontSize = '12px';
+                title.style.fontWeight = '600';
+            }
+        });
+
+        // Style controllers
+        const controllers = guiElement.querySelectorAll('.controller');
+        controllers.forEach(controller => {
+            controller.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
+            controller.style.padding = '4px 0';
+
+            const name = controller.querySelector('.name');
+            if (name) {
+                name.style.color = 'var(--text-color, #ffffff)';
+                name.style.fontSize = '11px';
+            }
+        });
+
+        // Style buttons
+        const buttons = guiElement.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.style.background = 'rgba(0, 255, 0, 0.1)';
+            button.style.border = '1px solid var(--primary, #00ff00)';
+            button.style.borderRadius = '6px';
+            button.style.color = 'var(--primary, #00ff00)';
+            button.style.fontSize = '11px';
+            button.style.fontWeight = '600';
+            button.style.transition = 'all 0.3s ease';
+
+            button.addEventListener('mouseenter', () => {
+                button.style.background = 'rgba(0, 255, 0, 0.2)';
+                button.style.boxShadow = '0 0 8px var(--glow, rgba(0, 255, 0, 0.3))';
+            });
+
+            button.addEventListener('mouseleave', () => {
+                button.style.background = 'rgba(0, 255, 0, 0.1)';
+                button.style.boxShadow = 'none';
+            });
+        });
+
+        // Style sliders
+        const sliders = guiElement.querySelectorAll('input[type="range"]');
+        sliders.forEach(slider => {
+            slider.style.accentColor = 'var(--primary, #00ff00)';
+        });
+
+        console.log('🎨 lil-gui styled with SlimeThis cyber theme');
+    }, 100); // Small delay to ensure GUI is fully rendered
 }
 
 
