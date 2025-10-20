@@ -298,14 +298,14 @@ function createCollapsibleControlPanel() {
         pointer-events: auto; /* Ensure clicks work */
     `;
 
-    // Create the shader effects tab (separate button)
+    // Create the shader effects tab (separate button) - positioned left of main tab
     const shaderTab = document.createElement('div');
     shaderTab.id = 'shader-tab';
     shaderTab.innerHTML = '✨';
     shaderTab.style.cssText = `
         position: absolute;
         bottom: -95px; /* Same level as main tab */
-        right: 110px; /* Positioned left of main tab */
+        right: 120px; /* Further left of main tab (70px) */
         width: 32px;
         height: 32px;
         background: rgba(0, 0, 0, 0.9);
