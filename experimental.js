@@ -222,32 +222,38 @@ function initTweakpane() {
         console.error('❌ Could not find pane DOM element');
     }
 
-    // Starfield parameters
-    const starFolder = pane.addFolder('Stars');
-    starFolder.add(starfieldParams, 'starCount', 1000, 50000, 1000).on('change', createStars);
-    starFolder.add(starfieldParams, 'starSize', 0.5, 5, 0.1).on('change', () => {
-        if (starField && starField.material) {
-            starField.material.size = starfieldParams.starSize;
-            starField.material.needsUpdate = true;
-        }
-    });
+    try {
+        // Starfield parameters
+        const starFolder = pane.addFolder('Stars');
+        starFolder.add(starfieldParams, 'starCount', 1000, 50000, 1000).on('change', createStars);
+        starFolder.add(starfieldParams, 'starSize', 0.5, 5, 0.1).on('change', () => {
+            if (starField && starField.material) {
+                starField.material.size = starfieldParams.starSize;
+                starField.material.needsUpdate = true;
+            }
+        });
 
-    // Animation parameters
-    const animFolder = pane.addFolder('Animation');
-    animFolder.add(starfieldParams, 'animationSpeed', 0, 0.002, 0.0001);
-    animFolder.add(starfieldParams, 'mouseInfluence', 0, 0.01, 0.0001);
-    animFolder.add(starfieldParams, 'scaleAmplitude', 0, 0.2, 0.01);
-    animFolder.add(starfieldParams, 'baseScale', 0.5, 2, 0.1);
+        // Animation parameters
+        const animFolder = pane.addFolder('Animation');
+        animFolder.add(starfieldParams, 'animationSpeed', 0, 0.002, 0.0001);
+        animFolder.add(starfieldParams, 'mouseInfluence', 0, 0.01, 0.0001);
+        animFolder.add(starfieldParams, 'scaleAmplitude', 0, 0.2, 0.01);
+        animFolder.add(starfieldParams, 'baseScale', 0.5, 2, 0.1);
 
-    // Color controls
-    const colorFolder = pane.addFolder('Colors');
-    colorFolder.add(starfieldParams.color, 'r', 0, 1, 0.01).on('change', updateStarColors);
-    colorFolder.add(starfieldParams.color, 'g', 0, 1, 0.01).on('change', updateStarColors);
-    colorFolder.add(starfieldParams.color, 'b', 0, 1, 0.01).on('change', updateStarColors);
+        // Color controls
+        const colorFolder = pane.addFolder('Colors');
+        colorFolder.add(starfieldParams.color, 'r', 0, 1, 0.01).on('change', updateStarColors);
+        colorFolder.add(starfieldParams.color, 'g', 0, 1, 0.01).on('change', updateStarColors);
+        colorFolder.add(starfieldParams.color, 'b', 0, 1, 0.01).on('change', updateStarColors);
 
-    // Utility buttons
-    pane.addButton('Regenerate Stars').on('click', createStars);
-    pane.addButton('Reset Defaults').on('click', resetStarfieldDefaults);
+        // Utility buttons
+        pane.addButton('Regenerate Stars').on('click', createStars);
+        pane.addButton('Reset Defaults').on('click', resetStarfieldDefaults);
+
+        console.log('✅ Tweakpane controls added successfully');
+    } catch (e) {
+        console.error('❌ Error adding Tweakpane controls:', e);
+    }
 
     console.log('✅ Tweakpane controls initialized');
 }
