@@ -1906,12 +1906,12 @@ let gui; // lil-gui instance
 
 // Starfield parameters (now controllable via GUI)
 let starfieldParams = {
-    starCount: 15000,
-    starSize: 1.5,
-    animationSpeed: 0.0002,
-    mouseInfluence: 0.001,
-    scaleAmplitude: 0.05,
-    baseScale: 1.0,
+    starCount: 100000,
+    starSize: 3,
+    animationSpeed: 0.01,
+    mouseInfluence: 0.01,
+    scaleAmplitude: 0.2,
+    baseScale: 0.5,
     color: { r: 0.3, g: 0.3, b: 0.5 }
 };
 
@@ -2100,10 +2100,10 @@ function createCollapsibleControlPanel() {
 
         <div class="control-section">
             <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">🌟 Stars</h4>
-            <div class="control-item">
-                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Count: <span id="star-count-value">15000</span></label>
-                <input type="range" id="star-count" min="1000" max="50000" step="1000" value="15000" style="width: 100%; accent-color: var(--primary, #00ff00);">
-            </div>
+        <div class="control-item">
+            <label style="color: var(--text-color, #ffffff); font-size: 12px;">Count: <span id="star-count-value">100000</span></label>
+            <input type="range" id="star-count" min="1000" max="100000" step="1000" value="100000" style="width: 100%; accent-color: var(--primary, #00ff00);">
+        </div>
             <div class="control-item">
                 <label style="color: var(--text-color, #ffffff); font-size: 12px;">Size: <span id="star-size-value">1.5</span></label>
                 <input type="range" id="star-size" min="0.5" max="5" step="0.1" value="1.5" style="width: 100%; accent-color: var(--primary, #00ff00);">
@@ -2953,7 +2953,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Apply saved theme
-    const savedTheme = localStorage.getItem('currentTheme') || 'veazy';
+    const savedTheme = localStorage.getItem('currentTheme') || 'galactic-nebula';
     document.body.setAttribute('data-theme', savedTheme);
     document.getElementById('theme-select').value = savedTheme;
     updateStarfieldColors(savedTheme);
