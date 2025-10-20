@@ -168,7 +168,7 @@ function createCollapsibleControlPanel() {
     tab.style.cssText = `
         position: fixed;
         bottom: 20px;
-        right: 20px; /* Match profile picture distance (~20px from edge) */
+        right: 70px; /* Trying 70px as user requested */
         width: 32px;
         height: 32px;
         background: rgba(0, 0, 0, 0.9);
