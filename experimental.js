@@ -181,10 +181,22 @@ function initGUI() {
 }
 
 function initTweakpane() {
-    // Initialize Tweakpane (v3 API)
-    pane = new Tweakpane({
-        title: 'Tweakpane Controls'
-    });
+    // Initialize Tweakpane (v3 API) - try Pane constructor
+    try {
+        pane = new Pane({
+            title: 'Tweakpane Controls'
+        });
+    } catch (e) {
+        console.error('Pane constructor failed, trying Tweakpane.Pane');
+        try {
+            pane = new Tweakpane.Pane({
+                title: 'Tweakpane Controls'
+            });
+        } catch (e2) {
+            console.error('Tweakpane.Pane also failed:', e2);
+            return;
+        }
+    }
 
     // Move the pane to a better position (bottom right)
     pane.domElement.style.position = 'fixed';
