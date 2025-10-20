@@ -223,36 +223,40 @@ function initTweakpane() {
     }
 
     try {
-        // Starfield parameters
-        const starFolder = pane.addFolder('Stars');
-        starFolder.add(starfieldParams, 'starCount', 1000, 50000, 1000).on('change', createStars);
-        starFolder.add(starfieldParams, 'starSize', 0.5, 5, 0.1).on('change', () => {
-            if (starField && starField.material) {
-                starField.material.size = starfieldParams.starSize;
-                starField.material.needsUpdate = true;
-            }
+        // Try simpler Tweakpane v3 API - basic controls first
+        pane.addBinding(starfieldParams, 'starCount', {
+            min: 1000,
+            max: 50000,
+            step: 1000
         });
 
-        // Animation parameters
-        const animFolder = pane.addFolder('Animation');
-        animFolder.add(starfieldParams, 'animationSpeed', 0, 0.002, 0.0001);
-        animFolder.add(starfieldParams, 'mouseInfluence', 0, 0.01, 0.0001);
-        animFolder.add(starfieldParams, 'scaleAmplitude', 0, 0.2, 0.01);
-        animFolder.add(starfieldParams, 'baseScale', 0.5, 2, 0.1);
+        pane.addBinding(starfieldParams, 'starSize', {
+            min: 0.5,
+            max: 5,
+            step: 0.1
+        });
 
-        // Color controls
-        const colorFolder = pane.addFolder('Colors');
-        colorFolder.add(starfieldParams.color, 'r', 0, 1, 0.01).on('change', updateStarColors);
-        colorFolder.add(starfieldParams.color, 'g', 0, 1, 0.01).on('change', updateStarColors);
-        colorFolder.add(starfieldParams.color, 'b', 0, 1, 0.01).on('change', updateStarColors);
+        pane.addBinding(starfieldParams, 'animationSpeed', {
+            min: 0,
+            max: 0.002,
+            step: 0.0001
+        });
 
-        // Utility buttons
-        pane.addButton('Regenerate Stars').on('click', createStars);
-        pane.addButton('Reset Defaults').on('click', resetStarfieldDefaults);
+        // Simple button
+        pane.addButton({
+            title: 'Regenerate Stars'
+        }).on('click', createStars);
 
-        console.log('✅ Tweakpane controls added successfully');
+        console.log('✅ Tweakpane basic controls added successfully');
     } catch (e) {
         console.error('❌ Error adding Tweakpane controls:', e);
+        // If basic controls fail, try even simpler approach
+        try {
+            pane.addInput(starfieldParams, 'starCount');
+            console.log('✅ Tweakpane input added as fallback');
+        } catch (e2) {
+            console.error('❌ Even basic input failed:', e2);
+        }
     }
 
     console.log('✅ Tweakpane controls initialized');
