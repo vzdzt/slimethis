@@ -161,14 +161,14 @@ function createCollapsibleControlPanel() {
         transition: all 0.3s ease;
     `;
 
-    // Create the tab (visible part) - positioned absolutely to screen edge
+    // Create the tab (visible part) - positioned to be visible on screen edge
     const tab = document.createElement('div');
     tab.id = 'control-tab';
     tab.innerHTML = '⚙️';
     tab.style.cssText = `
         position: fixed;
         top: 50%;
-        right: 0;
+        right: -2px;
         transform: translateY(-50%);
         width: 50px;
         height: 50px;
