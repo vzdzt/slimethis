@@ -161,29 +161,27 @@ function createCollapsibleControlPanel() {
         transition: all 0.3s ease;
     `;
 
-    // Create the tab (visible part) - positioned to be visible on screen edge
+    // Create the tab (visible part) - positioned next to profile picture
     const tab = document.createElement('div');
     tab.id = 'control-tab';
     tab.innerHTML = '⚙️';
     tab.style.cssText = `
         position: fixed;
-        top: 50%;
-        right: -2px;
-        transform: translateY(-50%);
-        width: 50px;
-        height: 50px;
+        top: 12px; /* Match navbar top position */
+        right: 52px; /* Position left of 32px pfp + some margin */
+        width: 32px; /* Same size as profile picture */
+        height: 32px; /* Same size as profile picture */
         background: rgba(0, 0, 0, 0.9);
         backdrop-filter: blur(20px);
         border: 2px solid var(--primary, #00ff00);
-        border-right: none;
-        border-radius: 12px 0 0 12px;
+        border-radius: 50%; /* Circular like profile picture */
         color: var(--primary, #00ff00);
-        font-size: 20px;
+        font-size: 16px; /* Smaller for 32px container */
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow: -5px 0 15px var(--glow, rgba(0, 255, 0, 0.3));
+        box-shadow: 0 0 10px var(--glow, rgba(0, 255, 0, 0.3));
         transition: all 0.3s ease;
         z-index: 1001;
     `;
