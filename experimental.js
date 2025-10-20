@@ -16,19 +16,18 @@ let starfieldParams = {
     scaleAmplitude: 0.05,
     baseScale: 1.0,
     color: { r: 0.3, g: 0.3, b: 0.5 },
-    // New shader effect parameters
-    shaderEffect: 'none', // 'none', 'twinkle', 'nebula', 'galaxy'
-    twinkleSpeed: 2.0,
-    twinkleIntensity: 0.5,
-    nebulaDensity: 0.3,
-    galaxyRotation: 0.1,
-    // 3D Text parameters
+    // 3D Text parameters only
     showText: false,
     textContent: 'SLIME THIS',
     textSize: 2.0,
     textColor: { r: 0.0, g: 1.0, b: 0.0 },
-    textPosition: { x: 0, y: 0, z: -50 }
+    textPosition: { x: 0, y: 0, z: -50 },
+    textAnchorX: 'center',
+    textAnchorY: 'middle'
 };
+
+// Global 3D text variable
+let textMesh = null;
 
 // Initialize the experimental page
 async function initExperimental() {
@@ -100,12 +99,9 @@ function initStarfieldExperimental() {
                 const time = Date.now() * 0.001;
                 starField.scale.setScalar(Math.sin(time) * starfieldParams.scaleAmplitude + starfieldParams.baseScale);
 
-                // Update shader uniforms if using custom shader
-                if (starField.material.uniforms) {
-                    starField.material.uniforms.uTime.value = time;
-                    starField.material.uniforms.uTwinkleSpeed.value = starfieldParams.twinkleSpeed;
-                    starField.material.uniforms.uTwinkleIntensity.value = starfieldParams.twinkleIntensity;
-                    starField.material.uniforms.uStarSize.value = starfieldParams.starSize;
+                // Animate 3D text if it exists
+                if (textMesh) {
+                    textMesh.rotation.y += 0.005; // Slow rotation
                 }
             }
             renderer.render(scene, camera);
@@ -134,8 +130,6 @@ function createStars() {
     const geometry = new THREE.BufferGeometry();
     const vertices = [];
     const colors = [];
-    const sizes = [];
-    const phases = [];
 
     for (let i = 0; i < starfieldParams.starCount; i++) {
         vertices.push(
@@ -144,115 +138,95 @@ function createStars() {
             Math.random() * 2000 - 1000
         );
         colors.push(starfieldParams.color.r, starfieldParams.color.g, starfieldParams.color.b);
-        sizes.push(Math.random() * 0.5 + 0.5); // Random size variation
-        phases.push(Math.random() * Math.PI * 2); // Random phase for twinkling
     }
 
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-    geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
-    geometry.setAttribute('phase', new THREE.Float32BufferAttribute(phases, 1));
 
-    let material;
-
-    if (starfieldParams.shaderEffect === 'none') {
-        // Use standard PointsMaterial for basic effect
-        material = new THREE.PointsMaterial({
-            size: starfieldParams.starSize,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.6,
-            sizeAttenuation: true,
-            fog: false,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending
-        });
-    } else {
-        // Use custom ShaderMaterial for advanced effects
-        material = createShaderMaterial();
-    }
+    const material = new THREE.PointsMaterial({
+        size: starfieldParams.starSize,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.6,
+        sizeAttenuation: true,
+        fog: false,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
 
     starField = new THREE.Points(geometry, material);
     scene.add(starField);
 }
 
-function createShaderMaterial() {
+function create3DText() {
+    // Remove existing text if it exists
+    if (textMesh) {
+        scene.remove(textMesh);
+        textMesh.dispose();
+        textMesh = null;
+    }
+
+    if (!starfieldParams.showText) return;
+
     try {
-        const vertexShader = `
-            attribute float size;
-            attribute float phase;
-            varying vec3 vColor;
-            varying float vTwinkle;
-            uniform float uTime;
-            uniform float uTwinkleSpeed;
-            uniform float uTwinkleIntensity;
-            uniform float uStarSize;
+        // Create new 3D text using Troika Three Text
+        textMesh = new TroikaThreeText.Text();
 
-            void main() {
-                vColor = color;
+        // Set text properties
+        textMesh.text = starfieldParams.textContent;
+        textMesh.fontSize = starfieldParams.textSize;
+        textMesh.color = new THREE.Color(
+            starfieldParams.textColor.r,
+            starfieldParams.textColor.g,
+            starfieldParams.textColor.b
+        );
+        textMesh.position.set(
+            starfieldParams.textPosition.x,
+            starfieldParams.textPosition.y,
+            starfieldParams.textPosition.z
+        );
+        textMesh.anchorX = starfieldParams.textAnchorX;
+        textMesh.anchorY = starfieldParams.textAnchorY;
 
-                // Twinkle effect
-                float twinkle = sin(uTime * uTwinkleSpeed + phase) * 0.5 + 0.5;
-                vTwinkle = mix(1.0, twinkle * uTwinkleIntensity + (1.0 - uTwinkleIntensity), uTwinkleIntensity);
+        // Add to scene
+        scene.add(textMesh);
 
-                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                gl_PointSize = uStarSize * size * vTwinkle * (300.0 / -mvPosition.z);
-                gl_Position = projectionMatrix * mvPosition;
-            }
-        `;
-
-        const fragmentShader = `
-            varying vec3 vColor;
-            varying float vTwinkle;
-
-            void main() {
-                // Create circular star shape
-                vec2 center = gl_PointCoord - vec2(0.5);
-                float dist = length(center);
-
-                if (dist > 0.5) discard;
-
-                // Soft circular falloff
-                float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
-
-                // Apply twinkle effect
-                vec3 finalColor = vColor * vTwinkle;
-
-                gl_FragColor = vec4(finalColor, alpha);
-            }
-        `;
-
-        const material = new THREE.ShaderMaterial({
-            uniforms: {
-                uTime: { value: 0 },
-                uTwinkleSpeed: { value: starfieldParams.twinkleSpeed },
-                uTwinkleIntensity: { value: starfieldParams.twinkleIntensity },
-                uStarSize: { value: starfieldParams.starSize }
-            },
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-            transparent: true,
-            vertexColors: true,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false
+        // Sync the text (asynchronous)
+        textMesh.sync(() => {
+            console.log('✅ 3D Text synced successfully');
         });
 
-        console.log('✅ Shader material created successfully');
-        return material;
+        console.log('✅ 3D Text created:', starfieldParams.textContent);
 
     } catch (error) {
-        console.error('❌ Shader creation failed:', error);
-        // Fallback to basic material
-        return new THREE.PointsMaterial({
-            size: starfieldParams.starSize,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.6,
-            sizeAttenuation: true,
-            fog: false,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending
-        });
+        console.error('❌ 3D Text creation failed:', error);
+    }
+}
+
+function update3DText() {
+    if (!textMesh) return;
+
+    try {
+        textMesh.text = starfieldParams.textContent;
+        textMesh.fontSize = starfieldParams.textSize;
+        textMesh.color = new THREE.Color(
+            starfieldParams.textColor.r,
+            starfieldParams.textColor.g,
+            starfieldParams.textColor.b
+        );
+        textMesh.position.set(
+            starfieldParams.textPosition.x,
+            starfieldParams.textPosition.y,
+            starfieldParams.textPosition.z
+        );
+        textMesh.anchorX = starfieldParams.textAnchorX;
+        textMesh.anchorY = starfieldParams.textAnchorY;
+
+        // Sync changes
+        textMesh.sync();
+
+    } catch (error) {
+        console.error('❌ 3D Text update failed:', error);
     }
 }
 
@@ -304,14 +278,14 @@ function createCollapsibleControlPanel() {
         pointer-events: auto; /* Ensure clicks work */
     `;
 
-    // Create the shader effects tab (separate button) - positioned left of main tab
-    const shaderTab = document.createElement('div');
-    shaderTab.id = 'shader-tab';
-    shaderTab.innerHTML = '✨';
-    shaderTab.style.cssText = `
+    // Create the Troika 3D text tab (separate button) - positioned left of main tab
+    const troikaTab = document.createElement('div');
+    troikaTab.id = 'troika-tab';
+    troikaTab.innerHTML = '📝';
+    troikaTab.style.cssText = `
         position: absolute;
         bottom: -95px; /* Same level as main tab */
-        right: 120px; /* Further left of main tab (70px) */
+        right: 120px; /* Left of main tab */
         width: 32px;
         height: 32px;
         background: rgba(0, 0, 0, 0.9);
@@ -350,7 +324,7 @@ function createCollapsibleControlPanel() {
         overflow-y: auto;
     `;
 
-    // Create sections
+    // Create sections - KEPT THE SAME STARFIELD CONTROLS
     content.innerHTML = `
         <h3 style="color: var(--primary, #00ff00); margin: 0 0 15px 0; text-shadow: 0 0 8px var(--glow, #00ff00);">
             🌟 Starfield Controls
@@ -387,8 +361,6 @@ function createCollapsibleControlPanel() {
                 <input type="range" id="base-scale" min="0.5" max="2" step="0.1" value="1.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
             </div>
         </div>
-
-
 
         <div class="control-section">
             <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">🎨 Colors</h4>
@@ -469,7 +441,7 @@ function createCollapsibleControlPanel() {
         }
     });
 
-    // Add control event listeners
+    // Add control event listeners - KEPT ALL STARFIELD CONTROLS
     setTimeout(() => {
         // Star controls
         const starCountInput = document.getElementById('star-count');
@@ -545,70 +517,28 @@ function createCollapsibleControlPanel() {
             updateStarColors();
         });
 
-        // Shader effect controls
-        const shaderEffectSelect = document.getElementById('shader-effect');
-        const shaderEffectValue = document.getElementById('shader-effect-value');
-        shaderEffectSelect.addEventListener('change', (e) => {
-            starfieldParams.shaderEffect = e.target.value;
-            shaderEffectValue.textContent = e.target.value;
-            createStars(); // Recreate stars with new material
-        });
-
-        const twinkleSpeedInput = document.getElementById('twinkle-speed');
-        const twinkleSpeedValue = document.getElementById('twinkle-speed-value');
-        twinkleSpeedInput.addEventListener('input', (e) => {
-            starfieldParams.twinkleSpeed = parseFloat(e.target.value);
-            twinkleSpeedValue.textContent = e.target.value;
-        });
-
-        const twinkleIntensityInput = document.getElementById('twinkle-intensity');
-        const twinkleIntensityValue = document.getElementById('twinkle-intensity-value');
-        twinkleIntensityInput.addEventListener('input', (e) => {
-            starfieldParams.twinkleIntensity = parseFloat(e.target.value);
-            twinkleIntensityValue.textContent = e.target.value;
-        });
-
         // Button controls
         document.getElementById('regenerate-btn').addEventListener('click', createStars);
         document.getElementById('reset-btn').addEventListener('click', resetStarfieldDefaults);
-
-        // Button hover effects
-        document.getElementById('regenerate-btn').addEventListener('mouseenter', function() {
-            this.style.background = 'rgba(0, 255, 0, 0.2)';
-            this.style.boxShadow = '0 0 8px var(--glow, rgba(0, 255, 0, 0.3))';
-        });
-        document.getElementById('regenerate-btn').addEventListener('mouseleave', function() {
-            this.style.background = 'rgba(0, 255, 0, 0.1)';
-            this.style.boxShadow = 'none';
-        });
-
-        document.getElementById('reset-btn').addEventListener('mouseenter', function() {
-            this.style.background = 'rgba(255, 100, 100, 0.2)';
-            this.style.boxShadow = '0 0 8px rgba(255, 100, 100, 0.3)';
-        });
-        document.getElementById('reset-btn').addEventListener('mouseleave', function() {
-            this.style.background = 'rgba(255, 100, 100, 0.1)';
-            this.style.boxShadow = 'none';
-        });
     }, 100);
 
-    // Create shader effects panel - positioned on left edge
-    const shaderPanel = document.createElement('div');
-    shaderPanel.id = 'shader-panel';
-    shaderPanel.style.cssText = `
+    // Create Troika 3D text panel
+    const troikaPanel = document.createElement('div');
+    troikaPanel.id = 'troika-panel';
+    troikaPanel.style.cssText = `
         position: fixed;
         top: 50%;
-        left: -50px; /* Start with tab visible on left edge */
+        left: -50px; /* Left edge for Troika panel */
         transform: translateY(-50%);
         z-index: 1000;
         transition: all 0.3s ease;
     `;
 
-    // Create shader content panel - opens to the right
-    const shaderContent = document.createElement('div');
-    shaderContent.id = 'shader-content';
-    shaderContent.style.cssText = `
-        width: 220px; /* Smaller than main panel */
+    // Create Troika content panel
+    const troikaContent = document.createElement('div');
+    troikaContent.id = 'troika-content';
+    troikaContent.style.cssText = `
+        width: 220px;
         background: rgba(0, 0, 0, 0.95);
         backdrop-filter: blur(20px);
         border: 2px solid var(--primary, #00ff00);
@@ -624,81 +554,137 @@ function createCollapsibleControlPanel() {
         overflow-y: auto;
     `;
 
-    // Shader panel content
-    shaderContent.innerHTML = `
+    // Troika panel content
+    troikaContent.innerHTML = `
         <h3 style="color: var(--primary, #00ff00); margin: 0 0 15px 0; text-shadow: 0 0 8px var(--glow, #00ff00);">
-            ✨ Shader Effects
+            📝 3D Text (Troika)
         </h3>
 
         <div class="control-section">
             <div class="control-item">
-                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Effect: <span id="shader-effect-value">none</span></label>
-                <select id="shader-effect" style="width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px; border-radius: 4px;">
-                    <option value="none">None</option>
-                    <option value="twinkle">Twinkle</option>
-                </select>
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Show Text: <span id="show-text-value">false</span></label>
+                <input type="checkbox" id="show-text" style="accent-color: var(--primary, #00ff00);">
             </div>
             <div class="control-item">
-                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Twinkle Speed: <span id="twinkle-speed-value">2.0</span></label>
-                <input type="range" id="twinkle-speed" min="0.5" max="5" step="0.1" value="2.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Text: <span id="text-content-value">SLIME THIS</span></label>
+                <input type="text" id="text-content" value="SLIME THIS" style="width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px; border-radius: 4px;">
             </div>
             <div class="control-item">
-                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Twinkle Intensity: <span id="twinkle-intensity-value">0.5</span></label>
-                <input type="range" id="twinkle-intensity" min="0" max="1" step="0.01" value="0.5" style="width: 100%; accent-color: var(--primary, #00ff00);">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Size: <span id="text-size-value">2.0</span></label>
+                <input type="range" id="text-size" min="0.5" max="10" step="0.1" value="2.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Text Red: <span id="text-color-r-value">0.0</span></label>
+                <input type="range" id="text-color-r" min="0" max="1" step="0.01" value="0.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Text Green: <span id="text-color-g-value">1.0</span></label>
+                <input type="range" id="text-color-g" min="0" max="1" step="0.01" value="1.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Text Blue: <span id="text-color-b-value">0.0</span></label>
+                <input type="range" id="text-color-b" min="0" max="1" step="0.01" value="0.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
             </div>
         </div>
     `;
 
-    // Add hover effects to shader tab
-    shaderTab.addEventListener('mouseenter', () => {
-        shaderTab.style.transform = 'scale(1.1)';
-        shaderTab.style.boxShadow = '0 0 12px var(--glow)';
+    // Add hover effects to Troika tab
+    troikaTab.addEventListener('mouseenter', () => {
+        troikaTab.style.transform = 'scale(1.1)';
+        troikaTab.style.boxShadow = '0 0 12px var(--glow)';
     });
 
-    shaderTab.addEventListener('mouseleave', () => {
-        if (!shaderPanel.classList.contains('open')) {
-            shaderTab.style.transform = 'scale(1)';
-            shaderTab.style.boxShadow = '0 0 8px var(--glow)';
+    troikaTab.addEventListener('mouseleave', () => {
+        if (!troikaPanel.classList.contains('open')) {
+            troikaTab.style.transform = 'scale(1)';
+            troikaTab.style.boxShadow = '0 0 8px var(--glow)';
         }
     });
 
-    // Toggle shader panel on shader tab click
-    let shaderIsOpen = false;
-    shaderTab.addEventListener('click', () => {
-        shaderIsOpen = !shaderIsOpen;
-        if (shaderIsOpen) {
-            shaderPanel.classList.add('open');
-            shaderContent.style.opacity = '1';
-            shaderContent.style.visibility = 'visible';
-            shaderContent.style.transform = 'translateX(0)';
-            shaderTab.innerHTML = '✕';
-            shaderTab.style.background = 'rgba(0, 255, 0, 0.2)';
+    // Toggle Troika panel on tab click
+    let troikaIsOpen = false;
+    troikaTab.addEventListener('click', () => {
+        troikaIsOpen = !troikaIsOpen;
+        if (troikaIsOpen) {
+            troikaPanel.classList.add('open');
+            troikaContent.style.opacity = '1';
+            troikaContent.style.visibility = 'visible';
+            troikaContent.style.transform = 'translateX(0)';
+            troikaTab.innerHTML = '✕';
+            troikaTab.style.background = 'rgba(0, 255, 0, 0.2)';
         } else {
-            shaderPanel.classList.remove('open');
-            shaderContent.style.opacity = '0';
-            shaderContent.style.visibility = 'hidden';
-            shaderContent.style.transform = 'translateX(20px)';
-            shaderTab.innerHTML = '✨';
-            shaderTab.style.background = 'rgba(0, 0, 0, 0.9)';
+            troikaPanel.classList.remove('open');
+            troikaContent.style.opacity = '0';
+            troikaContent.style.visibility = 'hidden';
+            troikaContent.style.transform = 'translateX(20px)';
+            troikaTab.innerHTML = '📝';
+            troikaTab.style.background = 'rgba(0, 0, 0, 0.9)';
         }
     });
 
-    // Assemble the panels
+    // Add Troika event listeners
+    setTimeout(() => {
+        const showTextInput = document.getElementById('show-text');
+        const showTextValue = document.getElementById('show-text-value');
+        showTextInput.addEventListener('change', (e) => {
+            starfieldParams.showText = e.target.checked;
+            showTextValue.textContent = e.target.checked;
+            create3DText();
+        });
+
+        const textContentInput = document.getElementById('text-content');
+        const textContentValue = document.getElementById('text-content-value');
+        textContentInput.addEventListener('input', (e) => {
+            starfieldParams.textContent = e.target.value;
+            textContentValue.textContent = e.target.value;
+            update3DText();
+        });
+
+        const textSizeInput = document.getElementById('text-size');
+        const textSizeValue = document.getElementById('text-size-value');
+        textSizeInput.addEventListener('input', (e) => {
+            starfieldParams.textSize = parseFloat(e.target.value);
+            textSizeValue.textContent = e.target.value;
+            update3DText();
+        });
+
+        const textColorRInput = document.getElementById('text-color-r');
+        const textColorRValue = document.getElementById('text-color-r-value');
+        textColorRInput.addEventListener('input', (e) => {
+            starfieldParams.textColor.r = parseFloat(e.target.value);
+            textColorRValue.textContent = e.target.value;
+            update3DText();
+        });
+
+        const textColorGInput = document.getElementById('text-color-g');
+        const textColorGValue = document.getElementById('text-color-g-value');
+        textColorGInput.addEventListener('input', (e) => {
+            starfieldParams.textColor.g = parseFloat(e.target.value);
+            textColorGValue.textContent = e.target.value;
+            update3DText();
+        });
+
+        const textColorBInput = document.getElementById('text-color-b');
+        const textColorBValue = document.getElementById('text-color-b-value');
+        textColorBInput.addEventListener('input', (e) => {
+            starfieldParams.textColor.b = parseFloat(e.target.value);
+            textColorBValue.textContent = e.target.value;
+            update3DText();
+        });
+    }, 100);
+
+    // Assemble the panels - KEPT STARFIELD PANEL AND ADDED TROIKA PANEL
     panel.appendChild(content);
     panel.appendChild(tab);
     document.body.appendChild(panel);
 
-    shaderPanel.appendChild(shaderContent);
-    shaderPanel.appendChild(shaderTab);
-    document.body.appendChild(shaderPanel);
+    troikaPanel.appendChild(troikaContent);
+    troikaPanel.appendChild(troikaTab);
+    document.body.appendChild(troikaPanel);
 
     console.log('✅ Collapsible control panel created');
-    console.log('✅ Shader effects panel created');
+    console.log('✅ Troika 3D text panel created');
 }
-
-
-
-
 
 function updateStarColors() {
     if (starField && starField.geometry.attributes.color) {
@@ -720,11 +706,16 @@ function resetStarfieldDefaults() {
     starfieldParams.scaleAmplitude = 0.05;
     starfieldParams.baseScale = 1.0;
     starfieldParams.color = { r: 0.3, g: 0.3, b: 0.5 };
-    starfieldParams.shaderEffect = 'none';
-    starfieldParams.twinkleSpeed = 2.0;
-    starfieldParams.twinkleIntensity = 0.5;
+    // Reset 3D text parameters
+    starfieldParams.showText = false;
+    starfieldParams.textContent = 'SLIME THIS';
+    starfieldParams.textSize = 2.0;
+    starfieldParams.textColor = { r: 0.0, g: 1.0, b: 0.0 };
+    starfieldParams.textPosition = { x: 0, y: 0, z: -50 };
+    starfieldParams.textAnchorX = 'center';
+    starfieldParams.textAnchorY = 'middle';
 
-    // Update custom controls
+    // Update all controls
     setTimeout(() => {
         document.getElementById('star-count').value = starfieldParams.starCount;
         document.getElementById('star-count-value').textContent = starfieldParams.starCount;
@@ -744,16 +735,23 @@ function resetStarfieldDefaults() {
         document.getElementById('color-g-value').textContent = starfieldParams.color.g;
         document.getElementById('color-b').value = starfieldParams.color.b;
         document.getElementById('color-b-value').textContent = starfieldParams.color.b;
-        document.getElementById('shader-effect').value = starfieldParams.shaderEffect;
-        document.getElementById('shader-effect-value').textContent = starfieldParams.shaderEffect;
-        document.getElementById('twinkle-speed').value = starfieldParams.twinkleSpeed;
-        document.getElementById('twinkle-speed-value').textContent = starfieldParams.twinkleSpeed;
-        document.getElementById('twinkle-intensity').value = starfieldParams.twinkleIntensity;
-        document.getElementById('twinkle-intensity-value').textContent = starfieldParams.twinkleIntensity;
+        document.getElementById('show-text').checked = starfieldParams.showText;
+        document.getElementById('show-text-value').textContent = starfieldParams.showText;
+        document.getElementById('text-content').value = starfieldParams.textContent;
+        document.getElementById('text-content-value').textContent = starfieldParams.textContent;
+        document.getElementById('text-size').value = starfieldParams.textSize;
+        document.getElementById('text-size-value').textContent = starfieldParams.textSize;
+        document.getElementById('text-color-r').value = starfieldParams.textColor.r;
+        document.getElementById('text-color-r-value').textContent = starfieldParams.textColor.r;
+        document.getElementById('text-color-g').value = starfieldParams.textColor.g;
+        document.getElementById('text-color-g-value').textContent = starfieldParams.textColor.g;
+        document.getElementById('text-color-b').value = starfieldParams.textColor.b;
+        document.getElementById('text-color-b-value').textContent = starfieldParams.textColor.b;
     }, 100);
 
-    // Recreate stars
+    // Recreate stars and remove text
     createStars();
+    create3DText(); // This will remove existing text if showText is false
 }
 
 function initThemeSystem() {
