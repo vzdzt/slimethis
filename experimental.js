@@ -15,7 +15,13 @@ let starfieldParams = {
     mouseInfluence: 0.001,
     scaleAmplitude: 0.05,
     baseScale: 1.0,
-    color: { r: 0.3, g: 0.3, b: 0.5 }
+    color: { r: 0.3, g: 0.3, b: 0.5 },
+    // New shader effect parameters
+    shaderEffect: 'none', // 'none', 'twinkle', 'nebula', 'galaxy'
+    twinkleSpeed: 2.0,
+    twinkleIntensity: 0.5,
+    nebulaDensity: 0.3,
+    galaxyRotation: 0.1
 };
 
 // Initialize the experimental page
@@ -87,6 +93,14 @@ function initStarfieldExperimental() {
                 starField.rotation.y += starfieldParams.animationSpeed * 1.5;
                 const time = Date.now() * 0.001;
                 starField.scale.setScalar(Math.sin(time) * starfieldParams.scaleAmplitude + starfieldParams.baseScale);
+
+                // Update shader uniforms if using custom shader
+                if (starField.material.uniforms) {
+                    starField.material.uniforms.uTime.value = time;
+                    starField.material.uniforms.uTwinkleSpeed.value = starfieldParams.twinkleSpeed;
+                    starField.material.uniforms.uTwinkleIntensity.value = starfieldParams.twinkleIntensity;
+                    starField.material.uniforms.uStarSize.value = starfieldParams.starSize;
+                }
             }
             renderer.render(scene, camera);
         }
@@ -114,6 +128,8 @@ function createStars() {
     const geometry = new THREE.BufferGeometry();
     const vertices = [];
     const colors = [];
+    const sizes = [];
+    const phases = [];
 
     for (let i = 0; i < starfieldParams.starCount; i++) {
         vertices.push(
@@ -122,24 +138,97 @@ function createStars() {
             Math.random() * 2000 - 1000
         );
         colors.push(starfieldParams.color.r, starfieldParams.color.g, starfieldParams.color.b);
+        sizes.push(Math.random() * 0.5 + 0.5); // Random size variation
+        phases.push(Math.random() * Math.PI * 2); // Random phase for twinkling
     }
 
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+    geometry.setAttribute('phase', new THREE.Float32BufferAttribute(phases, 1));
 
-    const material = new THREE.PointsMaterial({
-        size: starfieldParams.starSize,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.6,
-        sizeAttenuation: true,
-        fog: false,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-    });
+    let material;
+
+    if (starfieldParams.shaderEffect === 'none') {
+        // Use standard PointsMaterial for basic effect
+        material = new THREE.PointsMaterial({
+            size: starfieldParams.starSize,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.6,
+            sizeAttenuation: true,
+            fog: false,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        });
+    } else {
+        // Use custom ShaderMaterial for advanced effects
+        material = createShaderMaterial();
+    }
 
     starField = new THREE.Points(geometry, material);
     scene.add(starField);
+}
+
+function createShaderMaterial() {
+    const vertexShader = `
+        attribute float size;
+        attribute float phase;
+        varying vec3 vColor;
+        varying float vTwinkle;
+        uniform float uTime;
+        uniform float uTwinkleSpeed;
+        uniform float uTwinkleIntensity;
+        uniform float uStarSize;
+
+        void main() {
+            vColor = color;
+
+            // Twinkle effect
+            float twinkle = sin(uTime * uTwinkleSpeed + phase) * 0.5 + 0.5;
+            vTwinkle = mix(1.0, twinkle * uTwinkleIntensity + (1.0 - uTwinkleIntensity), uTwinkleIntensity);
+
+            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+            gl_PointSize = uStarSize * size * vTwinkle * (300.0 / -mvPosition.z);
+            gl_Position = projectionMatrix * mvPosition;
+        }
+    `;
+
+    const fragmentShader = `
+        varying vec3 vColor;
+        varying float vTwinkle;
+
+        void main() {
+            // Create circular star shape
+            vec2 center = gl_PointCoord - vec2(0.5);
+            float dist = length(center);
+
+            if (dist > 0.5) discard;
+
+            // Soft circular falloff
+            float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
+
+            // Apply twinkle effect
+            vec3 finalColor = vColor * vTwinkle;
+
+            gl_FragColor = vec4(finalColor, alpha * 0.8);
+        }
+    `;
+
+    return new THREE.ShaderMaterial({
+        uniforms: {
+            uTime: { value: 0 },
+            uTwinkleSpeed: { value: starfieldParams.twinkleSpeed },
+            uTwinkleIntensity: { value: starfieldParams.twinkleIntensity },
+            uStarSize: { value: starfieldParams.starSize }
+        },
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,
+        transparent: true,
+        vertexColors: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
 }
 
 function initGUI() {
@@ -245,6 +334,25 @@ function createCollapsibleControlPanel() {
             <div class="control-item">
                 <label style="color: var(--text-color, #ffffff); font-size: 12px;">Base Scale: <span id="base-scale-value">1.0</span></label>
                 <input type="range" id="base-scale" min="0.5" max="2" step="0.1" value="1.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+        </div>
+
+        <div class="control-section">
+            <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">✨ Shader Effects</h4>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Effect: <span id="shader-effect-value">none</span></label>
+                <select id="shader-effect" style="width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px; border-radius: 4px;">
+                    <option value="none">None</option>
+                    <option value="twinkle">Twinkle</option>
+                </select>
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Twinkle Speed: <span id="twinkle-speed-value">2.0</span></label>
+                <input type="range" id="twinkle-speed" min="0.5" max="5" step="0.1" value="2.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Twinkle Intensity: <span id="twinkle-intensity-value">0.5</span></label>
+                <input type="range" id="twinkle-intensity" min="0" max="1" step="0.01" value="0.5" style="width: 100%; accent-color: var(--primary, #00ff00);">
             </div>
         </div>
 
@@ -403,6 +511,29 @@ function createCollapsibleControlPanel() {
             updateStarColors();
         });
 
+        // Shader effect controls
+        const shaderEffectSelect = document.getElementById('shader-effect');
+        const shaderEffectValue = document.getElementById('shader-effect-value');
+        shaderEffectSelect.addEventListener('change', (e) => {
+            starfieldParams.shaderEffect = e.target.value;
+            shaderEffectValue.textContent = e.target.value;
+            createStars(); // Recreate stars with new material
+        });
+
+        const twinkleSpeedInput = document.getElementById('twinkle-speed');
+        const twinkleSpeedValue = document.getElementById('twinkle-speed-value');
+        twinkleSpeedInput.addEventListener('input', (e) => {
+            starfieldParams.twinkleSpeed = parseFloat(e.target.value);
+            twinkleSpeedValue.textContent = e.target.value;
+        });
+
+        const twinkleIntensityInput = document.getElementById('twinkle-intensity');
+        const twinkleIntensityValue = document.getElementById('twinkle-intensity-value');
+        twinkleIntensityInput.addEventListener('input', (e) => {
+            starfieldParams.twinkleIntensity = parseFloat(e.target.value);
+            twinkleIntensityValue.textContent = e.target.value;
+        });
+
         // Button controls
         document.getElementById('regenerate-btn').addEventListener('click', createStars);
         document.getElementById('reset-btn').addEventListener('click', resetStarfieldDefaults);
@@ -459,6 +590,9 @@ function resetStarfieldDefaults() {
     starfieldParams.scaleAmplitude = 0.05;
     starfieldParams.baseScale = 1.0;
     starfieldParams.color = { r: 0.3, g: 0.3, b: 0.5 };
+    starfieldParams.shaderEffect = 'none';
+    starfieldParams.twinkleSpeed = 2.0;
+    starfieldParams.twinkleIntensity = 0.5;
 
     // Update custom controls
     setTimeout(() => {
@@ -480,6 +614,12 @@ function resetStarfieldDefaults() {
         document.getElementById('color-g-value').textContent = starfieldParams.color.g;
         document.getElementById('color-b').value = starfieldParams.color.b;
         document.getElementById('color-b-value').textContent = starfieldParams.color.b;
+        document.getElementById('shader-effect').value = starfieldParams.shaderEffect;
+        document.getElementById('shader-effect-value').textContent = starfieldParams.shaderEffect;
+        document.getElementById('twinkle-speed').value = starfieldParams.twinkleSpeed;
+        document.getElementById('twinkle-speed-value').textContent = starfieldParams.twinkleSpeed;
+        document.getElementById('twinkle-intensity').value = starfieldParams.twinkleIntensity;
+        document.getElementById('twinkle-intensity-value').textContent = starfieldParams.twinkleIntensity;
     }, 100);
 
     // Recreate stars
