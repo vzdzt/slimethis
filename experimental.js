@@ -6,6 +6,7 @@ let allImages = [];
 // Global Three.js variables
 let camera, renderer, starField, scene = null;
 let gui; // lil-gui instance
+let pane; // Tweakpane instance
 
 // Starfield parameters (now controllable via GUI)
 let starfieldParams = {
@@ -30,6 +31,9 @@ async function initExperimental() {
 
     // Initialize lil-gui controls
     initGUI();
+
+    // Initialize Tweakpane controls
+    initTweakpane();
 
     // Initialize other components
     initThemeSystem();
@@ -174,6 +178,91 @@ function initGUI() {
     gui.add({ resetToDefaults: resetStarfieldDefaults }, 'resetToDefaults').name('Reset Defaults');
 
     console.log('✅ lil-gui controls initialized');
+}
+
+function initTweakpane() {
+    // Initialize Tweakpane
+    pane = new Tweakpane.Pane({
+        title: 'Tweakpane Controls',
+        expanded: false
+    });
+
+    // Move the pane to a better position (bottom right)
+    pane.element.style.position = 'fixed';
+    pane.element.style.bottom = '20px';
+    pane.element.style.right = '20px';
+    pane.element.style.zIndex = '1000';
+
+    // Starfield parameters
+    const starFolder = pane.addFolder({ title: 'Stars' });
+    starFolder.addBinding(starfieldParams, 'starCount', {
+        min: 1000,
+        max: 50000,
+        step: 1000
+    }).on('change', createStars);
+
+    starFolder.addBinding(starfieldParams, 'starSize', {
+        min: 0.5,
+        max: 5,
+        step: 0.1
+    }).on('change', () => {
+        if (starField && starField.material) {
+            starField.material.size = starfieldParams.starSize;
+            starField.material.needsUpdate = true;
+        }
+    });
+
+    // Animation parameters
+    const animFolder = pane.addFolder({ title: 'Animation' });
+    animFolder.addBinding(starfieldParams, 'animationSpeed', {
+        min: 0,
+        max: 0.002,
+        step: 0.0001
+    });
+
+    animFolder.addBinding(starfieldParams, 'mouseInfluence', {
+        min: 0,
+        max: 0.01,
+        step: 0.0001
+    });
+
+    animFolder.addBinding(starfieldParams, 'scaleAmplitude', {
+        min: 0,
+        max: 0.2,
+        step: 0.01
+    });
+
+    animFolder.addBinding(starfieldParams, 'baseScale', {
+        min: 0.5,
+        max: 2,
+        step: 0.1
+    });
+
+    // Color controls
+    const colorFolder = pane.addFolder({ title: 'Colors' });
+    colorFolder.addBinding(starfieldParams.color, 'r', {
+        min: 0,
+        max: 1,
+        step: 0.01
+    }).on('change', updateStarColors);
+
+    colorFolder.addBinding(starfieldParams.color, 'g', {
+        min: 0,
+        max: 1,
+        step: 0.01
+    }).on('change', updateStarColors);
+
+    colorFolder.addBinding(starfieldParams.color, 'b', {
+        min: 0,
+        max: 1,
+        step: 0.01
+    }).on('change', updateStarColors);
+
+    // Utility buttons
+    pane.addButton({ title: 'Regenerate Stars' }).on('click', createStars);
+    pane.addButton({ title: 'Reset Defaults' }).on('click', resetStarfieldDefaults);
+
+    console.log('✅ Tweakpane controls initialized');
 }
 
 function updateStarColors() {
