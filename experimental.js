@@ -208,12 +208,19 @@ function initTweakpane() {
     }
 
     // Move the pane to a better position (bottom right)
-    pane.domElement.style.position = 'fixed';
-    pane.domElement.style.bottom = '20px';
-    pane.domElement.style.right = '20px';
-    pane.domElement.style.zIndex = '10000'; // Higher than lil-gui
-    pane.domElement.style.background = 'rgba(0, 0, 0, 0.8)'; // Make it more visible
-    pane.domElement.style.border = '1px solid rgba(255, 255, 255, 0.3)';
+    // Try different property names for the DOM element
+    const paneElement = pane.domElement || pane.element || pane.container;
+    if (paneElement) {
+        paneElement.style.position = 'fixed';
+        paneElement.style.bottom = '20px';
+        paneElement.style.right = '20px';
+        paneElement.style.zIndex = '10000'; // Higher than lil-gui
+        paneElement.style.background = 'rgba(0, 0, 0, 0.8)'; // Make it more visible
+        paneElement.style.border = '1px solid rgba(255, 255, 255, 0.3)';
+        console.log('✅ Tweakpane styling applied');
+    } else {
+        console.error('❌ Could not find pane DOM element');
+    }
 
     // Starfield parameters
     const starFolder = pane.addFolder('Stars');
