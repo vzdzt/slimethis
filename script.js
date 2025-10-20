@@ -148,54 +148,54 @@ let bangerIndices = {
 
 // Navigation arrows for sequential bangers
 function createNavigationArrows() {
-    // Previous arrow
+    // Previous arrow - positioned over content
     const prevArrow = document.createElement('button');
     prevArrow.id = 'prev-banger';
-    prevArrow.innerHTML = '⬅️';
+    prevArrow.innerHTML = '‹';
     prevArrow.title = 'Previous item in sequence';
     prevArrow.style.cssText = `
-        position: fixed;
-        left: 20px;
-        bottom: 100px; /* Position above slime button */
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
         width: 50px;
         height: 50px;
-        background: rgba(0, 0, 0, 0.9);
-        backdrop-filter: blur(20px);
-        border: 2px solid var(--primary, #00ff00);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: none;
         border-radius: 50%;
-        color: var(--primary, #00ff00);
-        font-size: 18px;
+        font-size: 1.5rem;
         cursor: pointer;
-        display: none; /* Hidden by default, shown for specific types */
-        box-shadow: 0 0 10px var(--glow, rgba(0, 255, 0, 0.3));
+        font-weight: bold;
+        z-index: 10;
+        opacity: 0; /* Hidden by default */
         transition: all 0.3s ease;
-        z-index: 9999;
     `;
 
-    // Next arrow
+    // Next arrow - positioned over content
     const nextArrow = document.createElement('button');
     nextArrow.id = 'next-banger';
-    nextArrow.innerHTML = '➡️';
+    nextArrow.innerHTML = '›';
     nextArrow.title = 'Next item in sequence';
     nextArrow.style.cssText = prevArrow.style.cssText;
-    nextArrow.style.left = '90px'; // Position to the right of previous button
+    nextArrow.style.left = 'auto';
+    nextArrow.style.right = '10px';
 
     // Add hover effects
     [prevArrow, nextArrow].forEach(arrow => {
         arrow.addEventListener('mouseenter', () => {
-            arrow.style.transform = 'scale(1.1)';
-            arrow.style.boxShadow = `0 0 15px ${arrow === prevArrow ? 'rgba(255, 100, 100, 0.5)' : 'var(--glow, rgba(0, 255, 0, 0.5))'}`;
-            arrow.style.zIndex = '10000';
+            arrow.style.background = 'rgba(0, 0, 0, 0.9)';
+            arrow.style.transform = 'translateY(-50%) scale(1.1)';
         });
         arrow.addEventListener('mouseleave', () => {
-            arrow.style.transform = 'scale(1)';
-            arrow.style.boxShadow = `0 0 10px ${arrow === prevArrow ? 'rgba(255, 100, 100, 0.3)' : 'var(--glow, rgba(0, 255, 0, 0.3))'}`;
-            arrow.style.zIndex = '9999';
+            arrow.style.background = 'rgba(0, 0, 0, 0.7)';
+            arrow.style.transform = 'translateY(-50%) scale(1)';
         });
     });
 
     // Previous button functionality
-    prevArrow.addEventListener('click', () => {
+    prevArrow.addEventListener('click', function(e) {
+        e.stopPropagation();
         const currentType = document.getElementById('type-select').value;
         if (currentType !== 'all' && bangerIndices[currentType] > 0) {
             bangerIndices[currentType]--;
@@ -204,7 +204,8 @@ function createNavigationArrows() {
     });
 
     // Next button functionality
-    nextArrow.addEventListener('click', () => {
+    nextArrow.addEventListener('click', function(e) {
+        e.stopPropagation();
         const currentType = document.getElementById('type-select').value;
         if (currentType !== 'all') {
             bangerIndices[currentType]++;
@@ -212,27 +213,10 @@ function createNavigationArrows() {
         }
     });
 
-    document.body.appendChild(prevArrow);
-    document.body.appendChild(nextArrow);
-
-    // Show/hide arrows based on type selection
-    const typeSelector = document.getElementById('type-select');
-    function updateArrowVisibility() {
-        const currentType = typeSelector.value;
-        const display = currentType === 'all' ? 'none' : 'flex';
-        prevArrow.style.display = display;
-        nextArrow.style.display = display;
-    }
-
-    typeSelector.addEventListener('change', updateArrowVisibility);
-
-    // Set initial visibility
-    updateArrowVisibility();
-
     return { prevArrow, nextArrow };
 }
 
-// Navigate to specific banger in sequence
+//// Navigate to specific banger in sequence
 async function navigateToBanger(type, index) {
     const filteredBangers = allBangers.filter(banger => banger.type === type);
     if (filteredBangers.length === 0) return;
@@ -249,24 +233,33 @@ async function navigateToBanger(type, index) {
             duration: 0.3,
             onComplete: () => {
                 output.innerHTML = '';
+
+                // Create content wrapper
+                const contentWrapper = document.createElement('div');
+                contentWrapper.style.position = 'relative';
+                contentWrapper.style.width = '100%';
+                contentWrapper.style.display = 'inline-block';
+
+                let contentHTML = '';
+
                 if (selectedBanger.type === 'quote') {
-                    output.innerHTML = `<p>${selectedBanger.content}</p>`;
+                    contentHTML = `<p>${selectedBanger.content}</p>`;
                 } else if (selectedBanger.type === 'meme') {
-                    output.innerHTML = `
+                    contentHTML = `
                         <img src="${selectedBanger.image}" alt="Meme" class="auto-resize">
                         <p>${selectedBanger.caption}</p>
                     `;
                 } else if (selectedBanger.type === 'video') {
-                    output.innerHTML = `
+                    contentHTML = `
                         <video src="${selectedBanger.src}" controls autoplay loop muted class="auto-resize"></video>
                         <p>${selectedBanger.caption}</p>
                     `;
                 } else if (selectedBanger.type === 'gif') {
-                    output.innerHTML = `
+                    contentHTML = `
                         <img src="${selectedBanger.image}" alt="GIF" class="auto-resize">
                     `;
                 } else if (selectedBanger.type === 'double-image') {
-                    output.innerHTML = `
+                    contentHTML = `
                         <div class="double-image-container">
                             <img src="${selectedBanger.leftImage}" alt="Left Image" class="auto-resize">
                             <img src="${selectedBanger.rightImage}" alt="Right Image" class="auto-resize">
@@ -274,11 +267,11 @@ async function navigateToBanger(type, index) {
                         <p>${selectedBanger.caption}</p>
                     `;
                 } else if (selectedBanger.type === 'image') {
-                    output.innerHTML = `
+                    contentHTML = `
                         <img src="${selectedBanger.image}" alt="Image" class="auto-resize">
                     `;
                 } else if (selectedBanger.type === 'quad-image') {
-                    output.innerHTML = `
+                    contentHTML = `
                         <div class="quad-image-container">
                             <img src="${selectedBanger.topLeftImage}" alt="Top Left Image" class="auto-resize">
                             <img src="${selectedBanger.topRightImage}" alt="Top Right Image" class="auto-resize">
@@ -288,6 +281,18 @@ async function navigateToBanger(type, index) {
                         <p>${selectedBanger.caption}</p>
                     `;
                 }
+
+                contentWrapper.innerHTML = contentHTML;
+
+                // Create and add navigation arrows if there are multiple items
+                if (filteredBangers.length > 1) {
+                    const { prevArrow, nextArrow } = createContentNavigationArrows(type);
+                    contentWrapper.appendChild(prevArrow);
+                    contentWrapper.appendChild(nextArrow);
+                }
+
+                output.appendChild(contentWrapper);
+
                 gsap.fromTo(output,
                     { opacity: 0, y: -20 },
                     { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
@@ -295,6 +300,78 @@ async function navigateToBanger(type, index) {
             }
         });
     }
+}
+
+// Create navigation arrows for content (overlaid on images/content)
+function createContentNavigationArrows(type) {
+    // Previous arrow
+    const prevArrow = document.createElement('button');
+    prevArrow.innerHTML = '‹';
+    prevArrow.title = 'Previous item in sequence';
+    prevArrow.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 2rem;
+        cursor: pointer;
+        font-weight: bold;
+        z-index: 10;
+        opacity: 1;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    `;
+
+    // Next arrow
+    const nextArrow = document.createElement('button');
+    nextArrow.innerHTML = '›';
+    nextArrow.title = 'Next item in sequence';
+    nextArrow.style.cssText = prevArrow.style.cssText;
+    nextArrow.style.left = 'auto';
+    nextArrow.style.right = '10px';
+
+    // Add hover effects
+    [prevArrow, nextArrow].forEach(arrow => {
+        arrow.addEventListener('mouseenter', () => {
+            arrow.style.background = 'rgba(0, 0, 0, 0.9)';
+            arrow.style.transform = 'translateY(-50%) scale(1.1)';
+        });
+        arrow.addEventListener('mouseleave', () => {
+            arrow.style.background = 'rgba(0, 0, 0, 0.7)';
+            arrow.style.transform = 'translateY(-50%) scale(1)';
+        });
+    });
+
+    // Previous button functionality
+    prevArrow.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const currentType = document.getElementById('type-select').value;
+        if (currentType !== 'all' && bangerIndices[currentType] > 0) {
+            bangerIndices[currentType]--;
+            navigateToBanger(currentType, bangerIndices[currentType]);
+        }
+    });
+
+    // Next button functionality
+    nextArrow.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const currentType = document.getElementById('type-select').value;
+        if (currentType !== 'all') {
+            bangerIndices[currentType]++;
+            navigateToBanger(currentType, bangerIndices[currentType]);
+        }
+    });
+
+    return { prevArrow, nextArrow };
 }
 
 // Pagination functions
@@ -1898,24 +1975,33 @@ async function generateBanger() {
         duration: 0.3,
         onComplete: () => {
             output.innerHTML = '';
+
+            // Create content wrapper
+            const contentWrapper = document.createElement('div');
+            contentWrapper.style.position = 'relative';
+            contentWrapper.style.width = '100%';
+            contentWrapper.style.display = 'inline-block';
+
+            let contentHTML = '';
+
             if (selectedBanger.type === 'quote') {
-                output.innerHTML = `<p>${selectedBanger.content}</p>`;
+                contentHTML = `<p>${selectedBanger.content}</p>`;
             } else if (selectedBanger.type === 'meme') {
-                output.innerHTML = `
+                contentHTML = `
                     <img src="${selectedBanger.image}" alt="Meme" class="auto-resize">
                     <p>${selectedBanger.caption}</p>
                 `;
             } else if (selectedBanger.type === 'video') {
-                output.innerHTML = `
+                contentHTML = `
                     <video src="${selectedBanger.src}" controls autoplay loop muted class="auto-resize"></video>
                     <p>${selectedBanger.caption}</p>
                 `;
             } else if (selectedBanger.type === 'gif') {
-                output.innerHTML = `
+                contentHTML = `
                     <img src="${selectedBanger.image}" alt="GIF" class="auto-resize">
                 `;
             } else if (selectedBanger.type === 'double-image') {
-                output.innerHTML = `
+                contentHTML = `
                     <div class="double-image-container">
                         <img src="${selectedBanger.leftImage}" alt="Left Image" class="auto-resize">
                         <img src="${selectedBanger.rightImage}" alt="Right Image" class="auto-resize">
@@ -1923,11 +2009,11 @@ async function generateBanger() {
                     <p>${selectedBanger.caption}</p>
                 `;
             } else if (selectedBanger.type === 'image') {
-                output.innerHTML = `
+                contentHTML = `
                     <img src="${selectedBanger.image}" alt="Image" class="auto-resize">
                 `;
             } else if (selectedBanger.type === 'quad-image') {
-                output.innerHTML = `
+                contentHTML = `
                     <div class="quad-image-container">
                         <img src="${selectedBanger.topLeftImage}" alt="Top Left Image" class="auto-resize">
                         <img src="${selectedBanger.topRightImage}" alt="Top Right Image" class="auto-resize">
@@ -1937,6 +2023,21 @@ async function generateBanger() {
                     <p>${selectedBanger.caption}</p>
                 `;
             }
+
+            contentWrapper.innerHTML = contentHTML;
+
+            // Create and add navigation arrows if this is a specific type with multiple items
+            if (typeSelect !== 'all') {
+                const filteredBangers = allBangers.filter(banger => banger.type === typeSelect);
+                if (filteredBangers.length > 1) {
+                    const { prevArrow, nextArrow } = createContentNavigationArrows(typeSelect);
+                    contentWrapper.appendChild(prevArrow);
+                    contentWrapper.appendChild(nextArrow);
+                }
+            }
+
+            output.appendChild(contentWrapper);
+
             gsap.fromTo(output,
                 { opacity: 0, y: -20 },
                 { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
