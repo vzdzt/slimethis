@@ -75,7 +75,7 @@ i/* Reset default styles */
 
 .nav-container {
     width: 100%;
-    padding: 8px 20px;
+    padding: 8px 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
