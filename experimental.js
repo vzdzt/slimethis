@@ -272,14 +272,40 @@ function createCollapsibleControlPanel() {
         transition: all 0.3s ease;
     `;
 
-    // Create the tab (visible part) - positioned relative to document
+    // Create the main control tab (visible part) - positioned relative to document
     const tab = document.createElement('div');
     tab.id = 'control-tab';
     tab.innerHTML = '⚙️';
     tab.style.cssText = `
         position: absolute;
-        bottom: -95px; /* Trying -95px as user requested */
+        bottom: -95px; /* Sweet spot below document bottom */
         right: 70px; /* Horizontal position */
+        width: 32px;
+        height: 32px;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary);
+        border-radius: 50%;
+        color: var(--primary, #00ff00);
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 0 8px var(--glow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 9999; /* Increased z-index to ensure visibility */
+        pointer-events: auto; /* Ensure clicks work */
+    `;
+
+    // Create the shader effects tab (separate button)
+    const shaderTab = document.createElement('div');
+    shaderTab.id = 'shader-tab';
+    shaderTab.innerHTML = '✨';
+    shaderTab.style.cssText = `
+        position: absolute;
+        bottom: -95px; /* Same level as main tab */
+        right: 110px; /* Positioned left of main tab */
         width: 32px;
         height: 32px;
         background: rgba(0, 0, 0, 0.9);
@@ -356,24 +382,7 @@ function createCollapsibleControlPanel() {
             </div>
         </div>
 
-        <div class="control-section">
-            <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">✨ Shader Effects</h4>
-            <div class="control-item">
-                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Effect: <span id="shader-effect-value">none</span></label>
-                <select id="shader-effect" style="width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px; border-radius: 4px;">
-                    <option value="none">None</option>
-                    <option value="twinkle">Twinkle</option>
-                </select>
-            </div>
-            <div class="control-item">
-                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Twinkle Speed: <span id="twinkle-speed-value">2.0</span></label>
-                <input type="range" id="twinkle-speed" min="0.5" max="5" step="0.1" value="2.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
-            </div>
-            <div class="control-item">
-                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Twinkle Intensity: <span id="twinkle-intensity-value">0.5</span></label>
-                <input type="range" id="twinkle-intensity" min="0" max="1" step="0.01" value="0.5" style="width: 100%; accent-color: var(--primary, #00ff00);">
-            </div>
-        </div>
+
 
         <div class="control-section">
             <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">🎨 Colors</h4>
@@ -577,12 +586,108 @@ function createCollapsibleControlPanel() {
         });
     }, 100);
 
-    // Assemble the panel
+    // Create shader effects panel
+    const shaderPanel = document.createElement('div');
+    shaderPanel.id = 'shader-panel';
+    shaderPanel.style.cssText = `
+        position: fixed;
+        top: 50%;
+        right: -50px; /* Start with tab visible */
+        transform: translateY(-50%);
+        z-index: 1000;
+        transition: all 0.3s ease;
+    `;
+
+    // Create shader content panel
+    const shaderContent = document.createElement('div');
+    shaderContent.id = 'shader-content';
+    shaderContent.style.cssText = `
+        width: 220px; /* Smaller than main panel */
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--primary, #00ff00);
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        padding: 15px;
+        margin-right: 50px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(20px);
+        transition: all 0.3s ease;
+        max-height: 60vh;
+        overflow-y: auto;
+    `;
+
+    // Shader panel content
+    shaderContent.innerHTML = `
+        <h3 style="color: var(--primary, #00ff00); margin: 0 0 15px 0; text-shadow: 0 0 8px var(--glow, #00ff00);">
+            ✨ Shader Effects
+        </h3>
+
+        <div class="control-section">
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Effect: <span id="shader-effect-value">none</span></label>
+                <select id="shader-effect" style="width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-color); color: var(--text-color); padding: 5px; border-radius: 4px;">
+                    <option value="none">None</option>
+                    <option value="twinkle">Twinkle</option>
+                </select>
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Twinkle Speed: <span id="twinkle-speed-value">2.0</span></label>
+                <input type="range" id="twinkle-speed" min="0.5" max="5" step="0.1" value="2.0" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+            <div class="control-item">
+                <label style="color: var(--text-color, #ffffff); font-size: 12px;">Twinkle Intensity: <span id="twinkle-intensity-value">0.5</span></label>
+                <input type="range" id="twinkle-intensity" min="0" max="1" step="0.01" value="0.5" style="width: 100%; accent-color: var(--primary, #00ff00);">
+            </div>
+        </div>
+    `;
+
+    // Add hover effects to shader tab
+    shaderTab.addEventListener('mouseenter', () => {
+        shaderTab.style.transform = 'scale(1.1)';
+        shaderTab.style.boxShadow = '0 0 12px var(--glow)';
+    });
+
+    shaderTab.addEventListener('mouseleave', () => {
+        if (!shaderPanel.classList.contains('open')) {
+            shaderTab.style.transform = 'scale(1)';
+            shaderTab.style.boxShadow = '0 0 8px var(--glow)';
+        }
+    });
+
+    // Toggle shader panel on shader tab click
+    let shaderIsOpen = false;
+    shaderTab.addEventListener('click', () => {
+        shaderIsOpen = !shaderIsOpen;
+        if (shaderIsOpen) {
+            shaderPanel.classList.add('open');
+            shaderContent.style.opacity = '1';
+            shaderContent.style.visibility = 'visible';
+            shaderContent.style.transform = 'translateX(0)';
+            shaderTab.innerHTML = '✕';
+            shaderTab.style.background = 'rgba(0, 255, 0, 0.2)';
+        } else {
+            shaderPanel.classList.remove('open');
+            shaderContent.style.opacity = '0';
+            shaderContent.style.visibility = 'hidden';
+            shaderContent.style.transform = 'translateX(20px)';
+            shaderTab.innerHTML = '✨';
+            shaderTab.style.background = 'rgba(0, 0, 0, 0.9)';
+        }
+    });
+
+    // Assemble the panels
     panel.appendChild(content);
     panel.appendChild(tab);
     document.body.appendChild(panel);
 
+    shaderPanel.appendChild(shaderContent);
+    shaderPanel.appendChild(shaderTab);
+    document.body.appendChild(shaderPanel);
+
     console.log('✅ Collapsible control panel created');
+    console.log('✅ Shader effects panel created');
 }
 
 
