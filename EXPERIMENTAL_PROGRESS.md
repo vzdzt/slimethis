@@ -34,11 +34,12 @@ This document tracks the development of the Three.js experimental playground, a 
 ### 🧹 Cleanup & Optimization (v1.3)
 - **Date**: October 20, 2025
 - **Actions**:
-  - Removed all shader effect complexity
+  - Removed all shader effect complexity and Twinkle button
   - Fixed syntax errors from broken edits
-  - Restored clean starfield with control panel
+  - Restored clean starfield with basic starfield controls retained
   - Streamlined codebase for maintainability
-- **Status**: ✅ Clean, working experimental playground
+  - Removed shader button, panel, and all related code
+- **Status**: ✅ Clean, working experimental playground with core controls preserved
 
 ## 🔧 Development Lessons
 
