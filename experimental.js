@@ -149,6 +149,9 @@ function initGUI() {
 }
 
 function createCollapsibleControlPanel() {
+    // Ensure body has position relative for absolute positioning to work
+    document.body.style.position = 'relative';
+
     // Create the main container
     const panel = document.createElement('div');
     panel.id = 'control-panel';
