@@ -2052,7 +2052,7 @@ function createCollapsibleControlPanel() {
     tab.innerHTML = '⚙️';
     tab.style.cssText = `
         position: absolute;
-        bottom: -95px; /* Sweet spot below document bottom */
+        bottom: -90px; /* Adjusted wheel position */
         right: 70px; /* Horizontal position */
         width: 32px;
         height: 32px;
