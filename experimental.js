@@ -372,7 +372,7 @@ function initCursorEffects() {
 
 function initAnimations() {
     if (typeof gsap !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger);
+        // Note: ScrollTrigger not loaded in experimental page, using basic GSAP
         gsap.from('.nav-title', {
             opacity: 0,
             y: -50,
