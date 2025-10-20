@@ -1715,18 +1715,29 @@ async function generateBanger() {
     const output = document.getElementById('output');
     const typeSelect = document.getElementById('type-select').value;
 
-    // Filter bangers based on selected type
-    const filteredBangers = typeSelect === 'all'
-        ? allBangers
-        : allBangers.filter(banger => banger.type === typeSelect);
+    let selectedBanger;
 
-    if (filteredBangers.length === 0) {
-        output.innerHTML = `<p>No bangers available for this type!</p>`;
-        return;
+    if (typeSelect === 'all') {
+        // Random selection for 'all' type
+        selectedBanger = allBangers[Math.floor(Math.random() * allBangers.length)];
+    } else {
+        // Sequential selection for specific types
+        const filteredBangers = allBangers.filter(banger => banger.type === typeSelect);
+
+        if (filteredBangers.length === 0) {
+            output.innerHTML = `<p>No bangers available for this type!</p>`;
+            return;
+        }
+
+        // Get current index for this type
+        const currentIndex = bangerIndices[typeSelect] || 0;
+
+        // Get the next banger in sequence
+        selectedBanger = filteredBangers[currentIndex % filteredBangers.length];
+
+        // Increment the index for next time
+        bangerIndices[typeSelect] = (currentIndex + 1) % filteredBangers.length;
     }
-
-    // Randomly select a banger
-    const randomBanger = filteredBangers[Math.floor(Math.random() * filteredBangers.length)];
 
     // Clear previous content and animate
     output.style.opacity = '0';
@@ -1736,43 +1747,43 @@ async function generateBanger() {
         duration: 0.3,
         onComplete: () => {
             output.innerHTML = '';
-            if (randomBanger.type === 'quote') {
-                output.innerHTML = `<p>${randomBanger.content}</p>`;
-            } else if (randomBanger.type === 'meme') {
+            if (selectedBanger.type === 'quote') {
+                output.innerHTML = `<p>${selectedBanger.content}</p>`;
+            } else if (selectedBanger.type === 'meme') {
                 output.innerHTML = `
-                    <img src="${randomBanger.image}" alt="Meme" class="auto-resize">
-                    <p>${randomBanger.caption}</p>
+                    <img src="${selectedBanger.image}" alt="Meme" class="auto-resize">
+                    <p>${selectedBanger.caption}</p>
                 `;
-            } else if (randomBanger.type === 'video') {
+            } else if (selectedBanger.type === 'video') {
                 output.innerHTML = `
-                    <video src="${randomBanger.src}" controls autoplay loop muted class="auto-resize"></video>
-                    <p>${randomBanger.caption}</p>
+                    <video src="${selectedBanger.src}" controls autoplay loop muted class="auto-resize"></video>
+                    <p>${selectedBanger.caption}</p>
                 `;
-            } else if (randomBanger.type === 'gif') {
+            } else if (selectedBanger.type === 'gif') {
                 output.innerHTML = `
-                    <img src="${randomBanger.image}" alt="GIF" class="auto-resize">
+                    <img src="${selectedBanger.image}" alt="GIF" class="auto-resize">
                 `;
-            } else if (randomBanger.type === 'double-image') {
+            } else if (selectedBanger.type === 'double-image') {
                 output.innerHTML = `
                     <div class="double-image-container">
-                        <img src="${randomBanger.leftImage}" alt="Left Image" class="auto-resize">
-                        <img src="${randomBanger.rightImage}" alt="Right Image" class="auto-resize">
+                        <img src="${selectedBanger.leftImage}" alt="Left Image" class="auto-resize">
+                        <img src="${selectedBanger.rightImage}" alt="Right Image" class="auto-resize">
                     </div>
-                    <p>${randomBanger.caption}</p>
+                    <p>${selectedBanger.caption}</p>
                 `;
-            } else if (randomBanger.type === 'image') {
+            } else if (selectedBanger.type === 'image') {
                 output.innerHTML = `
-                    <img src="${randomBanger.image}" alt="Image" class="auto-resize">
+                    <img src="${selectedBanger.image}" alt="Image" class="auto-resize">
                 `;
-            } else if (randomBanger.type === 'quad-image') {
+            } else if (selectedBanger.type === 'quad-image') {
                 output.innerHTML = `
                     <div class="quad-image-container">
-                        <img src="${randomBanger.topLeftImage}" alt="Top Left Image" class="auto-resize">
-                        <img src="${randomBanger.topRightImage}" alt="Top Right Image" class="auto-resize">
-                        <img src="${randomBanger.bottomLeftImage}" alt="Bottom Left Image" class="auto-resize">
-                        <img src="${randomBanger.bottomRightImage}" alt="Bottom Right Image" class="auto-resize">
+                        <img src="${selectedBanger.topLeftImage}" alt="Top Left Image" class="auto-resize">
+                        <img src="${selectedBanger.topRightImage}" alt="Top Right Image" class="auto-resize">
+                        <img src="${selectedBanger.bottomLeftImage}" alt="Bottom Left Image" class="auto-resize">
+                        <img src="${selectedBanger.bottomRightImage}" alt="Bottom Right Image" class="auto-resize">
                     </div>
-                    <p>${randomBanger.caption}</p>
+                    <p>${selectedBanger.caption}</p>
                 `;
             }
             gsap.fromTo(output,
