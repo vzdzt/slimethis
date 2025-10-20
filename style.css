@@ -534,7 +534,7 @@ body {
 .container {
     text-align: center;
     padding: 20px;
-    padding-top: 100px; /* Account for fixed nav bar */
+    padding-top: 60px; /* Further reduced for compact nav bar fit */
     animation: container-bounce 3s ease-in-out infinite;
     position: relative;
     z-index: 10;
