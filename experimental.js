@@ -161,7 +161,7 @@ function createCollapsibleControlPanel() {
         transition: all 0.3s ease;
     `;
 
-    // Create the tab (visible part) - positioned in bottom right corner
+    // Create the tab (visible part) - positioned in bottom right corner, styled like pfp
     const tab = document.createElement('div');
     tab.id = 'control-tab';
     tab.innerHTML = '⚙️';
@@ -169,20 +169,20 @@ function createCollapsibleControlPanel() {
         position: fixed;
         bottom: 20px;
         right: 20px;
-        width: 50px;
-        height: 50px;
+        width: 32px;
+        height: 32px;
         background: rgba(0, 0, 0, 0.9);
         backdrop-filter: blur(20px);
-        border: 2px solid var(--primary, #00ff00);
-        border-radius: 12px;
+        border: 2px solid var(--primary);
+        border-radius: 50%;
         color: var(--primary, #00ff00);
-        font-size: 20px;
+        font-size: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow: 0 0 15px var(--glow, rgba(0, 255, 0, 0.3));
-        transition: all 0.3s ease;
+        box-shadow: 0 0 8px var(--glow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
         z-index: 1001;
     `;
 
@@ -289,16 +289,16 @@ function createCollapsibleControlPanel() {
         </div>
     `;
 
-    // Add hover effects to tab
+    // Add hover effects to tab (matching profile picture)
     tab.addEventListener('mouseenter', () => {
-        tab.style.background = 'rgba(0, 255, 0, 0.1)';
-        tab.style.boxShadow = '-8px 0 20px var(--glow, rgba(0, 255, 0, 0.4))';
+        tab.style.transform = 'scale(1.1)';
+        tab.style.boxShadow = '0 0 12px var(--glow)';
     });
 
     tab.addEventListener('mouseleave', () => {
         if (!panel.classList.contains('open')) {
-            tab.style.background = 'rgba(0, 0, 0, 0.9)';
-            tab.style.boxShadow = '-5px 0 15px var(--glow, rgba(0, 255, 0, 0.3))';
+            tab.style.transform = 'scale(1)';
+            tab.style.boxShadow = '0 0 8px var(--glow)';
         }
     });
 
