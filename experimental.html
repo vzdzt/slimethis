@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlimeThis Experimental - Three.js Playground</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <!-- Add lil-gui for live parameter controls -->
+    <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.19.2/dist/lil-gui.umd.min.js"></script>
+</head>
+<body data-theme="veazy">
+    <canvas id="universe" class="starfield"></canvas>
+    <div id="cursor" class="cursor"></div>
+    <div id="cursor-blur" class="cursor-blur"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <h1 class="nav-title">
+                <a href="index.html" style="color: inherit; text-decoration: none;">SlimeThis.com</a>
+                <span style="font-size: 0.6em; font-weight: normal; opacity: 0.7;">Experimental</span>
+            </h1>
+            <a href="https://x.com/vzdzt" target="_blank" class="nav-profile-link">
+                <img src="veazypfp.jpeg" alt="Veazy Profile" class="nav-profile-pic">
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <p class="subtitle">Three.js Experimental Playground - Testing new features and enhancements</p>
+
+        <!-- Experimental Controls -->
+        <div class="main-layout">
+            <div class="controls-panel">
+                <div class="theme-switcher">
+                    <label for="theme-select">Theme:</label>
+                    <select id="theme-select">
+                        <option value="veazy" selected>Veazy Mode</option>
+                        <option value="ultra-glass">Ultra Glass</option>
+                        <option value="satin">Satin</option>
+                        <option value="galactic-nebula">Galactic Nebula</option>
+                        <option value="electric-storm">Electric Storm</option>
+                        <option value="glass-morphism">Glass Morphism</option>
+                        <option value="void-pulse">Void Pulse</option>
+                        <option value="prism-shard">Prism Shard</option>
+                        <option value="inferno-core">Inferno Core</option>
+                        <option value="cosmic-rift">Cosmic Rift</option>
+                        <option value="retro-vaporwave">Retro Vaporwave</option>
+                        <option value="neon-fluid">Neon Fluid</option>
+                        <option value="aurora-wave">Aurora Wave</option>
+                    </select>
+                </div>
+
+                <!-- Experimental Features Panel -->
+                <div class="color-customizer">
+                    <div class="customizer-header">
+                        <h4>Experimental Features</h4>
+                    </div>
+                    <div class="color-palette">
+                        <div id="experimental-controls">
+                            <p style="color: var(--text-color); font-size: 0.9rem; margin: 10px 0;">
+                                🚧 Three.js enhancements coming soon...<br>
+                                <small>Testing lil-gui, shaders, and advanced effects</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="output-panel">
+                <div id="output" class="card">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;">Experimental Playground</h3>
+                    <p>Welcome to the Three.js experimental area! This is a safe space to test new features without affecting the main site.</p>
+                    <p style="margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">
+                        Planned enhancements:<br>
+                        • Live parameter controls (lil-gui)<br>
+                        • Custom shader effects<br>
+                        • Advanced 3D models<br>
+                        • Performance optimizations
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load Paint Worklets
+        if ('paintWorklet' in CSS) {
+            CSS.paintWorklet.addModule('neon-grid.js');
+            CSS.paintWorklet.addModule('neon-cursor.js');
+            CSS.paintWorklet.addModule('cyber-bg.js');
+        }
+    </script>
+    <script src="experimental.js"></script>
+</body>
+</html>
