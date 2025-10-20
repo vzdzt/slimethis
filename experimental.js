@@ -366,7 +366,7 @@ function createCollapsibleControlPanel() {
             <h4 style="color: var(--text-color, #ffffff); margin: 10px 0; font-size: 14px;">⚡ Animation</h4>
             <div class="control-item">
                 <label style="color: var(--text-color, #ffffff); font-size: 12px;">Speed: <span id="anim-speed-value">0.0002</span></label>
-                <input type="range" id="anim-speed" min="0" max="0.002" step="0.0001" value="0.0002" style="width: 100%; accent-color: var(--primary, #00ff00);">
+                <input type="range" id="anim-speed" min="0" max="0.01" step="0.0001" value="0.0002" style="width: 100%; accent-color: var(--primary, #00ff00);">
             </div>
             <div class="control-item">
                 <label style="color: var(--text-color, #ffffff); font-size: 12px;">Mouse Influence: <span id="mouse-influence-value">0.001</span></label>
