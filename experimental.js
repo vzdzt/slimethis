@@ -168,7 +168,7 @@ function createCollapsibleControlPanel() {
     tab.style.cssText = `
         position: fixed;
         bottom: 20px;
-        right: 15px;
+        right: 100px;
         width: 32px;
         height: 32px;
         background: rgba(0, 0, 0, 0.9);
