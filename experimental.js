@@ -155,7 +155,7 @@ function createCollapsibleControlPanel() {
     panel.style.cssText = `
         position: fixed;
         top: 50%;
-        right: 0;
+        right: -50px; /* Start with tab visible */
         transform: translateY(-50%);
         z-index: 1000;
         transition: all 0.3s ease;
