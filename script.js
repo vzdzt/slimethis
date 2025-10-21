@@ -2026,8 +2026,8 @@ async function generateBanger() {
 
             contentWrapper.innerHTML = contentHTML;
 
-            // Create and add navigation arrows if this is a specific type with multiple items
-            if (typeSelect !== 'all') {
+            // Create and add navigation arrows if this is a specific type with multiple items AND it's media content
+            if (typeSelect !== 'all' && typeSelect !== 'quote') {
                 const filteredBangers = allBangers.filter(banger => banger.type === typeSelect);
                 if (filteredBangers.length > 1) {
                     const { prevArrow, nextArrow } = createContentNavigationArrows(typeSelect);
