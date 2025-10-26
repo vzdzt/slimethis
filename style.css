@@ -867,7 +867,7 @@ body[data-theme="electric-storm"] .container {
         gap: 10px;
         padding: 90px 0px 15px 0px;
         margin-bottom: 1rem;
-        margin-left: 5px; /* Set exact 5px left margin for tighter spacing */
+        margin-left: 0px; /* No left margin - flush against screen edge */
         width: 70%; /* Keep container width balanced */
     }
 
