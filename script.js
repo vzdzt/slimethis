@@ -193,8 +193,8 @@ function createNavigationArrows() {
         });
     });
 
-    // Previous button functionality
-    prevArrow.addEventListener('click', function(e) {
+    // Previous button functionality - use cross-platform listener
+    addCrossPlatformListener(prevArrow, function(e) {
         e.stopPropagation();
         const currentType = document.getElementById('type-select').value;
         if (currentType !== 'all' && bangerIndices[currentType] > 0) {
@@ -203,14 +203,20 @@ function createNavigationArrows() {
         }
     });
 
-    // Next button functionality
-    nextArrow.addEventListener('click', function(e) {
+    // Next button functionality - use cross-platform listener
+    addCrossPlatformListener(nextArrow, function(e) {
         e.stopPropagation();
         const currentType = document.getElementById('type-select').value;
         if (currentType !== 'all') {
             bangerIndices[currentType]++;
             navigateToBanger(currentType, bangerIndices[currentType]);
         }
+    });
+
+    // Gallery button - use cross-platform listener
+    const galleryBtn = document.getElementById('gallery-btn');
+    addCrossPlatformListener(galleryBtn, function() {
+        displayImageGallery();
     });
 
     return { prevArrow, nextArrow };
@@ -351,8 +357,8 @@ function createContentNavigationArrows(type) {
         });
     });
 
-    // Previous button functionality
-    prevArrow.addEventListener('click', function(e) {
+    // Previous button functionality - use cross-platform listener
+    addCrossPlatformListener(prevArrow, function(e) {
         e.stopPropagation();
         const currentType = document.getElementById('type-select').value;
         if (currentType !== 'all' && bangerIndices[currentType] > 0) {
@@ -361,8 +367,8 @@ function createContentNavigationArrows(type) {
         }
     });
 
-    // Next button functionality
-    nextArrow.addEventListener('click', function(e) {
+    // Next button functionality - use cross-platform listener
+    addCrossPlatformListener(nextArrow, function(e) {
         e.stopPropagation();
         const currentType = document.getElementById('type-select').value;
         if (currentType !== 'all') {
@@ -2055,8 +2061,29 @@ async function generateBanger() {
     });
 }
 
+// Cross-platform touch and click handler
+function addCrossPlatformListener(element, handler, options = {}) {
+    if (!element) return;
+
+    // Mobile devices need touch events
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile && 'ontouchstart' in window) {
+        // Mobile: use touchstart for immediate response
+        element.addEventListener('touchstart', function(e) {
+            e.preventDefault(); // Prevent unwanted scrolling/behaviors
+            handler.call(element, e);
+        }, options);
+    } else {
+        // Desktop: use click
+        element.addEventListener('click', handler, options);
+    }
+}
+
 // Slime Button - Save and Copy current content
-document.getElementById('generate-btn').addEventListener('click', async () => {
+const generateBtn = document.getElementById('generate-btn');
+addCrossPlatformListener(generateBtn, async function() {
+    await generateBanger();
     copyCurrentBanger();
 });
 
@@ -2612,9 +2639,11 @@ function createCollapsibleControlPanel() {
             updateStarColors();
         });
 
-        // Button controls
-        document.getElementById('regenerate-btn').addEventListener('click', createStars);
-        document.getElementById('reset-btn').addEventListener('click', resetStarfieldDefaults);
+        // Button controls - use cross-platform listeners
+        const regenerateBtn = document.getElementById('regenerate-btn');
+        addCrossPlatformListener(regenerateBtn, createStars);
+        const resetBtn = document.getElementById('reset-btn');
+        addCrossPlatformListener(resetBtn, resetStarfieldDefaults);
 
         // Button hover effects
         document.getElementById('regenerate-btn').addEventListener('mouseenter', function() {
