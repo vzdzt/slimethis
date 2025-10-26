@@ -868,7 +868,7 @@ body[data-theme="electric-storm"] .container {
         padding: 90px 0px 15px 10px;
         margin-bottom: 1rem;
         margin-left: 10px;
-        width: calc(100% - 20px);
+        width: calc(100% - 10px); /* Further extend: -10px more (now -10px from edges) */
     }
 
     .main-layout {
