@@ -2070,22 +2070,23 @@ async function generateBanger() {
     });
 }
 
-// Cross-platform touch and click handler
+// Cross-platform touch and click handler - optimized for buttons
 function addCrossPlatformListener(element, handler, options = {}) {
     if (!element) return;
 
-    // Mobile devices need touch events
+    // Mobile devices need touch events - let them work naturally
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
+    // Always use click for best cross-platform compatibility
+    // Modern mobile browsers handle click events properly from touch
+    element.addEventListener('click', handler, options);
+
+    // For mobile, also listen for touchstart for faster response
     if (isMobile && 'ontouchstart' in window) {
-        // Mobile: use touchstart for immediate response
         element.addEventListener('touchstart', function(e) {
-            e.preventDefault(); // Prevent unwanted scrolling/behaviors
+            // Let the browser handle the touch naturally
             handler.call(element, e);
-        }, options);
-    } else {
-        // Desktop: use click
-        element.addEventListener('click', handler, options);
+        }, { passive: true, ...options });
     }
 }
 
