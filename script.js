@@ -452,14 +452,23 @@ function updatePaginationControls() {
 }
 
 function displayImageGallery() {
+    // Prevent multiple gallery openings and ensure proper cleanup
     const output = document.getElementById('output');
+
+    // Clear any existing gallery content to prevent accumulation
+    const existingGallery = output.querySelector('.gallery-grid');
+    if (existingGallery) {
+        // Remove all event listeners by recreating the gallery div
+        existingGallery.remove();
+    }
+
     const start = (currentPage - 1) * IMAGES_PER_PAGE;
     const end = start + IMAGES_PER_PAGE;
     const pageImages = allImages.slice(start, end);
 
     // Create a 2x5 grid that fits in viewport
     let galleryHTML = `
-        <div style="display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 120px); gap: 10px; padding: 10px; max-width: 100%; margin: 0 auto;">
+        <div class="gallery-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 120px); gap: 10px; padding: 10px; max-width: 100%; margin: 0 auto;">
     `;
 
     pageImages.forEach((image, index) => {
