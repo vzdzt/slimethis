@@ -2307,11 +2307,11 @@ function initStarfieldExperimental() {
     // Enhanced performance detection
     console.log('Device capabilities:', deviceCaps);
 
-    // Strict performance checks - DISABLE high-performance features on these devices
+    // Strict performance checks - DISABLE all 3D features on MOBILE for guaranteed touch compatibility
     const shouldDisable3D = (
         !deviceCaps.canRun3D ||                                  // No WebGL support
         deviceCaps.performance === 'low' ||                      // Low performance device
-        (deviceCaps.isMobile && deviceCaps.cpuCores < 4) ||      // Mobile with weak CPU
+        deviceCaps.isMobile ||                                   // DISABLE starfield on ALL mobile devices for touch compatibility
         (deviceCaps.isIntegratedGPU && deviceCaps.memoryGB < 8)  // Integrated GPU with low memory
     );
 
