@@ -2178,24 +2178,88 @@ let starfieldParams = {
     color: { r: 0.3, g: 0.3, b: 0.5 }
 };
 
+// Performance detection utilities
+function detectDeviceCapabilities() {
+    // CPU/GPU detection
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+    if (!gl) return { canRun3D: false, performance: 'low', cpuClass: 'unknown' };
+
+    const renderer = gl.getParameter(gl.RENDERER).toLowerCase();
+    const isIntegratedGPU = renderer.includes('intel') || renderer.includes('hd graphics') || renderer.includes('iris');
+    const isDedicatedGPU = renderer.includes('nvidia') || renderer.includes('amd') || renderer.includes('radeon') || renderer.includes('geforce');
+
+    // Memory detection (if available)
+    let memoryGB = 8; // default assumption
+    if ('deviceMemory' in navigator) {
+        memoryGB = navigator.deviceMemory || 8;
+    }
+
+    // CPU core detection
+    let cpuCores = navigator.hardwareConcurrency || 4;
+
+    // Performance classification
+    let performance = 'high';
+    if (cpuCores < 4 || memoryGB < 4 || isIntegratedGPU) {
+        performance = 'medium';
+    }
+    if (cpuCores < 2 || memoryGB < 2) {
+        performance = 'low';
+    }
+
+    return {
+        canRun3D: true,
+        performance: performance,
+        isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+        isIntegratedGPU: isIntegratedGPU,
+        isDedicatedGPU: isDedicatedGPU,
+        memoryGB: memoryGB,
+        cpuCores: cpuCores,
+        renderer: renderer
+    };
+}
+
 // Initialize the experimental starfield with controls
 function initStarfieldExperimental() {
-    // Check for WebGL support and device performance
+    // Get detailed device capabilities
+    const deviceCaps = detectDeviceCapabilities();
+
     const canvas = document.getElementById('universe');
     if (!canvas || typeof THREE === 'undefined') {
         console.error('Three.js or canvas not found.');
+        // Don't show error, just disable silently for better UX
+        if (canvas) canvas.style.display = 'none';
         return;
     }
 
-    // Check for Paint Worklet support and performance issues
-    const hasWorkletSupport = CSS && 'paintWorklet' in CSS;
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isLowPerfBrowser = !window.WebGLRenderingContext || isMobile || !hasWorkletSupport;
+    // Enhanced performance detection
+    console.log('Device capabilities:', deviceCaps);
 
-    if (isLowPerfBrowser) {
+    // Strict performance checks - DISABLE high-performance features on these devices
+    const shouldDisable3D = (
+        !deviceCaps.canRun3D ||                                  // No WebGL support
+        deviceCaps.performance === 'low' ||                      // Low performance device
+        (deviceCaps.isMobile && deviceCaps.cpuCores < 4) ||      // Mobile with weak CPU
+        (deviceCaps.isIntegratedGPU && deviceCaps.memoryGB < 8)  // Integrated GPU with low memory
+    );
+
+    if (shouldDisable3D) {
+        console.log('🚫 High-performance features disabled for better stability');
+        console.log(`Device: ${deviceCaps.performance} performance, ${deviceCaps.isMobile ? 'mobile' : 'desktop'}, ${deviceCaps.cpuCores} cores, ${deviceCaps.memoryGB}GB memory`);
+
+        // Disable all heavy features for better performance
         canvas.style.display = 'none';
         document.body.style.background = 'var(--background)';
-        console.log('Starfield disabled on low-performance device');
+
+        // Aggressive optimization: disable all GSAP animations for slow devices
+        if (typeof gsap !== 'undefined' && deviceCaps.performance === 'low') {
+            console.log('⚡ Disabling GSAP animations for better performance');
+            // Replace GSAP animations with simple CSS transitions
+            document.documentElement.style.setProperty('--animation-duration', '0s');
+            document.documentElement.style.setProperty('--animation-delay', '0s');
+        }
+
         return;
     }
 
@@ -3218,11 +3282,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         localStorage.setItem('colorCustomizations', JSON.stringify(currentCustomizations));
     }
 
-    // Apply saved theme
+    // Apply saved theme with performance consideration
     const savedTheme = localStorage.getItem('currentTheme') || 'galactic-nebula';
     document.body.setAttribute('data-theme', savedTheme);
     document.getElementById('theme-select').value = savedTheme;
-    updateStarfieldColors(savedTheme);
+
+    // Only update starfield colors if 3D is enabled (performance check already done)
+    if (scene && starField) {
+        updateStarfieldColors(savedTheme);
+    }
 
     // Show/hide color customizer button based on initial theme
     const colorPanelButton = document.getElementById('color-panel-btn');
