@@ -2074,19 +2074,33 @@ async function generateBanger() {
 function addCrossPlatformListener(element, handler, options = {}) {
     if (!element) return;
 
-    // Mobile devices need touch events - let them work naturally
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    // Always use click for best cross-platform compatibility
-    // Modern mobile browsers handle click events properly from touch
+    // Simple approach: Let the browser handle touch->click conversion naturally
+    // Modern mobile browsers automatically convert touchstart to click for interactive elements
     element.addEventListener('click', handler, options);
+}
 
-    // For mobile, also listen for touchstart for faster response
-    if (isMobile && 'ontouchstart' in window) {
-        element.addEventListener('touchstart', function(e) {
-            // Let the browser handle the touch naturally
-            handler.call(element, e);
-        }, { passive: true, ...options });
+// Ensure mobile touch targets are properly sized
+function ensureMobileTouchTargets() {
+    if (window.innerWidth <= 768) {  // Mobile breakpoint
+        const buttons = document.querySelectorAll('button, select, .gallery-btn');
+        buttons.forEach(btn => {
+            // Ensure minimum touch target size (44px recommended)
+            const rect = btn.getBoundingClientRect();
+            if (rect.height < 44) {
+                btn.style.minHeight = '44px';
+            }
+            if (rect.width < 44) {
+                btn.style.minWidth = '44px';
+            }
+
+            // Ensure adequate spacing between elements
+            btn.style.margin = '8px';
+
+            // Remove any pointer-events: none that might interfere
+            if (btn.style.pointerEvents === 'none') {
+                btn.style.pointerEvents = 'auto';
+            }
+        });
     }
 }
 
