@@ -865,7 +865,7 @@ body[data-theme="electric-storm"] .container {
         flex-direction: column !important;
         align-items: flex-start;
         gap: 10px;
-        padding: 90px 10px 15px 10px;
+        padding: 90px 0px 15px 10px;
         margin-bottom: 1rem;
         margin-left: 10px;
         width: calc(100% - 20px);
