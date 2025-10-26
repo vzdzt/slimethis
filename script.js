@@ -2338,9 +2338,17 @@ function initStarfieldExperimental() {
 }
 
 function createStars() {
-    // Remove existing starfield if it exists
+    // Remove existing starfield if it exists - properly dispose to prevent memory leaks
     if (starField) {
         scene.remove(starField);
+        // Properly dispose of Three.js objects to prevent memory leaks
+        if (starField.geometry) {
+            starField.geometry.dispose();
+        }
+        if (starField.material) {
+            starField.material.dispose();
+        }
+        starField = null; // Clear reference
     }
 
     const geometry = new THREE.BufferGeometry();
