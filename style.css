@@ -865,10 +865,10 @@ body[data-theme="electric-storm"] .container {
         flex-direction: column !important;
         align-items: flex-start;
         gap: 10px;
-        padding: 90px 0px 15px 0px; /* TEMPORARY: Extreme test - no left padding */
+        padding: 90px 0px 15px 0px;
         margin-bottom: 1rem;
-        margin-left: 0px; /* TEMPORARY: Extreme test - no left margin */
-        width: 100%; /* TEMPORARY: Extreme test - full width */
+        margin-left: 15%; /* Add 15% margin on left */
+        width: 70%; /* Reduce width by 15% from each side */
     }
 
     .main-layout {
