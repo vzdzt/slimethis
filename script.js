@@ -2697,6 +2697,64 @@ function resetStarfieldDefaults() {
     createStars();
 }
 
+function updateStarfieldColors(theme) {
+    // Early return if starfield not available (disabled for performance reasons)
+    if (!starField || !starField.geometry.attributes.color) {
+        console.log(`🎨 Starfield disabled - color update for ${theme} theme skipped`);
+        return;
+    }
+
+    // Theme color mappings for starfield
+    const themeColors = {
+        'galactic-nebula': { r: 0.4, g: 0.3, b: 0.8 },   // Purple-blue
+        'electric-storm': { r: 0.8, g: 0.8, b: 1.0 },    // Electric blue
+        'void-pulse': { r: 0.1, g: 0.1, b: 0.15 },       // Dark purple
+        'prism-shard': { r: 0.9, g: 0.1, b: 0.8 },      // Magenta-pink
+        'inferno-core': { r: 1.0, g: 0.3, b: 0.1 },     // Orange-red
+        'cosmic-rift': { r: 0.2, g: 0.8, b: 1.0 },      // Teal-blue
+        'retro-vaporwave': { r: 0.9, g: 0.1, b: 0.6 },  // Pink-magenta
+        'ultra-glass': { r: 0.3, g: 0.5, b: 0.9 },      // Glass blue
+        'satin': { r: 0.2, g: 0.2, b: 0.3 },            // Dark blue
+        'glass-morphism': { r: 0.1, g: 0.8, b: 0.9 },   // Teal
+        'veazy': { r: 0.0, g: 0.8, b: 0.4 },            // Green theme
+        'neon-fluid': { r: 0.0, g: 1.0, b: 1.0 },       // Cyan
+        'aurora-wave': { r: 0.5, g: 0.9, b: 1.0 }       // Light blue
+    };
+
+    // Default colors if theme not found
+    const colors = themeColors[theme] || { r: 0.3, g: 0.3, b: 0.5 };
+
+    // Get color attribute
+    const colorAttribute = starField.geometry.attributes.color;
+    const colorArray = colorAttribute.array;
+
+    // Update all star colors with theme-appropriate tints
+    for (let i = 0; i < colorArray.length; i += 3) {
+        // Base color from theme
+        let r = colors.r;
+        let g = colors.g;
+        let b = colors.b;
+
+        // Add some variation for realism (stars aren't all identical)
+        const variation = (Math.random() - 0.5) * 0.3; // ±15% variation
+        r = Math.max(0.05, Math.min(1.0, r + variation));
+        g = Math.max(0.05, Math.min(1.0, g + variation));
+        b = Math.max(0.05, Math.min(1.0, b + variation));
+
+        colorArray[i] = r;     // Red
+        colorArray[i + 1] = g; // Green
+        colorArray[i + 2] = b; // Blue
+    }
+
+    // Mark as needing update
+    colorAttribute.needsUpdate = true;
+
+    // Update starfieldParams to match
+    starfieldParams.color = colors;
+
+    console.log(`🎨 Starfield colors updated for ${theme} theme`);
+}
+
 function createColorCustomizerPanel() {
     // Create the color customizer button and panel
     const colorPanelButton = document.createElement('div');
