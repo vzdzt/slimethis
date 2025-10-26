@@ -193,8 +193,18 @@ function createNavigationArrows() {
         });
     });
 
-    // Previous button functionality - use cross-platform listener
-    addCrossPlatformListener(prevArrow, function(e) {
+    // Previous button functionality - prevent any interference
+    prevArrow.addEventListener('touchstart', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        const currentType = document.getElementById('type-select').value;
+        if (currentType !== 'all' && bangerIndices[currentType] > 0) {
+            bangerIndices[currentType]--;
+            navigateToBanger(currentType, bangerIndices[currentType]);
+        }
+    }, { passive: false });
+
+    prevArrow.addEventListener('click', function(e) {
         e.stopPropagation();
         const currentType = document.getElementById('type-select').value;
         if (currentType !== 'all' && bangerIndices[currentType] > 0) {
@@ -203,8 +213,18 @@ function createNavigationArrows() {
         }
     });
 
-    // Next button functionality - use cross-platform listener
-    addCrossPlatformListener(nextArrow, function(e) {
+    // Next button functionality - prevent any interference
+    nextArrow.addEventListener('touchstart', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        const currentType = document.getElementById('type-select').value;
+        if (currentType !== 'all') {
+            bangerIndices[currentType]++;
+            navigateToBanger(currentType, bangerIndices[currentType]);
+        }
+    }, { passive: false });
+
+    nextArrow.addEventListener('click', function(e) {
         e.stopPropagation();
         const currentType = document.getElementById('type-select').value;
         if (currentType !== 'all') {
@@ -3204,17 +3224,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         displayImageGallery();
     });
 
-    // Output card click handler
+    // Output card click handler - only trigger for main output area, not navigation arrows
     document.getElementById('output').addEventListener('click', function(e) {
-        // Only generate banger when clicking directly on the output area, not on gallery images or buttons
-        if (e.target === this || e.target.closest('.gallery-image, button, .pagination-controls button')) {
-            // Don't generate if clicking on gallery images or buttons
-            if (!e.target.closest('.gallery-image, button, .pagination-controls button')) {
-                generateBanger();
-            }
-        } else {
+        // Check if the click is on navigation arrows - exclude these completely
+        if (e.target.closest('#prev-banger, #next-banger, .prev-banger-overlay, .next-banger-overlay')) {
+            // Completely ignore clicks on navigation arrows
+            return;
+        }
+
+        // Only generate banger when clicking directly on the output area itself
+        if (e.target === this) {
             generateBanger();
         }
+
+        // Also handle clicks inside the output but not on buttons or images
+        if (e.target.closest('img, video, .gallery-image, button:not(#prev-banger):not(#next-banger):not(.prev-banger-overlay):not(.next-banger-overlay), .pagination-controls button')) {
+            // Don't generate when clicking on content or other interactive elements
+            return;
+        }
+
+        generateBanger();
     });
 
     // Color Customization
