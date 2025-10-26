@@ -3012,7 +3012,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // GSAP Animations
     if (typeof gsap !== 'undefined') {
         gsap.registerPlugin(ScrollTrigger);
-        gsap.from('.slime-title', {
+        gsap.from('h1.nav-title', {
             opacity: 0,
             y: -50,
             duration: 1,
@@ -3040,7 +3040,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ease: 'back.out(1.7)',
             delay: 0.9
         });
-        gsap.from('.social-container', {
+        gsap.from('.nav-container', {
             opacity: 0,
             y: 30,
             duration: 0.8,
